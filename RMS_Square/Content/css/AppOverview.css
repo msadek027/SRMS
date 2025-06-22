@@ -1,0 +1,137 @@
+﻿.node {
+    width: 130px;
+    height: 40px;
+    background-color: #007bff;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    position: absolute;
+    cursor: pointer;
+    font-size:small;
+}
+.nodeRectangle {
+    width: 130px;
+    height: 40px;
+    background-color: #007bff;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    position: absolute;
+    cursor: pointer;
+    font-size: small;
+}
+
+.nodeDiamond {
+    width: 80px; /* Adjust width for diamond size */
+    height: 80px; /* Make height equal to width for a diamond */
+    background-color: #007bff;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    cursor: pointer;
+    transform: rotate(45deg); /* Rotate the square to make a diamond */
+    font-size: small;
+}
+
+    /* Center text within the diamond */
+    .nodeDiamond span {
+        transform: rotate(-45deg); /* Rotate text back to normal orientation */
+        font-size: small;
+    }
+
+.nodeCircle {
+    width: 60px; /* Make width and height equal */
+    height: 60px;
+    background-color: #007bff;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%; /* Makes the element circular */
+    position: absolute;
+    cursor: pointer;
+    font-size: small;
+}
+
+.nodeOval {
+    width: 100px; /* Width greater than height */
+    height: 60px; /* Height smaller than width */
+    background-color: #007bff;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%; /* Keeps the shape oval */
+    position: absolute;
+    cursor: pointer;
+    font-size: small;
+}
+.shape {
+    float: left;
+    margin: 80px;
+    width: 100px;
+    height: 100px;
+    border: solid 1px;
+    font-size: small;
+}
+
+.square {
+    width: 100px;
+    height: 100px;
+    background: #76D7C4;
+    font-size: small;
+}
+
+.circle {
+    width: 100px;
+    height: 100px;
+    background: red;
+    -moz-border-radius: 50px;
+    -webkit-border-radius: 50px;
+    border-radius: 50px;
+    background: #F7DC6F;
+    font-size: small;
+}
+
+.triangle-down {
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-top: 100px solid red;
+    font-size: small;
+}
+
+.parallelogram {
+    width: 150px;
+    height: 100px;
+    -webkit-transform: skew(20deg);
+    -moz-transform: skew(20deg);
+    -o-transform: skew(20deg);
+    background: blue;
+    font-size: small;
+}
+
+.labelClass {
+    background-color: yellow;
+    padding: 0.4em;
+    font: 16px sans-serif;
+    color: #444;
+    z-index: 21;
+    border: 1px solid red;
+    font-size: small;
+}
+/* Style for the connector label */
+.connector-label {
+    color: #4CAF50;
+    font-weight: bold;  
+    font-size: small;
+}
+
+

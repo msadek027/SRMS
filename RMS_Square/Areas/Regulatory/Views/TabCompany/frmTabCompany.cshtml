@@ -1,0 +1,84 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<link href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#tabs").tabs();
+    });
+</script><div id="tabs">
+    <ul>    
+        <li><a href="#tabs-1">Entry License Info</a></li>
+        <li><a href="#tabs-2">View License</a></li>
+        <li><a href="#tabs-3">Entry GMP Certificate</a></li>
+        <li><a href="#tabs-4">View GMP Certificate</a></li>
+        <li><a href="#tabs-5">Products</a></li>
+    </ul>
+             <br />
+             <br />
+             <div class="box-header with-border">
+                 <div class="row">
+                     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                         <div class="input-group">
+                             <input type="text" id="EmpID" name="EmpID" readonly="readonly" placeholder="Press F9" class="RequiredField form-control input-sm" />
+                             <span class="input-group-btn" style="width:0px;"></span>
+                             <input type="text" id="EmpName" name="EmpName" readonly="readonly" class="RequiredField form-control input-sm" />
+                         </div>
+                     </div>
+                     <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"><div id="MessageText" style="text-align:center"></div></div>
+                     <div class="col-xs-0 col-sm-0 col-md-6 col-lg-6">
+                         <div style="text-align:right;">
+                             <button id="btnReset" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+                             <button id="btnSave" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-save"></i>Save</button>
+                             <button id="btnView" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>View</button>
+                       </div>
+                     </div>
+                 </div>
+             </div>
+    <div id="tabs-1">
+    <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><label class="control-label required">Father Name:</label></div>
+    <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="FatherName" name="FatherName" placeholder="FatherName" class="RequiredField form-control" /></div>
+    <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"></div>
+    <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"><label class="control-label required">Mother Name:</label></div>
+    <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="MotherName" name="MotherName" placeholder="MotherName" class="RequiredField form-control" /></div>
+</div></div>
+    <div id="tabs-2">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><label class="control-label required">Father Name:</label></div>
+            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="FatherName" name="FatherName" placeholder="FatherName" class="RequiredField form-control" /></div>
+            <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"></div>
+            <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"><label class="control-label required">Mother Name:</label></div>
+            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="MotherName" name="MotherName" placeholder="MotherName" class="RequiredField form-control" /></div>
+        </div>
+    </div>
+   <div id="tabs-3">
+    <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><label class="control-label required">Father Name:</label></div>
+    <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="FatherName" name="FatherName" placeholder="FatherName" class="RequiredField form-control" /></div>
+    <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"></div>
+    <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"><label class="control-label required">Mother Name:</label></div>
+    <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="MotherName" name="MotherName" placeholder="MotherName" class="RequiredField form-control" /></div>
+</div></div>
+             <div id="tabs-4">
+                 <div class="row">
+                     <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><label class="control-label required">Father Name:</label></div>
+                     <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="FatherName" name="FatherName" placeholder="FatherName" class="RequiredField form-control" /></div>
+                     <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"></div>
+                     <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"><label class="control-label required">Mother Name:</label></div>
+                     <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="MotherName" name="MotherName" placeholder="MotherName" class="RequiredField form-control" /></div>
+                 </div>
+             </div>
+             <div id="tabs-5">
+    <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><label class="control-label required">Father Name:</label></div>
+    <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="FatherName" name="FatherName" placeholder="FatherName" class="RequiredField form-control" /></div>
+    <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"></div>
+    <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"><label class="control-label required">Mother Name:</label></div>
+    <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="MotherName" name="MotherName" placeholder="MotherName" class="RequiredField form-control" /></div>
+</div></div>
+         
+</div>

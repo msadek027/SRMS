@@ -1,0 +1,76 @@
+﻿
+.basic-info {
+    padding-left: 0;
+    /*text-align: right;*/
+}
+
+.thumb {
+    width: 120px;
+    height: 75px;
+    margin: 5px;
+    float: left;
+}
+
+.uploader {
+    clear: both;
+}
+/*fieldset {
+        overflow: hidden;
+    }*/
+.select2-container.select2-container-disabled .select2-choice {
+    background-color: #eee !important;
+}
+
+.fieldSetup .form-group {
+    margin-bottom: 12px;
+}
+
+/*.modal {
+        padding-right: 100%;
+    }*/
+
+.modal-content {
+    width: 1000px;
+    /*height: 453px;*/
+}
+
+.form-control {
+    /*width: 100%;*/
+    height: 20%;
+    font-size: 11px;
+}
+
+.unset-width {
+    width: unset;
+    padding-right: 0;
+    overflow: hidden;
+}
+
+.select2-container .select2-choice {
+    height: 26px;
+    line-height: 1;
+}
+
+.ui-grid-header-cell {
+    height: 10px;
+}
+
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+    border-top: none;
+    padding: 3px;
+}
+.ui-grid {
+    font-size: 11px;
+}
+input[type=checkbox], input[type=radio] {
+    margin: 67% 0 0;
+    margin-top: 1px\9;
+    line-height: normal;
+}
+.td-limit-dues {
+    background-color: #999;
+}.td-limit-dues>label {
+    color:white;
+}.td-limit-dues>input {
+    border:white;
+}
