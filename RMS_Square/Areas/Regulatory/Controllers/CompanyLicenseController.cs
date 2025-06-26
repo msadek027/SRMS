@@ -104,6 +104,12 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             var data = _dalObj.GetAllInfo(new CompanyLicenseBEL(), orderBy: "DESC"); ;
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
+        public ActionResult GetAllInfo(string CompanyCode)
+        {
+            var data = _dalObj.GetAllInfo(new CompanyLicenseBEL(),CompanyCode, orderBy: "DESC"); ;
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
         [ActionAuth]
         public ActionResult frmCompanyLicenseView()
         {

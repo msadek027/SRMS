@@ -1,0 +1,323 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<link href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+
+
+
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        debugger;
+        var activeTabIndex = 0; // Default to the first tab
+        var ButtonEvent = ''; // Declare ButtonEvent as a global variable
+
+        // Retrieve the active tab index from sessionStorage
+        if (sessionStorage.getItem('activeTabIndex') !== null) {
+            activeTabIndex = parseInt(sessionStorage.getItem('activeTabIndex'), 10);
+        }
+
+        // Handle specific tab options stored in sessionStorage
+        var keyOption = sessionStorage.getItem('keyOption');
+        if (keyOption === "Employment") {
+            activeTabIndex = 2; // Employment tab
+        } else if (keyOption === "Entry License Info") {
+            activeTabIndex = 0; // EmpContactAddress tab
+        }
+
+        // Initialize the jQuery UI tabs widget
+        $('#tabs').tabs({
+            active: activeTabIndex,
+            activate: function (event, ui) {
+                // Save the active tab index in sessionStorage when the tab changes
+                var newActiveTabIndex = $('#tabs').tabs("option", "active");
+                sessionStorage.setItem('activeTabIndex', newActiveTabIndex);
+
+                // Update ButtonEvent and call GetView for the active tab
+                var activeTabText = $("#btnList li:nth-child(" + (newActiveTabIndex + 1) + ") a").text();
+                sessionStorage.setItem('keyOption', activeTabText); // Store the active tab's text
+                ButtonEvent = activeTabText; // Update the global variable
+                GetView($('#CompanyCode').val(), ButtonEvent);
+
+                // Highlight the active tab by adding the class and removing it from others
+                $("#btnList li").removeClass('active-tab');
+                $("#btnList li:nth-child(" + (newActiveTabIndex + 1) + ")").addClass('active-tab');
+            }
+        });
+
+        // Populate fields with stored session data
+        $('#CompanyCode').val(sessionStorage.getItem('keyCompanyCode'));
+
+
+        // Initial content loading for the current tab
+        var initialButtonEvent = sessionStorage.getItem('keyOption') || "Entry License Info";
+        ButtonEvent = initialButtonEvent; // Initialize ButtonEvent
+        GetView($('#CompanyCode').val(), ButtonEvent);
+
+        // Mark the initially active tab
+        $("#btnList li").removeClass('active-tab');
+        $("#btnList li:nth-child(" + (activeTabIndex + 1) + ")").addClass('active-tab');
+
+        // Tab click handler to update ButtonEvent and fetch content
+        $("#btnList li").click(function () {
+            ButtonEvent = $(this).text(); // Update the global variable
+            GetView($('#CompanyCode').val(), ButtonEvent);
+
+            // Highlight the clicked tab
+            $("#btnList li").removeClass('active-tab');
+            $(this).addClass('active-tab');
+        });
+
+
+
+        function GetView(CompanyCode, ButtonEvent) {
+            switch (ButtonEvent) {
+                case "Product Info":
+                    $('#btnReset').prop('disabled', false);
+                    $('#btnSave').prop('disabled', false);
+                    $('#btnView').prop('disabled', false);
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
+                    break;
+                case "Recipe":
+                    $('#btnReset').prop('disabled', false);
+                    $('#btnSave').prop('disabled', true);
+                    $('#btnView').prop('disabled', false);
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
+                    break;
+                case "Registration":
+                    $('#btnReset').prop('disabled', false);
+                    $('#btnSave').prop('disabled', false);
+                    $('#btnView').prop('disabled', false);
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
+                    break;
+                case "Price":
+                    $('#btnReset').prop('disabled', false);
+                    $('#btnSave').prop('disabled', true);
+                    $('#btnView').prop('disabled', false);
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
+                    break;
+                case "MA Certification":
+                    $('#btnReset').prop('disabled', false);
+                    $('#btnSave').prop('disabled', true);
+                    $('#btnView').prop('disabled', false);
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
+                    break;
+                default:
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
+                    break;
+            }
+        }
+
+        function GetCompanyDetails(URL, CompanyCode, ButtonEvent) {
+            $.ajax({
+                url: URL,
+                data: JSON.stringify({ CompanyCode: CompanyCode, ButtonEvent: ButtonEvent }),
+                type: 'POST',
+                contentType: 'application/json;',
+                dataType: 'json',
+                success: function (data) {
+                    debugger;
+                    if (data.length > 0) {
+                        SetDetailData(data);
+                    }
+                    else {
+                        toastr.success("Data not found!");
+                    }
+
+                },
+                error: function () {
+                    alert('Error occured!');
+                },
+            });
+        }
+        function SetDetailData(data) {
+            if (!data || !Array.isArray(data) || data.length === 0) {
+                toastr.error("No data found!");
+                return;
+            }
+            for (var i = 0; i < data.length; i++) {
+                const item = data[i];
+                // Populate input fields dynamically
+                $.each(item, function (key, value) {
+                    $('#' + key).val(value);
+                });
+
+                // toastr.success("Data found!");
+            }
+        }
+        $('#btnView').click(function () {
+            debugger;
+
+            switch (ButtonEvent) {
+                case "Entry License Info":
+
+                    break;
+
+                case "View License":
+
+
+                    break;
+
+                case "Entry GMP Certificate":
+
+                    break;
+
+                case "View GMP Certificate":
+
+                    break;
+
+                default:
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
+                    break;
+            }
+
+        });
+
+        //Tab1 Start
+
+    });
+
+</script>
+
+<script>
+    $('#UploadFile').on('change', function (e) {
+        var checkInput = InputValidation('RefNo');
+        if (checkInput == 0) {
+            var files = e.target.files;
+            var refId = $("#CLID").val();
+            if (refId != "") {
+                var fileSize = 0;
+                var fSizeStrg = "";
+                $file = $("#UploadFile");
+                for (var f = 0; f < files.length; f++) {
+                    var iSize = ($file[0].files[f].size / 1024);
+                    fileSize = (Math.round((iSize / 1024) * 100) / 100);
+                    if (fSizeStrg != "") {
+                        fSizeStrg += ',' + fileSize;
+                    }
+                    else {
+                        fSizeStrg = fileSize;
+                    }
+                    if (iSize / 1024 > 25) {
+                        iSize = (Math.round((iSize / 1024) * 100) / 100);
+                        alert('File size is ' + iSize + ' MB');
+                        $("#divLoading").show();
+                        if (iSize > 25) {
+                            toastr.warning(OperationMsg("UFW"));
+                            $("#divLoading").hide();
+                            return;
+                        }
+                    }
+                }
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        var data = new FormData();
+                        for (var x = 0; x < files.length; x++) {
+                            data.append("file" + x, files[x]);
+                        }
+                        $("#divLoading").show();
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("UploadFile", "CompanyLicense")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#RefNo").val(),
+                            contentType: false,
+                            processData: false,
+                            data: data,
+                            success: function (result) {
+                                $("#divLoading").hide();
+                                if (result.msgType == "FUS") {
+                                    toastr.success(OperationMsg(result.msgType));
+                                    $("#LicenseViewTabGrid2").data("kendoGrid").dataSource.data(result.FileList);
+                                    $("#RefNo").val('--Select Any--');
+                                }
+                                else if (result.msgType == "FLI") {
+                                    toastr.warning(OperationMsg(result.msgType));
+                                }
+                                else {
+                                    toastr.warning(OperationMsg(result.msgType));
+                                }
+                            }
+
+                        });
+                    } else {
+                        alert("This browser doesn't support HTML5 file uploads!");
+                    }
+                }
+            }
+            else {
+                toastr.warning(OperationMsg("FI"));
+            }
+        }
+        else {
+            toastr.error(OperationMsg("SDN"));
+        }
+
+    });
+
+</script>
+<div id="tabs">
+    <ul id="btnList">
+        <li><a href="#tabs-1">Setup Info</a></li>
+        <li><a href="#tabs-2">View Item</a></li>
+        <li><a href="#tabs-3">Entry Item Info</a></li>
+      
+    </ul>
+
+
+    <div class="box-header with-border">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+                <div class="input-group">
+                    <input type="text" id="CompanyCode" name="CompanyCode" placeholder="Company Code" readonly="readonly" class="RequiredField form-control input-sm" />
+                    <span class="input-group-btn" style="width:0px;"></span>
+                    <input type="text" id="CompanyName" name="CompanyName" placeholder="Company Name" readonly="readonly" class="RequiredField form-control input-sm" />
+                    <span class="input-group-btn" style="width:0px;"></span>
+                    <input type="text" id="Address" name="Address" placeholder="Company Addess" readonly="readonly" class="RequiredField form-control input-sm" />
+                </div>
+            </div>
+            <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"></div>
+
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+
+            </div>
+            <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"><div id="MessageText" style="text-align:center"></div></div>
+            <div class="col-xs-0 col-sm-0 col-md-6 col-lg-6">
+                <div style="text-align:right;">
+                    <button id="btnReset" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+                    <button id="btnSave" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-save"></i>Save</button>
+                    <button id="btnView" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>View</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="tabs-1">
+       
+
+    </div> @*tab1 closed*@
+
+
+
+
+
+    <div id="tabs-2">
+       
+
+
+        @*Tab2 Closed*@
+    </div>
+    <div id="tabs-3">
+      
+
+        @*Tab3 Closed*@
+    </div>
+    
+
+</div>

@@ -7,7 +7,7 @@ var PopupWindow = $("#PopupWindow").kendoWindow({
     draggable: true,
     modal: true,
     title: "List of Record."
-}).data("kendoWindow").center();
+}).data("kendoWindow");
 
 
 

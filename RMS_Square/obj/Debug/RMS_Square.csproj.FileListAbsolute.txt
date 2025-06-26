@@ -711,6 +711,5 @@ E:\Officials Projects\Year 2025\SRMS All\SRMS\RMS_Square\RMS_Square\bin\System.W
 E:\Officials Projects\Year 2025\SRMS All\SRMS\RMS_Square\RMS_Square\bin\System.Web.WebPages.Deployment.xml
 E:\Officials Projects\Year 2025\SRMS All\SRMS\RMS_Square\RMS_Square\bin\System.Web.WebPages.Razor.xml
 E:\Officials Projects\Year 2025\SRMS All\SRMS\RMS_Square\RMS_Square\bin\Systems.pdb
-E:\Officials Projects\Year 2025\SRMS All\SRMS\RMS_Square\RMS_Square\obj\Debug\RMS_Square.csprojResolveAssemblyReference.cache
 E:\Officials Projects\Year 2025\SRMS All\SRMS\RMS_Square\RMS_Square\obj\Debug\RMS_Square.dll
 E:\Officials Projects\Year 2025\SRMS All\SRMS\RMS_Square\RMS_Square\obj\Debug\RMS_Square.pdb

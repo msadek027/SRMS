@@ -102,6 +102,12 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             var data = _dalObj.GetAllInfo(new GmpCertificateInfoBEL(), orderBy: "DESC"); ;
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
+        public ActionResult GetAllInfo(string CompanyCode)
+        {
+            var data = _dalObj.GetAllInfo(new GmpCertificateInfoBEL(),CompanyCode, orderBy: "DESC"); ;
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
         [ActionAuth]
         public ActionResult frmGmpCertificateView()
         {

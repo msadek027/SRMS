@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RMS_Square.Areas.Regulatory.Models.DAO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,11 +9,28 @@ namespace RMS_Square.Areas.Regulatory.Controllers
 {
     public class TabCompanyController : Controller
     {
-        //
-        // GET: /Regulatory/Company/
+        TabCompanyDAO primaryDAO = new TabCompanyDAO();
         public ActionResult frmTabCompany()
         {
             return View();
+        }
+        [HttpPost]
+        public ActionResult ViewModeCompany(string CompanyCode, string ButtonEvent)
+        {
+            object data;
+            switch (ButtonEvent)
+            {
+                case "Entry License Info":
+                    data = primaryDAO.CompanyDeatils(CompanyCode);
+                    break;
+
+
+
+                default:
+                    data = primaryDAO.CompanyDeatils(CompanyCode);
+                    break;
+            }
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 	}
 }

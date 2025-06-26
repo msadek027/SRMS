@@ -1414,6 +1414,9 @@
     <Content Include="Content\css\cssTree\ico-jsplumb.eot" />
     <Content Include="Content\css\cssTree\ico-jsplumb.ttf" />
     <Content Include="Content\css\cssTree\ico-jsplumb.woff" />
+    <Content Include="Areas\Regulatory\Views\TabProduct\frmTabProduct.cshtml" />
+    <Content Include="Areas\Regulatory\Views\TabNarcotics\frmNarcotics.cshtml" />
+    <Content Include="Areas\Regulatory\Views\TabNarcotics\frmTabNarcotics.cshtml" />
     <None Include="Properties\PublishProfiles\RMS_Square.pubxml" />
     <Content Include="Reports\SourceValidationMainRpt.rpt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1672,6 +1675,7 @@
     <Compile Include="Areas\Regulatory\Controllers\ReportsController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\SourceValidationController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\StrengthInfoController.cs" />
+    <Compile Include="Areas\Regulatory\Controllers\TabNarcoticsController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\TabProductController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\TherapeuticClassInfoController.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\AdvertisementInfoBEL.cs" />
@@ -1712,6 +1716,7 @@
     <Compile Include="Areas\Regulatory\Models\BEL\ReportModel.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\SourceValidationBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\StrengthInfoBEL.cs" />
+    <Compile Include="Areas\Regulatory\Models\BEL\TabCompanyBEO.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\TherapeuticClassInfoBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\AdvertisementInfoDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\BlockListDAO.cs" />
@@ -1745,6 +1750,7 @@
     <Compile Include="Areas\Regulatory\Models\DAO\ReportDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\SourceValidationDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\StrengthInfoDAO.cs" />
+    <Compile Include="Areas\Regulatory\Models\DAO\TabCompanyDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\TherapeuticClassInfoDAO.cs" />
     <Compile Include="Areas\Regulatory\RegulatoryAreaRegistration.cs" />
     <Compile Include="Areas\SA\Controllers\FormController.cs" />
@@ -2143,7 +2149,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Regulatory\Views\Company\" />
     <Folder Include="Areas\Regulatory\Views\Shared\" />
-    <Folder Include="Areas\Regulatory\Views\TabProduct\" />
     <Folder Include="Areas\SA\Views\Shared\" />
     <Folder Include="dll\" />
   </ItemGroup>

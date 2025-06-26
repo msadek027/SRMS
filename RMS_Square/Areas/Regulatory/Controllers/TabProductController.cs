@@ -10,9 +10,27 @@ namespace RMS_Square.Areas.Regulatory.Controllers
     {
         //
         // GET: /Regulatory/TabProduct/
-        public ActionResult Index()
+        public ActionResult frmTabProduct()
         {
             return View();
         }
+        //[HttpPost]
+        //public ActionResult ViewMode(string EmpID, string ButtonEvent, string ViewMode)
+        //{
+        //    object data;
+        //    switch (ButtonEvent)
+        //    {
+        //        case "EmpContactAddress":
+        //            data = primaryDAO.GetEmployeeBasic(EmpID, ViewMode);
+        //            break;
+
+        
+
+        //        default:
+        //            data = primaryDAO.GetEmployeeBasic(EmpID, ViewMode);
+        //            break;
+        //    }
+        //    return Json(data, JsonRequestBehavior.AllowGet);
+        //}
 	}
 }
