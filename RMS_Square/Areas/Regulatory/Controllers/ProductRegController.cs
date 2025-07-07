@@ -146,10 +146,10 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             return Json(GetFileByParameters(_fileModel).OrderBy(o => o.FileID), JsonRequestBehavior.AllowGet);
         }
 
-        [AcceptVerbs(HttpVerbs.Get)]
-        public ActionResult GetAllInfo()
+        [HttpPost]
+        public ActionResult GetAllInfo(string companyCode)
         {
-            var data = _dalObj.GetAllInfo(new ProductRegistrationBEL(), orderBy: "DESC");
+            var data = _dalObj.GetAllInfo(new ProductRegistrationBEL(),companyCode, orderBy: "DESC");
             //return Json(data, JsonRequestBehavior.AllowGet);
             return new JsonResult()
             {
@@ -163,7 +163,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         {
             var model = new ProductRegistrationBEL();
             model.CompanyCode = companyCode;
-            var data = _dalObj.GetAllInfo(model, orderBy: "DESC");
+            var data = _dalObj.GetAllInfo(model,companyCode, orderBy: "DESC");
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         [ActionAuth]
@@ -176,9 +176,9 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             return Redirect(string.Format("~/Home/frmHome"));
         }
         [HttpPost]
-        public ActionResult GetInfoByParams(ProductRegistrationBEL model)
+        public ActionResult GetInfoByParams(ProductRegistrationBEL model, string companyCode)
         {
-            var dMaster = _dalObj.GetAllInfo(model, orderBy: "DESC");
+            var dMaster = _dalObj.GetAllInfo(model,companyCode, orderBy: "DESC");
             if (dMaster.Any())
             {
                 _fileModel = new FileDetailModel();

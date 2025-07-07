@@ -58,10 +58,10 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             }
         }
 
-        [AcceptVerbs(HttpVerbs.Get)]
-        public ActionResult GetProduct()
+        [HttpPost]
+        public ActionResult GetProduct(string companyCode)
         {
-            var data = primaryDAO.GetProductList();
+            var data = primaryDAO.GetProductList(companyCode);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -91,6 +91,12 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         public ActionResult GetInfoByParams(ProductInfoBEL model)
         {
             var dMaster = primaryDAO.GetInfoByParams(model, orderBy: "DESC");
+            return Json(new { dataMaster = dMaster }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult GetReportInfoByParams(ProductInfoBEL model)
+        {
+            var dMaster = primaryDAO.GetReportInfoByParams(model);
             return Json(new { dataMaster = dMaster }, JsonRequestBehavior.AllowGet);
         }
         //public ActionResult GetLatestProductAll()

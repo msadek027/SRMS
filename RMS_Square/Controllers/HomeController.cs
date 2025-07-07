@@ -145,6 +145,12 @@ namespace RMS_Square.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult GetDefaultMeetingInfo()
+        {
+            var data = _dalObj.GetDefaultMeetingInfo(); ;
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult GetMeetingInfo()
         {
             var data = _dalObj.GetMeetingInfo(); ;

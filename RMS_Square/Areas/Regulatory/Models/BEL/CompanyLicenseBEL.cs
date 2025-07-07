@@ -30,6 +30,8 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
 
         public string FromDate { get; set; }
         public string ToDate { get; set; }
-        
+
+
+        public string SearchType { get; set; }
     }
 }

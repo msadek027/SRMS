@@ -456,15 +456,43 @@ namespace RMS_Square.Universal
             }
         }
 
-        public IList<MeetingInfoBEL> GetMeetingInfo()
+        public IList<MeetingInfoBEL> GetDefaultMeetingInfo()
         {
+            string setDate=DateTime.Today.ToString("dd/MM/yyyy");
             var query = new StringBuilder();
             query.Append(" SELECT D.ID, D.MEETING_TYPE, D.REMARKS, D.MEETING_NAME,TO_CHAR(D.MEETING_DATE, 'dd/mm/yyyy')MEETING_DATE, TO_CHAR(D.MEETING_DATE,'RRRR') MEETING_YEAR,TO_CHAR(D.SET_ON, 'dd/mm/yyyy')SET_ON, REMARKS ");
             query.Append(" FROM MEETING_INFO D");
             query.Append(" WHERE 1=1 ");
-            query.Append(" AND D.MEETING_DATE >= TO_DATE('" + DateTime.Today.ToString("dd/MM/yyyy") + "','dd/MM/yyyy') ");
+            query.Append(" AND ABS(TRUNC(D.MEETING_DATE) - TO_DATE('" + setDate + "','dd-MM-yyyy'))<= 240 ");
             query.Append(" ORDER BY  D.ID DESC ");
 
+            string qry = string.Format(query.ToString());
+            DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), string.Format(query.ToString()));
+
+            var item = (from DataRow row in dt.Rows
+                        select new MeetingInfoBEL
+                        {
+                            ID = Convert.ToInt64(row["ID"]),
+                            MeetingSubject = row["MEETING_NAME"].ToString(),
+                            Remarks = row["REMARKS"].ToString(),
+                            MeetingType = row["MEETING_TYPE"].ToString(),
+                            MeetingDate = row["MEETING_DATE"].ToString(),
+                            MeetingYear = row["MEETING_YEAR"].ToString(),
+                            SetOn = row["SET_ON"].ToString(),
+                        }).ToList();
+            return item;
+        }
+        public IList<MeetingInfoBEL> GetMeetingInfo()
+        {
+            string setDate = DateTime.Today.ToString("dd/MM/yyyy");
+            var query = new StringBuilder();
+            query.Append(" SELECT D.ID, D.MEETING_TYPE, D.REMARKS, D.MEETING_NAME,TO_CHAR(D.MEETING_DATE, 'dd/mm/yyyy')MEETING_DATE, TO_CHAR(D.MEETING_DATE,'RRRR') MEETING_YEAR,TO_CHAR(D.SET_ON, 'dd/mm/yyyy')SET_ON, REMARKS ");
+            query.Append(" FROM MEETING_INFO D");
+            query.Append(" WHERE 1=1 ");
+            query.Append(" AND EXTRACT(YEAR FROM D.MEETING_DATE) IN (EXTRACT(YEAR FROM SYSDATE), EXTRACT(YEAR FROM SYSDATE) - 1) ");
+            query.Append(" ORDER BY  D.ID DESC ");
+
+            string qry = string.Format(query.ToString());
             DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), string.Format(query.ToString()));
 
             var item = (from DataRow row in dt.Rows

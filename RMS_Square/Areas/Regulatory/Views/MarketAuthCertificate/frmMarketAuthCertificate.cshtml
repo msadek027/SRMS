@@ -272,14 +272,7 @@
         });
 
         //Display window
-        var DisplayPopupWindow = $("#DisplayPopupWindow").kendoWindow({
-            actions: ["Minimize", "Maximize", "Close"],
-            width: "95%",
-            height: "80%",
-            draggable: true,
-            modal: true,
-            title: "List of Record"
-        }).data("kendoWindow").center();
+       
 
         $('#btnView').click(function () {
             DisplayPopupWindow.open();
@@ -298,7 +291,14 @@
                 }
             });
         });
-
+        var DisplayPopupWindow = $("#DisplayPopupWindow").kendoWindow({
+            actions: ["Minimize", "Maximize", "Close"],
+            width: "95%",
+            height: "80%",
+            draggable: true,
+            modal: true,
+            title: "List of Record"
+        }).data("kendoWindow").center();
         var PopupGrid = $('#DisplayPopupWindowGrid').kendoGrid({
             dataSource: new kendo.data.DataSource({
                 batch: true,

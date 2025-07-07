@@ -121,7 +121,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             }
         }
 
-        public IList<RecipeBEL> GetAllInfo(RecipeBEL model, string orderBy)
+        public IList<RecipeBEL> GetAllInfo(RecipeBEL model,string companyCode, string orderBy)
         {
             var query = new StringBuilder();
             query.Append(" SELECT D.ID, D.SLNO,D.REVISION_NO,D.COMPANY_CODE,D.PRODUCT_CODE,D.MEETING_TYPE,D.MANUFACTURING_TYPE,D.DCC_NO,TO_CHAR(D.RECEIVE_DATE, 'dd/mm/yyyy')RECEIVE_DATE,");
@@ -137,7 +137,10 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             query.Append(" LEFT JOIN  DOSAGE_FORM_INFO DF ON DF.DOSAGE_FORM_CODE=P.DOSAGE_FORM_CODE");
             query.Append(" WHERE D.IS_DELETE <>'Y' " );
             query.Append(" AND P.STATUS = 'Active' " );
-
+            if (!string.IsNullOrEmpty(companyCode))
+            {
+                query.Append(" AND  D.COMPANY_CODE='" + companyCode + "'");
+            }
             if (!string.IsNullOrEmpty(model.CompanyCode))
             {
                 query.Append(" AND  D.COMPANY_CODE='{0}'");
@@ -245,7 +248,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             return item;
         }
 
-        public IList<RecipeBEL> GetAllRecipeForAnnex(RecipeBEL model, string orderBy)
+        public IList<RecipeBEL> GetAllRecipeForAnnex(RecipeBEL model,string companyCode, string orderBy)
         {
             var query = new StringBuilder();
             query.Append(" SELECT A.* FROM (");
@@ -262,7 +265,10 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             query.Append(" LEFT JOIN  DOSAGE_FORM_INFO DF ON DF.DOSAGE_FORM_CODE=P.DOSAGE_FORM_CODE");
             query.Append(" WHERE D.IS_DELETE <>'Y' ");
             query.Append(" AND P.STATUS = 'Active' ");
-
+            if (!string.IsNullOrEmpty(companyCode))
+            {
+                query.Append(" AND D.COMPANY_CODE='" + companyCode + "'");
+            }
             if (!string.IsNullOrEmpty(model.CompanyCode))
             {
                 query.Append(" AND D.COMPANY_CODE='{0}'");

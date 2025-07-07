@@ -41,5 +41,13 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                     }).ToList();
             return item;
         }
+
+        public string AccessPrivilege(string RoleId,string PageNo)
+        {
+            string qry = "SELECT ACCESSLEVEL FROM SA_PAGE_ACCESS_INFO WHERE ROLEID='" + RoleId + "' AND FORMID='" + PageNo + "'";
+            string value = dbHelper.GetValueFn(dbConn.SAConnStrReader(), qry);
+     
+            return value;
+        }
     }
 }

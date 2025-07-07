@@ -12,6 +12,15 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         // GET: /Regulatory/TabProduct/
         public ActionResult frmTabProduct()
         {
+            if (Session["UserID"] != null)
+            {
+                return View();
+            }
+            return Redirect(string.Format("~/Home/frmHome"));
+        }
+        public ActionResult Popup(string tab)
+        {
+            ViewBag.Tab = tab;
             return View();
         }
         //[HttpPost]
@@ -24,7 +33,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         //            data = primaryDAO.GetEmployeeBasic(EmpID, ViewMode);
         //            break;
 
-        
+
 
         //        default:
         //            data = primaryDAO.GetEmployeeBasic(EmpID, ViewMode);
@@ -32,5 +41,5 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         //    }
         //    return Json(data, JsonRequestBehavior.AllowGet);
         //}
-	}
+    }
 }

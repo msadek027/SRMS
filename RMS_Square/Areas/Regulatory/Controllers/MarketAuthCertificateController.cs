@@ -53,10 +53,10 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-         [AcceptVerbs(HttpVerbs.Get)]
-        public ActionResult GetMarketAuthCertificate()
+         [HttpPost]
+        public ActionResult GetMarketAuthCertificate(string companyCode)
         {
-            var data = _dalObj.GetMarketAuthCertificateList();
+            var data = _dalObj.GetMarketAuthCertificateList(companyCode);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         

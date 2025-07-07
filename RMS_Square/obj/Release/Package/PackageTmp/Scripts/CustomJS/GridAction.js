@@ -62,7 +62,7 @@ var RemoveConfirmation = $('#RemoveConfirmationWindow').kendoWindow({
     draggable: true,
     modal: true,
     title: "Do You Want To Remove This Record?"    
-    }).data("kendoWindow").center();
+    }).data("kendoWindow");
 
 
 ////Handling Yes button click for master Delete Confirmation[Yes Button]
@@ -97,7 +97,7 @@ var DeleteConfirmation = $('#DeleteConfirmationWindow').kendoWindow({
     draggable: true,
     modal: true,
     title: "Do You Want To Delete This Record?"  
-}).data("kendoWindow").center();
+}).data("kendoWindow");
 
 
 ////Handling Yes button click for master Delete Confirmation[Yes Button]

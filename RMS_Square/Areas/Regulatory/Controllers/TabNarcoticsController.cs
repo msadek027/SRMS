@@ -12,7 +12,11 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         // GET: /Regulatory/TabNarcotics/
         public ActionResult frmTabNarcotics()
         {
-            return View();
+            if (Session["UserID"] != null)
+            {
+                return View();
+            }
+            return Redirect(string.Format("~/Home/frmHome"));
         }
 	}
 }

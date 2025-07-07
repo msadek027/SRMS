@@ -6,10 +6,10 @@
 <link href="~/Content/CSS/InputText.css" rel="stylesheet" />
 <div class="box-header with-border">
     @*Form Title*@
-    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-        <i class="glyphicon glyphicon-filter"></i> Filter By : >> >> >> >> >> >> >><div id="MessageText"></div>
+    <div class="col-md-4">
+        <div id="MessageText"></div>
     </div>
-    <div class="col-xs-0 col-sm-0 col-md-8 col-lg-8">
+    <div class="col-md-8">
         <div style="text-align:right;">
             <button id="btnSearch" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
             <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
@@ -17,45 +17,56 @@
     </div>
 </div>
 <div class="box-body">
-    <div class="form-group">
-        <div class="row">
-            <div class="col-sm-2">Product Code : </div>
-            <div class="col-sm-2">
-                <input type="text" id="ProductCode" name="ProductCode" class="form-control txtBox" readonly />
-            </div>
-            <div class="col-sm-1"><button id="btnFind" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
-            <div class="col-sm-1">
-            </div>
-            <div class="col-sm-1"> Last Days</div>
-            <div class="col-sm-2">
-                <input type="text" id="LastDays" name="LastDays" class="form-control txtBox" />
-            </div>
-            <div class="col-sm-3">
-            </div>
+    <div class="row">
+        <div class="col-md-2">Company: </div>
+        <div class="col-md-4">
+            <select id="CompanyCode" class="txtBox">
+                <option selected value="All">All</option>
+                <option value="0001">SPPLC (Pabna Unit)</option>
+                <option value="0002">SPPLC (Dhaka Unit)</option>
+                <option value="0004">SPPLC (CD)</option>
+                <option value="0005">SPPLC (Herbal)</option>
+                <option value="0006">SPPLC (Ayurvedic)</option>
+                <option value="0007">SLL</option>
+
+
+            </select>
         </div>
+
     </div>
-    <div class="form-group">
-        <div class="row">
-            <div class="col-sm-2">From Date : </div>
-            <div class="col-sm-3">
-                <div class="input-group date">
-                    <input type="text" class="form-control txtBox" id="FromDate" name="FromDate" placeholder="dd/mm/yyyy">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                </div>
-            </div>
-            <div class="col-sm-1">
-            </div>
-            <div class="col-sm-1">To Date : </div>
-            <div class="col-sm-3">
-                <div class="input-group date">
-                    <input type="text" class="form-control txtBox" id="ToDate" name="ToDate" placeholder="dd/mm/yyyy">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                </div>
-            </div>
-            <div class="col-sm-2">
-            </div>
+
+
+
+
+    <div class="row">
+        <div class="col-md-2">Type : </div>
+        <div class="col-md-4">
+            <select id="Type" class="txtBox">
+                <option selected value="All">All</option>
+                <option value="Recipe Approval">Recipe Approval</option>
+                <option value="Inclusion">Inclusion</option>
+                <option value="Price Approval">Price Approval</option>
+                <option value="MA Certificate Approval">MA Certificate Approval</option>
+            </select>
         </div>
+
     </div>
+    <div class="row">
+        <div class="col-md-2"> Year : </div>
+        <div class="col-md-4">
+            <select id="Year" class="txtBox">
+                <option selected value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+            </select>
+        </div>
+
+    </div>
+
+
     <div class="form-group">
         <fieldset class="panel-border" >
             <legend class="panel-border">Product Information :</legend>
@@ -94,40 +105,13 @@
             //,todayBtn: true,
         });
 
-        // Product window for find button
-        var ProductWindow = $("#ProductWindow").kendoWindow({
-            actions: ["Minimize", "Maximize", "Close"],
-            width: "90%",
-            height: "80%",
-            draggable: true,
-            modal: true,
-            title: "List of Product."
-        }).data("kendoWindow").center();
+       
 
-
-        $('#btnFind').click(function () {
-            ProductWindow.open();
-            $.ajax({
-                url: '@Url.Action("GetAllProduct", "General")',
-                method: 'get',
-                data: 'json',
-                success: function (data) {
-                    if (data != "") {
-                        $('#ProductWindowGrid').data('kendoGrid').dataSource.data(data);
-                    }
-                    else {
-                        ProductWindow.close();
-                        AcknowledgeMsg();
-                    }
-
-                }
-            });
-
-        });
+     
 
         //Initializing Main page details Kendo Grid Colums
-        var productGrid = $('#ProductWindowGrid').kendoGrid({
-            dataSource: new kendo.data.DataSource({
+        var productInfoGrid = $('#ProductInfoGrid').kendoGrid({
+            dataSource:  new kendo.data.DataSource({
                 batch: true,
                 schema: {
                     model: {
@@ -137,92 +121,9 @@
                         }
                     }
                 },
-                pageSize: 10,
+                pageSize: 10
+           
             }),
-            pageable: {
-                //refresh: true,
-                pageSizes: true, buttonCount: 10
-            },
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            editable: false,
-            selectable: "row",
-            //selectable: "multiple",
-            toolbar: [{ template: "<input type='text' id='txtProductKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
-            navigatable: true,
-            height: 430,
-            // groupable: true,
-            groupable: { messages: { empty: "Custom message text" } },
-            columnMenu: true,
-            reorderable: true,
-            resizable: true,
-            columns: [
-                 { field: "ProductCode", title: "ProductCode", width: 100 },
-                 { field: "SAPProductCode", title: "SAPCode", width: 100 },
-                 { field: "BrandName", title: "BrandName", width: 160 },
-                 { field: "GenAndStrength", title: "Generic & Strength", width: 260 },
-                 { field: "DosageFormName", title: "Dosage Form", width: 100 },
-                 { field: "PackSizeName", title: "Pack Size", width: 100 },
-                 { field: "ProductCategory", title: "Product Category", width: 100 }
-            ]
-
-        }).data('kendoGrid');
-
-        $('#ProductWindowGrid').dblclick(function () {
-            var grid = $(this).data('kendoGrid');
-            var selectRow = grid.dataItem(grid.select());
-
-            ProductWindow.close();
-            SetMasterData(selectRow);
-
-        });
-
-        //Product Name wise Filter table row
-        $("#txtProductKeyword").keyup(function () {
-            var val = $(this).val();
-            $("#ProductWindowGrid").data("kendoGrid").dataSource.filter({
-                logic: "or",
-                filters: [
-                     { field: "ProductCode", operator: "contains", value: val },
-                     { field: "SAPProductCode", operator: "contains", value: val },
-                     { field: "BrandName", operator: "contains", value: val },
-                     { field: "GenAndStrength", operator: "contains", value: val },
-                ]
-            });
-        });
-
-        //To Define Data  for product info Kendo Grid
-        var productInfoDataSource = new kendo.data.DataSource({
-            batch: true,
-            schema: {
-                model: {
-                    id: "ProductCode",
-                    fields: {
-                        ProductCode: { type: "string" },
-                    }
-                }
-            },
-            pageSize: 10
-            @*,transport: {
-                read: function () {
-                    $.ajax({
-                        url: '@Url.Action("GetLatestProductAll", "ProductInfo")', // at first data
-                        type: "GET",
-                        contentType: 'application/json;',
-                        dataType: 'json',
-                        success: function (data) {
-                            $("#ProductInfoGrid").data("kendoGrid").dataSource.data(data);
-                            $("#divLoading").hide();
-                        }
-                    });
-                }
-            }*@
-        });
-
-        //Initializing Main page details Kendo Grid Colums
-        var productInfoGrid = $('#ProductInfoGrid').kendoGrid({
-            dataSource: productInfoDataSource,
             pageable: {
                 pageSizes: true, buttonCount: 5
             },
@@ -290,15 +191,15 @@
         });
 
         $('#btnSearch').click(function () {
+            var model = {  };
+            model.CompanyCode = $('#CompanyCode').val();
+        
+            model.Type = $('#Type').val();
+            model.Year = $('#Year').val();
 
-            model.ProductCode = $('#ProductCode').val();
-            // model.ProductCodeList = $('#ProductCodeList').val();
-            model.LastDays = $('#LastDays').val();
-            model.FromDate = $('#FromDate').val();
-            model.ToDate = $('#ToDate').val();
-            
+            $("#ProductInfoGrid").data("kendoGrid").dataSource.data([]);
             $.ajax({
-                url: '@Url.Action("GetInfoByParams", "ProductInfo")',
+                url: '@Url.Action("GetReportInfoByParams", "ProductInfo")',
                 data: JSON.stringify(model),
                 type: 'POST',
                 contentType: 'application/json;',
@@ -319,7 +220,7 @@
             }); //End of ajax call
 
         });
-        var model = { "ProductCode": "", "LastDays": "", "FromDate": "", "ToDate": "" };
+  
 
     });
 

@@ -12,7 +12,11 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         TabCompanyDAO primaryDAO = new TabCompanyDAO();
         public ActionResult frmTabCompany()
         {
-            return View();
+            if (Session["UserID"] != null)
+            {
+                return View();
+            }
+            return Redirect(string.Format("~/Home/frmHome"));
         }
         [HttpPost]
         public ActionResult ViewModeCompany(string CompanyCode, string ButtonEvent)
@@ -30,6 +34,15 @@ namespace RMS_Square.Areas.Regulatory.Controllers
                     data = primaryDAO.CompanyDeatils(CompanyCode);
                     break;
             }
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult AccessPrivilege(string RoleId,string PageNo)
+        {
+            object data = primaryDAO.AccessPrivilege(RoleId, PageNo);
+
+          
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 	}

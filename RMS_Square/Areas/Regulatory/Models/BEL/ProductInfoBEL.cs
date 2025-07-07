@@ -42,7 +42,11 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         public string LastDays { get; set; }
-        
 
+
+
+        public string Type { get; set; }
+
+        public string Year { get; set; }
     }
 }

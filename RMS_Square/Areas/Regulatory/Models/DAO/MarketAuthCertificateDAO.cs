@@ -23,7 +23,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             _idGenerated = new IDGenerated();
         }
 
-        public List<MarketAuthCertificateBEL> GetMarketAuthCertificateList()
+        public List<MarketAuthCertificateBEL> GetMarketAuthCertificateList(string companyCode)
         {
             var query = new StringBuilder();
 
@@ -38,6 +38,11 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             query.Append(" INNER JOIN( SELECT A.ANNEX_ID,A.ANNEXURE_NO,A.REVISION_NO,A.RECIPE_ID,A.DAR_NO FROM PRODUCT_REGISTRATION_INFO A INNER JOIN (SELECT RECIPE_ID,MAX(REVISION_NO) AS MaxRvNo FROM PRODUCT_REGISTRATION_INFO GROUP BY RECIPE_ID) B ON B.RECIPE_ID=A.RECIPE_ID AND B.MaxRvNo=A.REVISION_NO");
             query.Append(" )PR ON R.ID=PR.RECIPE_ID ) RP ON RP.PRODUCT_CODE=P.PRODUCT_CODE AND RP.COMPANY_CODE=C.COMPANY_CODE");
             query.Append(" AND P.STATUS = 'Active' ");
+            if (!string.IsNullOrEmpty(companyCode))
+            {
+                query.Append(" AND C.COMPANY_CODE = '" + companyCode + "' ");
+            }
+
             query.Append(" ORDER BY D.ID DESC");
 
             DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), query.ToString());

@@ -67,6 +67,30 @@
     .divGap {
         padding-left: 20px;
     }
+
+
+
+    #MessageScrollingWrapper {
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        background: #f0f0f0;
+        border: 1px solid #ccc;
+        height: 40px;
+        line-height: 40px;
+        position: relative;
+    }
+
+    #MessageScrolling {
+        position: absolute;
+        white-space: nowrap;
+        font-weight: bold;
+        font-size: 16px;
+        color: #333;
+    }
+
+
+
 </style>
 
 <div class="box-body" id="divFirst">
@@ -76,12 +100,13 @@
         <div class="col-md-6">
             <div class="row">
                 <div class="col-md-12">
-                    <button class="btn btn-default" style="width:100%;" type="button" data-toggle="collapse" data-target="#collapseSummary" aria-expanded="false" aria-controls="collapseSummary">
-                        <i class="glyphicon glyphicon-search"></i> Search
+                    <button class="btn btn-lg btn-primary" style="width:100%;" type="button" data-toggle="collapse" data-target="#collapseSummary" aria-expanded="false" aria-controls="collapseSummary">
+                        Find A Product
                     </button>
+
                 </div>
             </div>
-             <div class="row">                         
+                <div class="row collapse" id="collapseSummary">              
                             <div class="col-md-5">
                                 <input type="text" id="BrandNameSummary" name="BrandNameSummary" class="form-control" readonly placeholder="Brand Name / Generic Name" />
                                 <input type="hidden" class="form-control txtBox" id="ProductCodeSummary" name=" ProductCodeSummary">
@@ -92,23 +117,22 @@
                             </div>
                             <div class="col-md-2">
                                 <button id="btnShowSummary" class="btn btn-default btn-md" type="button"><i class="glyphicon glyphicon-search"></i>View Details</button>
-                            </div>                         
-                 <div class="col-md-1">  </div>
-                 </div>
+                            </div>
+                            <div class="col-md-1">  </div>
+                        </div>
+              
             </div>
-     
+    
         <div class="col-md-6">
             <div class="text-right">
-                <div class="btn-group" role="group" aria-label="Horizontal button group">
-                    <button type="button" class="btn btn-default" id="btnSearch">
+                <div class="btn-group d-flex align-items-center" style="display: flex; gap: 10px;">
+                    <button type="button" class="btn btn-default" id="btnMeetingSearch">
                         <i class="glyphicon glyphicon-bell"></i> Meeting
                     </button>
-                    <button type="button" class="btn btn-default">
-                        <i class="glyphicon glyphicon-screenshot"></i> &nbsp; Scrolling message.... &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                    </button>
-                    <button type="button" class="btn btn-default">
-                        <i class="glyphicon glyphicon-picture"></i> Profile
-                    </button>
+
+                    <div id="MessageScrollingWrapper" style="flex: 1;">
+                        <div id="MessageScrolling"></div>
+                    </div>
                 </div>
             </div>
 
@@ -179,9 +203,9 @@
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
                 <li><a href="/Regulatory/CompanyLicense/frmCompanyLicenseView">Manufacturing License</a></li>
                 <li><a href="/Regulatory/GmpCertificate/frmGmpCertificateView">GMP Certificate</a></li>
-                <li><a href="#">Products</a></li>
-                <li><a href="#">Meeting Info</a></li>
-                <li><a href="#">Narcotics Item info & License</a></li>          
+                <li><a href="/Regulatory/ProductInfo/frmProductInfoView">Products</a></li>
+                <li><a href="/Regulatory/MeetingInfo/frmMeetingInfoView">Meeting Info</a></li>
+                <li><a href="/Regulatory/NarcoticLicense/frmNarcoticLicenseRpt">Narcotics Item info & License</a></li>          
             </ul>
         </div>
         <div class="dropdown" style="margin: 10px; display: inline-block;">
@@ -488,7 +512,7 @@
     function openCompanyTab(unitCode) {
         sessionStorage.setItem('keyCompanyCode', unitCode);
         sessionStorage.setItem('keyOption', "Entry License Info");
-   
+        sessionStorage.setItem('keyOptionId','tabs-1');
         var win = window.open("/Regulatory/TabCompany/frmTabCompany", "_blank");
         if (!win) {
             alert("Popup was blocked. Please allow popups for this site.");
@@ -497,6 +521,7 @@
     function openProductTab(unitCode) {
         sessionStorage.setItem('keyCompanyCode', unitCode);
         sessionStorage.setItem('keyOption', "Product Info");
+        sessionStorage.setItem('keyOptionId','tabs-1');
 
         var win = window.open("/Regulatory/TabProduct/frmTabProduct", "_blank");
         if (!win) {
@@ -506,7 +531,7 @@
     function openNarcoticsTab(unitCode) {
         sessionStorage.setItem('keyCompanyCode', unitCode);
         sessionStorage.setItem('keyOption', "Product Info");
-
+        sessionStorage.setItem('keyOptionId','tabs-1');
         var win = window.open("/Regulatory/TabNarcotics/frmTabNarcotics", "_blank");
         if (!win) {
             alert("Popup was blocked. Please allow popups for this site.");
@@ -1290,114 +1315,165 @@
             ]
         }).data('kendoGrid');
 
-        $('#btnSearch').click(function () {
+        function scrollTicker() {
+            var $msg = $('#MessageScrolling');
+            var $wrapper = $('#MessageScrollingWrapper');
+
+            // Reset position
+            $msg.css({ left: $wrapper.width() });
+
+            // Animate to the left
+            var totalWidth = $msg.width() + $wrapper.width();
+
+            $msg.animate({ left: -$msg.width() }, totalWidth * 20, 'linear', function () {
+                scrollTicker(); // loop again
+            });
+        }
+
+       function AutoScrollingMessage() {
             $.ajax({
-                url: '@Url.Action("GetMeetingInfo", "Home")',
+                url: '@Url.Action("GetDefaultMeetingInfo", "Home")',
                 type: 'GET',
                 success: function (data) {
-                    if (data != "") {
-                        $("#LicenseInfoGrid").data("kendoGrid").dataSource.data(data);
-                        MeetingWindow.open();
+                    try {
+                        let parsedData = Array.isArray(data) ? data : JSON.parse(data);
+
+                        if (parsedData.length === 0) {
+                            $("#MessageScrolling").html("No Meeting Information Found.");
+                            return;
+                        }
+
+                        const scrollText = parsedData.map(d => {
+                            const name = d.MeetingSubject ? d.MeetingSubject.replace(/\r?\n|\r/g, ' ') : 'No Name';
+                        const meetingType = d.MeetingType ? d.MeetingType.replace(/\r?\n|\r/g, ' ') : 'No Name';
+                        
+                            const date = d.MeetingDate ? d.MeetingDate : 'No Date';
+                            return `${name}, ${meetingType} (${date})`;
+                        }).join(" | ");
+
+                        $("#MessageScrolling").html(scrollText);
+                        scrollTicker(); // Make sure this function exists
+                    } catch (err) {
+                        console.error("Parsing or processing error:", err);
+                        $("#MessageScrolling").html("Error loading meeting information.");
                     }
-                    else {
-                        alert("Sorry ! No Meeting Information Found.");
-                        MeetingWindow.close();
-                        //AcknowledgeMsg();
-                    }
-                }
-            }); 
-        });
-
-        /************************************ Product List Window  ************************************************/
-
-        $(genericItemGrid.tbody).on("dblclick", "td", function (e) {
-            var row = $(this).closest("tr");
-            var rowIdx = $("tr", genericItemGrid.tbody).index(row);
-            var colIdx = $("td", row).index(this);
-            var colName = $('#GenericDetailGrid').find('th').eq(colIdx).text()
-
-            var item = genericItemGrid.dataItem(row);
-            var id = item.CompanyName;
-
-            //alert("row:" + rowIdx + " col:" + colIdx + "," + colName + " id:" + id + "\nitem:" + JSON.stringify(item, null, 4));
-            //alert("row:" + rowIdx + " col:" + colIdx + "," + colName + " Name: " + id + " , Company Code: " + item.CompanyCode);
-
-            $.ajax({
-                url: '/Home/ShowProductList',
-                method: 'post',
-                contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify({ CompanyCode: item.CompanyCode, DType: colName, fromDt: $('#fromDt').val(), toDt: $('#toDt').val() }),
-                dataType: 'json',
-                success: function (data) {
-                    if (data != "") {
-                        ProductListWindow.open();
-                        $('#ProductListGrid').data('kendoGrid').dataSource.data(data);
-                    }
-                    else {
-                        DisplayPopupWindow.close();
-                        AcknowledgeMsg();
-                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                    $("#MessageScrolling").html("Failed to fetch meeting info.");
                 }
             });
-        });
+}
 
-        $("#GenericDetailGrid").kendoTooltip({
-            filter: "td",
-            content: function (e) {
-                var grid = $("#GenericDetailGrid").data("kendoGrid");
-                var tr = e.target.closest('tr');
-                var dataItem = grid.dataItem(tr);
-                var rowIdx = tr.index();
-                var colIdx = e.target.index();
-                var colName = $('#GenericDetailGrid').find('th').eq(colIdx).text();
-                var id = dataItem.CompanyName;
-
-                //console.log("row:" + rowIdx + " col:" + colIdx + " msg: " + colName +"," + id );
-                return ("Field: "+ colName + ", Unit: " + id);
+                AutoScrollingMessage();
+    $('#btnMeetingSearch').click(function () {
+        $.ajax({
+            url: '@Url.Action("GetMeetingInfo", "Home")',
+            type: 'GET',
+            success: function (data) {
+                if (data != "") {
+                    $("#LicenseInfoGrid").data("kendoGrid").dataSource.data(data);
+                    MeetingWindow.open();
+                }
+                else {
+                    alert("Sorry ! No Meeting Information Found.");
+                    MeetingWindow.close();
+                    //AcknowledgeMsg();
+                }
             }
         });
+    });
 
-        var ProductListWindow = $("#ProductListWindow").kendoWindow({
-            actions: ["Minimize", "Maximize", "Close"],
-            width: "100%",
-            height: "80%",
-            draggable: true,
-            modal: true,
-            title: "Product List"
-        }).data("kendoWindow").center();
+    /************************************ Product List Window  ************************************************/
+
+    $(genericItemGrid.tbody).on("dblclick", "td", function (e) {
+        var row = $(this).closest("tr");
+        var rowIdx = $("tr", genericItemGrid.tbody).index(row);
+        var colIdx = $("td", row).index(this);
+        var colName = $('#GenericDetailGrid').find('th').eq(colIdx).text()
+
+        var item = genericItemGrid.dataItem(row);
+        var id = item.CompanyName;
+
+        //alert("row:" + rowIdx + " col:" + colIdx + "," + colName + " id:" + id + "\nitem:" + JSON.stringify(item, null, 4));
+        //alert("row:" + rowIdx + " col:" + colIdx + "," + colName + " Name: " + id + " , Company Code: " + item.CompanyCode);
+
+        $.ajax({
+            url: '/Home/ShowProductList',
+            method: 'post',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({ CompanyCode: item.CompanyCode, DType: colName, fromDt: $('#fromDt').val(), toDt: $('#toDt').val() }),
+            dataType: 'json',
+            success: function (data) {
+                if (data != "") {
+                    ProductListWindow.open();
+                    $('#ProductListGrid').data('kendoGrid').dataSource.data(data);
+                }
+                else {
+                    DisplayPopupWindow.close();
+                    AcknowledgeMsg();
+                }
+            }
+        });
+    });
+
+    $("#GenericDetailGrid").kendoTooltip({
+        filter: "td",
+        content: function (e) {
+            var grid = $("#GenericDetailGrid").data("kendoGrid");
+            var tr = e.target.closest('tr');
+            var dataItem = grid.dataItem(tr);
+            var rowIdx = tr.index();
+            var colIdx = e.target.index();
+            var colName = $('#GenericDetailGrid').find('th').eq(colIdx).text();
+            var id = dataItem.CompanyName;
+
+            //console.log("row:" + rowIdx + " col:" + colIdx + " msg: " + colName +"," + id );
+            return ("Field: "+ colName + ", Unit: " + id);
+        }
+    });
+
+    var ProductListWindow = $("#ProductListWindow").kendoWindow({
+        actions: ["Minimize", "Maximize", "Close"],
+        width: "100%",
+        height: "80%",
+        draggable: true,
+        modal: true,
+        title: "Product List"
+    }).data("kendoWindow").center();
 
 
-        //Initializing Main page details Kendo Grid Colums
-        var ProductListGrid = $('#ProductListGrid').kendoGrid({
-            pageable: {
-                pageSizes: true, buttonCount: 5
-            },
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            editable: true,
-            height: 350,
-            selectable: "row",
-            toolbar: ["excel", { template: "<input type='text' id='txtInputLicense'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
-            excel: {
-                fileName: "Export.xlsx",
-                allPages: true,
-                filterable: true
-            },
-            navigatable: true,
-            groupable: true,
-            columnMenu: true,
-            reorderable: true,
-            resizable: true,
-            columns: [
-                 //{ field: "ID", title: "ID", width: 70 },
-                 { field: "BrandName", title: "Brand Name", width: 120 },
-                 { field: "GenericCode", title: "Generic Name", width: 180 },
-                 { field: "PRCApprovalDate", title: "Approval Date", width: 80 },
-                 //{ field: "MeetingDate", title: "MeetingDate", width: 100 },
-                 //{ field: "SetOn", title: "EntryDate", width: 100 }
-            ]
-        }).data('kendoGrid');
+    //Initializing Main page details Kendo Grid Colums
+    var ProductListGrid = $('#ProductListGrid').kendoGrid({
+        pageable: {
+            pageSizes: true, buttonCount: 5
+        },
+        scrollable: true,
+        sortable: true,
+        filterable: true,
+        editable: true,
+        height: 350,
+        selectable: "row",
+        toolbar: ["excel", { template: "<input type='text' id='txtInputLicense'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+        excel: {
+            fileName: "Export.xlsx",
+            allPages: true,
+            filterable: true
+        },
+        navigatable: true,
+        groupable: true,
+        columnMenu: true,
+        reorderable: true,
+        resizable: true,
+        columns: [
+             //{ field: "ID", title: "ID", width: 70 },
+             { field: "BrandName", title: "Brand Name", width: 120 },
+             { field: "GenericCode", title: "Generic Name", width: 180 },
+             { field: "PRCApprovalDate", title: "Approval Date", width: 80 },
+             //{ field: "MeetingDate", title: "MeetingDate", width: 100 },
+             //{ field: "SetOn", title: "EntryDate", width: 100 }
+        ]
+    }).data('kendoGrid');
 
 
 

@@ -137,5 +137,23 @@ namespace RMS_Square.Areas.Regulatory.Controllers
                 return Json(new { dataMaster = "", dataLevel1 = "" }, JsonRequestBehavior.AllowGet);
             }
          }
+        [HttpPost]
+        public ActionResult GetReportInfoByParams(CompanyLicenseBEL model)
+        {
+            var dMaster = _dalObj.GetReportAllInfo(model);
+            if (dMaster.Any())
+            {
+                _fileModel = new FileDetailModel();
+                var refL1 = dMaster.FirstOrDefault().CLID;
+                _fileModel.RefLevel1 = refL1.ToString();
+                _fileModel.FileType = (int)Enums.E_FormFileType.CompanyLicense;
+                var dLevel1 = GetFileByParameters(_fileModel).OrderBy(o => o.FileID);
+                return Json(new { dataMaster = dMaster, dataLevel1 = dLevel1 }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { dataMaster = "", dataLevel1 = "" }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

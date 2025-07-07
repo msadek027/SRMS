@@ -16,14 +16,19 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
         DBConnection dbConn = new DBConnection();
         DBHelper dbHelper = new DBHelper();
         IDGenerated idGenerated = new IDGenerated();
-        public List<ProductInfoBEL> GetProductList()
+        public List<ProductInfoBEL> GetProductList(string companyCode)
         {
             string Qry = "SELECT C.COMPANY_CODE,C.COMPANY_NAME,C.LICENSE_NO, P.PRODUCT_CODE,P.SAP_PRODUCT_CODE,P.GENERIC_CODE ,P.STRENGTH_CODE,S.STRENGTH_NAME,P.DOSAGE_FORM_CODE,D.DOSAGE_FORM_NAME,P.PACK_SIZE_NAME," +
                         "P.BRAND_NAME, P.PRODUCT_CATEGORY,P.THERAPEUTIC_CLASS_CODE,T.THERAPEUTIC_CLASS_NAME,P.PRODUCT_SPECIFICATION,P.INTRODUCED_BANGLADESH," +
                         "P.MANUFACTURING_TYPE,P.PRODUCT_TYPE_CODE, FN_PRODUCT_TYPE_NAME(P.PRODUCT_TYPE_CODE) PRODUCT_TYPE_NAME,P.STATUS,P.REMARKS,TO_CHAR(p.SET_ON, 'YYYY')||TO_CHAR(p.SET_ON, 'MM') as YearMonth " +
                         "FROM PRODUCT_INFO p,COMPANY_INFO C,STRENGTH_INFO S, DOSAGE_FORM_INFO D, THERAPEUTIC_CLASS_INFO T " +
-                        "WHERE P.COMPANY_CODE=C.COMPANY_CODE(+) AND P.STRENGTH_CODE=S.STRENGTH_CODE(+) AND P.DOSAGE_FORM_CODE=D.DOSAGE_FORM_CODE(+) AND P.THERAPEUTIC_CLASS_CODE=T.THERAPEUTIC_CLASS_CODE(+) ORDER BY P.SET_ON DESC";
+                        "WHERE P.COMPANY_CODE=C.COMPANY_CODE(+) AND P.STRENGTH_CODE=S.STRENGTH_CODE(+) AND P.DOSAGE_FORM_CODE=D.DOSAGE_FORM_CODE(+) AND P.THERAPEUTIC_CLASS_CODE=T.THERAPEUTIC_CLASS_CODE(+) ";
 
+            if (!string.IsNullOrEmpty(companyCode))
+            {
+                Qry = Qry + " AND C.COMPANY_CODE='" + companyCode + "' ";
+            }
+            Qry = Qry + " ORDER BY P.SET_ON DESC";
             DataTable dt = dbHelper.GetDataTable(dbConn.SAConnStrReader(), Qry);
             List<ProductInfoBEL> item;
 
@@ -285,6 +290,76 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             //    query.Append(" AND ROUND(((SELECT SYSDATE FROM DUAL)-( P.SET_ON)),0)<= 60 ");
             //}
             DataTable dt = dbHelper.GetDataTable(dbConn.SAConnStrReader(),string.Format(query.ToString(), model.LastDays));
+            List<ProductInfoBEL> item;
+
+            item = (from DataRow row in dt.Rows
+                    select new ProductInfoBEL
+                    {
+                        ProductCode = row["PRODUCT_CODE"].ToString(),
+                        SAPProductCode = row["SAP_PRODUCT_CODE"].ToString(),
+                        GenericCode = row["GENERIC_CODE"].ToString(),
+                        GenAndStrength = row["GENERIC_CODE"].ToString(),
+                        StrengthCode = row["STRENGTH_CODE"].ToString(),
+                        StrengthName = row["STRENGTH_NAME"].ToString(),
+                        DosageFormCode = row["DOSAGE_FORM_CODE"].ToString(),
+                        DosageFormName = row["DOSAGE_FORM_NAME"].ToString(),
+                        PackSizeName = row["PACK_SIZE_NAME"].ToString(),
+                        BrandName = row["BRAND_NAME"].ToString(),
+                        ProductCategory = row["PRODUCT_CATEGORY"].ToString(),
+                        TherapeuticClassCode = row["THERAPEUTIC_CLASS_CODE"].ToString(),
+                        TherapeuticClassName = row["THERAPEUTIC_CLASS_NAME"].ToString(),
+                        ProductSpecification = row["PRODUCT_SPECIFICATION"].ToString(),
+                        IntroducedInBD = row["INTRODUCED_BANGLADESH"].ToString(),
+                        ManufacturingType = row["MANUFACTURING_TYPE"].ToString(),
+                        ProductTypeCode = row["PRODUCT_TYPE_CODE"].ToString(),
+                        ProductTypeName = row["PRODUCT_TYPE_NAME"].ToString(),
+                        Status = row["STATUS"].ToString(),
+                        Remarks = row["REMARKS"].ToString(),
+                        YearMonth = row["YearMonth"].ToString()
+
+                    }).ToList();
+            return item;
+        }
+        public List<ProductInfoBEL> GetReportInfoByParams(ProductInfoBEL model)
+        {
+            var query = new System.Text.StringBuilder();
+
+            query.Append(" SELECT P.PRODUCT_CODE,P.SAP_PRODUCT_CODE,P.GENERIC_CODE ,P.STRENGTH_CODE,S.STRENGTH_NAME,P.DOSAGE_FORM_CODE,D.DOSAGE_FORM_NAME,P.PACK_SIZE_NAME,");
+            query.Append(" P.BRAND_NAME, P.PRODUCT_CATEGORY,P.THERAPEUTIC_CLASS_CODE,T.THERAPEUTIC_CLASS_NAME,P.PRODUCT_SPECIFICATION,P.INTRODUCED_BANGLADESH, ");
+            query.Append(" P.MANUFACTURING_TYPE,P.PRODUCT_TYPE_CODE, FN_PRODUCT_TYPE_NAME(P.PRODUCT_TYPE_CODE) PRODUCT_TYPE_NAME,P.STATUS,P.REMARKS,TO_CHAR(P.SET_ON, 'YYYY')||TO_CHAR(P.SET_ON, 'MM') as YearMonth  ");
+            query.Append(" FROM PRODUCT_INFO P  LEFT JOIN  STRENGTH_INFO S ON S.STRENGTH_CODE=P.STRENGTH_CODE  LEFT JOIN DOSAGE_FORM_INFO D ON D.DOSAGE_FORM_CODE=P.DOSAGE_FORM_CODE ");
+            query.Append(" LEFT JOIN  THERAPEUTIC_CLASS_INFO T ON T.THERAPEUTIC_CLASS_CODE=P.THERAPEUTIC_CLASS_CODE ");
+            query.Append("  WHERE 1=1 ");
+
+            if (!string.IsNullOrEmpty(model.CompanyCode) && !model.CompanyCode.Equals("All"))
+            {
+                query.Append(" AND P.COMPANY_CODE ='" + model.CompanyCode + "'");
+            }
+            if (!string.IsNullOrEmpty(model.Type) && !model.Type.Equals("All"))
+            {
+                if (model.Type == "Recipe Approval")
+                {
+                    query.Append(" AND P.PRODUCT_CODE IN (Select  DISTINCT PRODUCT_CODE FROM RECIPE_INFO Where APPROVAL_STATUS='Approved')");
+                }
+                if (model.Type == "Inclusion")
+                {
+                    query.Append(" AND P.PRODUCT_CODE IN (Select  DISTINCT PRODUCT_CODE FROM NARCOTIC_LICENSE Where APPROVAL_DATE IS NOT NULL )");
+                }
+                if (model.Type == "Price Approval")
+                {
+                    query.Append(" AND P.PRODUCT_CODE IN (Select  DISTINCT PRODUCT_CODE FROM PRODUCT_PRICE Where APPROVAL_DATE IS NOT NULL)");
+                }
+                if (model.Type == "MA Certificate Approval")
+                {
+                    query.Append(" AND P.PRODUCT_CODE IN (Select  DISTINCT PRODUCT_CODE FROM MARKET_AUTH_CERTIFICATE Where APPROVAL_DATE IS NOT NULL)");
+                }
+            }
+            if (!string.IsNullOrEmpty(model.Year) && !model.Year.Equals("All"))
+            {
+                query.Append(" AND TO_CHAR(P.SET_ON,'YYYY')='" + model.Year + "' ");
+            }
+           
+            DataTable dt = dbHelper.GetDataTable(dbConn.SAConnStrReader(), string.Format(query.ToString()));
             List<ProductInfoBEL> item;
 
             item = (from DataRow row in dt.Rows

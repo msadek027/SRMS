@@ -1417,6 +1417,7 @@
     <Content Include="Areas\Regulatory\Views\TabProduct\frmTabProduct.cshtml" />
     <Content Include="Areas\Regulatory\Views\TabNarcotics\frmNarcotics.cshtml" />
     <Content Include="Areas\Regulatory\Views\TabNarcotics\frmTabNarcotics.cshtml" />
+    <Content Include="Areas\Regulatory\Views\TabProduct\Popup.cshtml" />
     <None Include="Properties\PublishProfiles\RMS_Square.pubxml" />
     <Content Include="Reports\SourceValidationMainRpt.rpt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

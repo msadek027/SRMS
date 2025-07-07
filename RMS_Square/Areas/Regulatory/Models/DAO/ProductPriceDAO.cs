@@ -83,7 +83,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             }
         }
 
-        public IList<ProductPriceBEL> GetAllInfo(ProductPriceBEL model, string orderBy)
+        public IList<ProductPriceBEL> GetAllInfo(ProductPriceBEL model,string companyCode, string orderBy)
         {
             var item = new List<ProductPriceBEL>();
             try
@@ -103,6 +103,10 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                 query.Append(" WHERE D.IS_DELETE <>'Y' ");
                 query.Append(" AND P.STATUS = 'Active' ");
 
+                if (!string.IsNullOrEmpty(companyCode))
+                {
+                    query.Append(" AND C.COMPANY_CODE='" + companyCode + "'");
+                }
                 if (!string.IsNullOrEmpty(model.CompanyCode))
                 {
                     query.Append(" AND C.COMPANY_CODE='{0}'");

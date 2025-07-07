@@ -170,7 +170,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
         //        throw errorException;
         //    }
         //}
-        public IList<ProductRegistrationBEL> GetAllInfo(ProductRegistrationBEL model, string orderBy)
+        public IList<ProductRegistrationBEL> GetAllInfo(ProductRegistrationBEL model,string companyCode, string orderBy)
         {
             var query = new StringBuilder();
             query.Append(" SELECT D.ANNEX_ID,D.ANNEXURE_NO,D.REVISION_NO,D.RECIPE_ID,D.DAR_NO,D.DTL_REMARKS,D.STATE_STATUS,");
@@ -188,7 +188,10 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             query.Append(" LEFT JOIN  DOSAGE_FORM_INFO DF ON DF.DOSAGE_FORM_CODE=P.DOSAGE_FORM_CODE");
             query.Append(" WHERE D.IS_DELETE <>'Y' ");
             query.Append(" AND P.STATUS = 'Active' ");
-
+            if (!string.IsNullOrEmpty(companyCode))
+            {
+                query.Append(" AND  C.COMPANY_CODE='" + companyCode + "'");
+            }
             if (!string.IsNullOrEmpty(model.CompanyCode))
             {
                 query.Append(" AND  C.COMPANY_CODE='{0}'");
