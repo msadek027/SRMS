@@ -17,69 +17,77 @@
     </div>
 </div>
 <div class="box-body">
+  
     <div class="row">
-        <div class="col-md-2">Company: </div>
         <div class="col-md-4">
-            <select id="CompanyCode" class="txtBox">
-                <option selected value="All">All</option>
-                <option value="0001">SPPLC (Pabna Unit)</option>
-                <option value="0002">SPPLC (Dhaka Unit)</option>
-                <option value="0004">SPPLC (CD)</option>
-                <option value="0005">SPPLC (Herbal)</option>
-                <option value="0006">SPPLC (Ayurvedic)</option>
-                <option value="0007">SLL</option>
-
-
-            </select>
-        </div>
-
-    </div>
-
-
-
-
-    <div class="row">
-        <div class="col-md-2">Type : </div>
-        <div class="col-md-4">
-            <select id="Type" class="txtBox">
-                <option selected value="All">All</option>
-                <option value="Recipe Approval">Recipe Approval</option>
-                <option value="Inclusion">Inclusion</option>
-                <option value="Price Approval">Price Approval</option>
-                <option value="MA Certificate Approval">MA Certificate Approval</option>
-            </select>
-        </div>
-
-    </div>
-    <div class="row">
-        <div class="col-md-2"> Year : </div>
-        <div class="col-md-4">
-            <select id="Year" class="txtBox">
-                <option selected value="2025">2025</option>
-                <option value="2024">2024</option>
-                <option value="2023">2023</option>
-                <option value="2022">2022</option>
-                <option value="2021">2021</option>
-                <option value="2020">2020</option>
-            </select>
-        </div>
-
-    </div>
-
-
-    <div class="form-group">
-        <fieldset class="panel-border" >
-            <legend class="panel-border">Product Information :</legend>
             <div class="form-group">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div id="ProductInfoGrid" class=""></div>
-                    </div>
+                <label class="control-label required">Company:</label>
+
+
+                <select id="CompanyCode" class="txtBox">
+                    <option selected value="All">All</option>
+                    <option value="0001">SPPLC (Pabna Unit)</option>
+                    <option value="0002">SPPLC (Dhaka Unit)</option>
+                    <option value="0004">SPPLC (CD)</option>
+                    <option value="0005">SPPLC (Herbal)</option>
+                    <option value="0006">SPPLC (Ayurvedic)</option>
+                    <option value="0007">SLL</option>
+
+
+                </select>
+            </div>
+
+            </div>
+
+    
+
+
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label required">Typw:</label>
+
+                <select id="Type" class="txtBox">
+                    <option selected value="All">All</option>
+                    <option value="Recipe Approval">Recipe Approval</option>
+                    <option value="Inclusion">Inclusion</option>
+                    <option value="Price Approval">Price Approval</option>
+                    <option value="MA Certificate Approval">MA Certificate Approval</option>
+                </select>
+
+            </div>
+        </div>
+
+          
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label required">Year:</label>
+                <select id="Year" class="txtBox">
+                    <option selected value="2025">2025</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                    <option value="2020">2020</option>
+                </select>
+            </div>
+        </div>
+                </div>
+
+
+                <div class="form-group">
+                    <fieldset class="panel-border">
+                        <legend class="panel-border">Product Information :</legend>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div id="ProductInfoGrid" class=""></div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
                 </div>
             </div>
-        </fieldset>
-    </div>
-</div>
 <div class="box-footer">@*Form Footer*@</div>
 <div class="row">
     <div id="DisplayPopupWindow" class="PopupWindowLayout" style="display: none;">

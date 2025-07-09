@@ -1075,6 +1075,24 @@
     <Content Include="AdminLTE\plugins\timepicker\bootstrap-timepicker.min.css" />
     <Content Include="AdminLTE\plugins\timepicker\bootstrap-timepicker.min.js" />
     <Content Include="AdminLTE\starter.html" />
+    <Content Include="Content\chart.js\.gitignore" />
+    <Content Include="Content\chart.js\Chart.js" />
+    <Content Include="Content\chart.js\Chart.min.js" />
+    <Content Include="Content\chart.js\gulpfile.js" />
+    <Content Include="Content\chart.js\samples\bar.html" />
+    <Content Include="Content\chart.js\samples\doughnut.html" />
+    <Content Include="Content\chart.js\samples\line-customTooltips.html" />
+    <Content Include="Content\chart.js\samples\line.html" />
+    <Content Include="Content\chart.js\samples\pie-customTooltips.html" />
+    <Content Include="Content\chart.js\samples\pie.html" />
+    <Content Include="Content\chart.js\samples\polar-area.html" />
+    <Content Include="Content\chart.js\samples\radar.html" />
+    <Content Include="Content\chart.js\src\Chart.Bar.js" />
+    <Content Include="Content\chart.js\src\Chart.Core.js" />
+    <Content Include="Content\chart.js\src\Chart.Doughnut.js" />
+    <Content Include="Content\chart.js\src\Chart.Line.js" />
+    <Content Include="Content\chart.js\src\Chart.PolarArea.js" />
+    <Content Include="Content\chart.js\src\Chart.Radar.js" />
     <Content Include="Content\css\AdminLTE.css" />
     <Content Include="Content\css\AdminLTE.min.css" />
     <Content Include="Content\css\alt\AdminLTE-bootstrap-social.css" />
@@ -1340,6 +1358,8 @@
     <Content Include="Content\Scroll\ScrollHorizontal.html" />
     <Content Include="Content\Scroll\ScrollVertical.html" />
     <Content Include="Content\Scroll\style.css" />
+    <Content Include="fonts\fontawesome-webfont.svg" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Media\VideoFile.mp4" />
     <Content Include="Scripts\BootstrapMultiselect\css\bootstrap-multiselect.css" />
@@ -1418,6 +1438,32 @@
     <Content Include="Areas\Regulatory\Views\TabNarcotics\frmNarcotics.cshtml" />
     <Content Include="Areas\Regulatory\Views\TabNarcotics\frmTabNarcotics.cshtml" />
     <Content Include="Areas\Regulatory\Views\TabProduct\Popup.cshtml" />
+    <Content Include="Areas\Regulatory\Views\NarcoticLicense\frmNarcoticLicenseReport.cshtml" />
+    <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.woff2" />
+    <Content Include="fonts\FontAwesome.otf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\kendo\images\kendoui.woff" />
+    <Content Include="Content\chart.js\.bower.json" />
+    <Content Include="Content\chart.js\.travis.yml" />
+    <Content Include="Content\chart.js\bower.json" />
+    <Content Include="Content\chart.js\CONTRIBUTING.md" />
+    <Content Include="Content\chart.js\docs\00-Getting-Started.md" />
+    <Content Include="Content\chart.js\docs\01-Line-Chart.md" />
+    <Content Include="Content\chart.js\docs\02-Bar-Chart.md" />
+    <Content Include="Content\chart.js\docs\03-Radar-Chart.md" />
+    <Content Include="Content\chart.js\docs\04-Polar-Area-Chart.md" />
+    <Content Include="Content\chart.js\docs\05-Pie-Doughnut-Chart.md" />
+    <Content Include="Content\chart.js\docs\06-Advanced.md" />
+    <Content Include="Content\chart.js\docs\07-Notes.md" />
+    <Content Include="Content\chart.js\LICENSE.md" />
+    <Content Include="Content\chart.js\package.json" />
+    <Content Include="Content\chart.js\README.md" />
     <None Include="Properties\PublishProfiles\RMS_Square.pubxml" />
     <Content Include="Reports\SourceValidationMainRpt.rpt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -2151,6 +2197,7 @@
     <Folder Include="Areas\Regulatory\Views\Company\" />
     <Folder Include="Areas\Regulatory\Views\Shared\" />
     <Folder Include="Areas\SA\Views\Shared\" />
+    <Folder Include="Content\MaskedDatePicker\images\" />
     <Folder Include="dll\" />
   </ItemGroup>
   <ItemGroup>

@@ -149,6 +149,88 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                 return false;
             }
         }
+        public IList<NarcoticLicenseBEL> GetReportNarcoticLicense(NarcoticLicenseBEL model)
+        {
+            var query = new StringBuilder();
+            query.Append(" SELECT * FROM VW_IMPORTNARCOTICSSTATUSRPT Where 1=1");
+            if (!string.IsNullOrEmpty(model.CompanyCode) && !model.CompanyCode.Equals("All"))
+            {
+                query.Append(" AND  COMPANY_CODE='" + model.CompanyCode + "'");
+            }
+            if (!string.IsNullOrEmpty(model.GenericCode) && !model.GenericCode.Equals("All"))
+            {
+                query.Append(" AND  GENERIC_CODE='" + model.GenericCode + "'");
+            }
+            if (!string.IsNullOrEmpty(model.Type) && !model.Type.Equals("All"))
+            {
+                query.Append(" AND  LICENSE_TYPE='" + model.Type + "'");
+            }
+            if (!string.IsNullOrEmpty(model.FiscalYear) && !model.FiscalYear.Equals("All"))
+            {
+                query.Append(" AND  SUBMISSION_TYPE='" + model.FiscalYear + "'");
+            }
+            if (!string.IsNullOrEmpty(model.RecordStatus) && !model.RecordStatus.Equals("All"))
+            {
+                query.Append(" AND  SUBMISSION_TYPE='" + model.RecordStatus + "'");
+            }
+        
+                query.Append(" ORDER BY ID DESC");
+            
+            DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), string.Format(query.ToString()));
+
+            var item = (from DataRow row in dt.Rows
+                        select new NarcoticLicenseBEL
+                        {
+                            ID = Convert.ToInt64(row["ID"]),
+                       
+                            CompanyCode = row["COMPANY_CODE"].ToString(),
+                            CompanyName = row["COMPANY_NAME"].ToString(),
+                           // Address = row["ADDRESS"].ToString(),
+                           // LicenseNo = row["LICENSE_NO"].ToString(),
+                            LicenseType = row["LICENSE_TYPE"].ToString(),
+                            SubmissionType = row["SUBMISSION_TYPE"].ToString(),
+                            SubmissionDate = row["SUBMISSION_DATE"].ToString(),
+                            InspectionDate = row["INSPECTION_DATE"].ToString(),
+                           // ValidUpto = row["VALID_UPTO"].ToString(),
+                            ApprovalDate = row["APPROVAL_DATE"].ToString(),
+                           // AlarmDays = row["NOTIFICATION_DAYS"].ToString(),
+                            //RevisionDate = row["SET_ON"].ToString(),
+                            //RevisionNo = row["REVISION_NO"].ToString(),
+
+                            GenericName = row["GENERIC_CODE"].ToString(),
+                            //BrandName = row["BRAND_NAME"].ToString(),
+                            //AnnualQuota = row["ANNUAL_QUOTA"].ToString(),
+                            //SubDGDA = row["SUB_DGDA"].ToString(),
+                            //ApproveDGDA = row["APPROVE_DGDA"].ToString(),
+                            //SubNercotic = row["SUB_NERCOTIC"].ToString(),
+                            //ImportQtyPerYr = row["IMPORT_QTY_PRE_YR"].ToString(),
+                            //ImportQtyCurYr = row["IMPORT_QTY_CUR_YR"].ToString(),
+                            //ImportPurpose = row["IMPORT_PURPOSE"].ToString(),
+                            //PermitApprovalDate = row["PERMIT_APPROVAL_DATE"].ToString(),
+                            //ImportDate = row["IMPORT_DATE"].ToString(),
+                            //ImportQty = row["IMPORT_QTY"].ToString(),
+                            //RecSentNarc = row["RECV_SENT_NARC"].ToString(),
+                            //InsRptRcvNarc = row["INST_RPT_RECV_NARC"].ToString(),
+                            //SubInsRptNhq = row["SUB_INST_RPT_NHQ"].ToString(),
+                            //SubInsRptNarc = row["SUB_INST_RPT_NARC"].ToString(),
+                            //FinalImpPermit = row["FINAL_IMP_PERMIT"].ToString(),
+                            //RMImpQty = row["RM_IMPORT_QTY"].ToString(),
+                            //SendToPPIC = row["SEND_TO_PPIC"].ToString(),
+                            //PPICLocalApp = row["PPIC_LOCAL_APP"].ToString(),
+                            //InsSampleCall = row["INST_SAMPLE_CALL"].ToString(),
+                            //SampleRec = row["SAMPLE_RECV_NARC"].ToString(),
+                            //RPTDispatch = row["RPT_DISPATCH"].ToString(),
+                            //PPICSent = row["PPIC_SENT"].ToString(),
+                            //PPICApplyNarc = row["PPIC_APPLY_NARC"].ToString(),
+                            //RptForwrdRcv = row["RPT_FORWARDING_RECV"].ToString(),
+                            //DivToDnc = row["DIV_TO_DNC"].ToString(),
+                            //FinalPermit = row["FINAL_PERMIT"].ToString(),
+                            //DeliverToIMD = row["DELIVERED_TO_IMD"].ToString(),
+                            //ImportQtyPerYr = row["REVISION_NO"].ToString(),
+                        }).ToList();
+            return item;
+        }
+
 
         public IList<NarcoticLicenseBEL> GetAllInfo(NarcoticLicenseBEL model, string orderBy)
         {

@@ -3121,13 +3121,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/20/2017 09:59:44</publishTime>
     </File>
     <File Include="AdminLTE/plugins/morris/morris.css">
-      <publishTime>08/20/2017 09:59:44</publishTime>
+      <publishTime>09/20/2023 10:30:12</publishTime>
     </File>
     <File Include="AdminLTE/plugins/morris/morris.js">
-      <publishTime>08/20/2017 09:59:44</publishTime>
+      <publishTime>09/20/2023 10:30:12</publishTime>
     </File>
     <File Include="AdminLTE/plugins/morris/morris.min.js">
-      <publishTime>08/20/2017 09:59:44</publishTime>
+      <publishTime>09/20/2023 10:30:12</publishTime>
     </File>
     <File Include="AdminLTE/plugins/pace/pace.css">
       <publishTime>08/20/2017 09:59:44</publishTime>
@@ -3352,7 +3352,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/16/2018 11:22:46</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/CompanyLicense/frmCompanyLicenseView.cshtml">
-      <publishTime>05/28/2018 08:40:12</publishTime>
+      <publishTime>07/08/2025 09:03:40</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/CountryInfo/frmCountryInfo.cshtml">
       <publishTime>01/24/2018 11:32:52</publishTime>
@@ -3397,7 +3397,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/03/2018 10:49:46</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/GmpCertificate/frmGmpCertificateView.cshtml">
-      <publishTime>01/11/2018 08:54:44</publishTime>
+      <publishTime>07/08/2025 09:05:13</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/ImportProductRegistration/frmImportProductRegistration.cshtml">
       <publishTime>04/02/2018 14:17:52</publishTime>
@@ -3412,16 +3412,19 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/14/2018 09:50:40</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/MarketAuthCertificate/frmMarketAuthCertificateView.cshtml">
-      <publishTime>07/19/2018 10:54:18</publishTime>
+      <publishTime>07/07/2025 15:40:46</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/MeetingInfo/frmMeetingInfo.cshtml">
       <publishTime>01/17/2024 12:38:06</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/MeetingInfo/frmMeetingInfoView.cshtml">
-      <publishTime>03/25/2018 08:54:22</publishTime>
+      <publishTime>07/08/2025 09:32:56</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/NarcoticLicense/frmNarcoticLicense.cshtml">
       <publishTime>12/09/2020 12:32:50</publishTime>
+    </File>
+    <File Include="Areas/Regulatory/Views/NarcoticLicense/frmNarcoticLicenseReport.cshtml">
+      <publishTime>07/08/2025 16:03:37</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/NarcoticLicense/frmNarcoticLicenseRpt.cshtml">
       <publishTime>12/02/2020 13:07:16</publishTime>
@@ -3448,7 +3451,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/07/2021 11:43:32</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/ProductInfo/frmProductInfoView.cshtml">
-      <publishTime>05/16/2018 12:43:30</publishTime>
+      <publishTime>07/08/2025 09:03:40</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/ProductPrice/frmProductPrice.cshtml">
       <publishTime>03/03/2021 09:47:40</publishTime>
@@ -3523,7 +3526,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/24/2018 11:29:28</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/TabCompany/frmTabCompany.cshtml">
-      <publishTime>07/07/2025 13:03:21</publishTime>
+      <publishTime>07/09/2025 15:25:50</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/TabNarcotics/frmNarcotics.cshtml">
       <publishTime>06/26/2025 16:48:01</publishTime>
@@ -3532,7 +3535,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/29/2025 08:35:02</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/TabProduct/frmTabProduct.cshtml">
-      <publishTime>07/07/2025 10:18:39</publishTime>
+      <publishTime>07/09/2025 11:53:38</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/TabProduct/Popup.cshtml">
       <publishTime>06/30/2025 13:32:04</publishTime>
@@ -3706,7 +3709,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/18/2021 11:56:40</publishTime>
     </File>
     <File Include="bin/RMS_Square.dll">
-      <publishTime>07/07/2025 10:19:11</publishTime>
+      <publishTime>07/09/2025 13:36:21</publishTime>
     </File>
     <File Include="bin/System.Net.Http.Formatting.dll">
       <publishTime>07/16/2017 16:14:18</publishTime>
@@ -3740,6 +3743,105 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="bin/UserAuthenticator.dll">
       <publishTime>09/03/2018 10:42:33</publishTime>
+    </File>
+    <File Include="Content/chart.js/.bower.json">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/.gitignore">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/.travis.yml">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/bower.json">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/Chart.js">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/Chart.min.js">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/CONTRIBUTING.md">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/docs/00-Getting-Started.md">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/docs/01-Line-Chart.md">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/docs/02-Bar-Chart.md">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/docs/03-Radar-Chart.md">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/docs/04-Polar-Area-Chart.md">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/docs/05-Pie-Doughnut-Chart.md">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/docs/06-Advanced.md">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/docs/07-Notes.md">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/gulpfile.js">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/LICENSE.md">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/package.json">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/README.md">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/samples/bar.html">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/samples/doughnut.html">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/samples/line-customTooltips.html">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/samples/line.html">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/samples/pie-customTooltips.html">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/samples/pie.html">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/samples/polar-area.html">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/samples/radar.html">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/src/Chart.Bar.js">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/src/Chart.Core.js">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/src/Chart.Doughnut.js">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/src/Chart.Line.js">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/src/Chart.PolarArea.js">
+      <publishTime>09/20/2023 10:30:11</publishTime>
+    </File>
+    <File Include="Content/chart.js/src/Chart.Radar.js">
+      <publishTime>09/20/2023 10:30:11</publishTime>
     </File>
     <File Include="Content/css/AdminLTE.css">
       <publishTime>11/26/2024 08:50:59</publishTime>
@@ -4004,6 +4106,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="Content/kendo/BlueOpal/sprite_2x.png">
       <publishTime>08/20/2017 10:00:32</publishTime>
+    </File>
+    <File Include="Content/kendo/images/kendoui.woff">
+      <publishTime>07/09/2025 09:50:07</publishTime>
     </File>
     <File Include="Content/kendo/kendo.blueopal.min.css">
       <publishTime>08/20/2017 10:00:32</publishTime>
@@ -4586,6 +4691,39 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="dll/UserAuthenticator.dll">
       <publishTime>09/03/2018 10:42:33</publishTime>
+    </File>
+    <File Include="fonts/fontawesome-webfont.eot">
+      <publishTime>09/20/2023 10:30:13</publishTime>
+    </File>
+    <File Include="fonts/fontawesome-webfont.svg">
+      <publishTime>09/20/2023 10:30:13</publishTime>
+    </File>
+    <File Include="fonts/fontawesome-webfont.ttf">
+      <publishTime>09/20/2023 10:30:13</publishTime>
+    </File>
+    <File Include="fonts/fontawesome-webfont.woff">
+      <publishTime>09/20/2023 10:30:13</publishTime>
+    </File>
+    <File Include="fonts/fontawesome-webfont.woff2">
+      <publishTime>09/20/2023 10:30:13</publishTime>
+    </File>
+    <File Include="fonts/FontAwesome.otf">
+      <publishTime>09/20/2023 10:30:13</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.eot">
+      <publishTime>09/20/2023 10:30:13</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.svg">
+      <publishTime>09/20/2023 10:30:13</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.ttf">
+      <publishTime>09/20/2023 10:30:13</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.woff">
+      <publishTime>09/20/2023 10:30:13</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.woff2">
+      <publishTime>09/20/2023 10:30:13</publishTime>
     </File>
     <File Include="Global.asax">
       <publishTime>08/20/2017 09:55:58</publishTime>
@@ -5380,7 +5518,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/23/2018 10:10:02</publishTime>
     </File>
     <File Include="Views/Home/frmHome.cshtml">
-      <publishTime>06/30/2025 17:24:05</publishTime>
+      <publishTime>07/09/2025 12:04:35</publishTime>
     </File>
     <File Include="Views/Home/frmNewIndex.cshtml">
       <publishTime>02/17/2021 12:22:50</publishTime>
@@ -5407,16 +5545,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/23/2018 11:25:46</publishTime>
     </File>
     <File Include="Views/LoginRegistration/Index.cshtml">
-      <publishTime>11/01/2017 09:11:08</publishTime>
+      <publishTime>07/09/2025 10:47:51</publishTime>
     </File>
     <File Include="Views/LoginRegistration/Index3.cshtml">
       <publishTime>08/20/2017 11:03:16</publishTime>
     </File>
     <File Include="Views/LoginRegistration/LogIn.cshtml">
-      <publishTime>11/01/2017 09:11:42</publishTime>
+      <publishTime>07/09/2025 10:47:44</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>01/26/2021 12:45:22</publishTime>
+      <publishTime>07/09/2025 13:06:34</publishTime>
     </File>
     <File Include="Views/Test/TestRpt.cshtml">
       <publishTime>01/08/2018 14:31:16</publishTime>
@@ -5425,7 +5563,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/20/2017 10:08:32</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>07/07/2025 10:19:13</publishTime>
+      <publishTime>07/09/2025 13:36:23</publishTime>
     </File>
   </ItemGroup>
 </Project>

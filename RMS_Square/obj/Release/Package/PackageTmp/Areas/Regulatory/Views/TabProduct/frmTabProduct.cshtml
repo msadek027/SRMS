@@ -35,6 +35,8 @@
     }
     // ✅ Open modal with content from tab ID and set values if saved
     function openTabModal(tabId, title) {
+
+        debugger;
         currentTabId = tabId;
 
         // Clone live DOM to preserve form values
@@ -293,12 +295,6 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-
-      //  CheckUnSavedDataTab2();
-      
-   
- 
-
         $('.input-group.date').datepicker({
             format: "d/mm/yyyy",//dd M yyyy
             // daysOfWeekDisabled: "5,6",
@@ -307,77 +303,88 @@
             //,todayBtn: true,
         });
         debugger;
-        var activeTabIndex = 0; // Default to the first tab
-        var activeTabIndexId = 'tabs-1'; // Default to the first tab
-        var ButtonEvent = ''; // Declare ButtonEvent as a global variable
-        var ButtonEventId = ''; // Declare ButtonEvent as a global variable
-        // Retrieve the active tab index from sessionStorage
+        var activeTabIndex = 0;
+        var ButtonEvent = '';
+        var ButtonEventId = '';
+
+        // 🔁 Retrieve last selected tab label & ID from sessionStorage
+        var storedButtonEvent = sessionStorage.getItem('keyOption') || "Product Info";
+        var storedButtonEventId = sessionStorage.getItem('keyOptionId') || "tabs-1";
+
+        // Update global variables
+        ButtonEvent = storedButtonEvent;
+        ButtonEventId = storedButtonEventId;
+
+        // Try to retrieve stored tab index
         if (sessionStorage.getItem('activeTabIndex') !== null) {
             activeTabIndex = parseInt(sessionStorage.getItem('activeTabIndex'), 10);
-            activeTabIndexId = sessionStorage.getItem('activeTabId');
         }
 
-        // Handle specific tab options stored in sessionStorage
-        var keyOption = sessionStorage.getItem('keyOption');
-        var keyOptionId = sessionStorage.getItem('keyOptionId');
-        if (keyOption === "Entry License Info") {
-            activeTabIndex = 0; // EmpContactAddress tab
-            activeTabIndexId = 'tabs-1';
-        }
-
-        // Initialize the jQuery UI tabs widget
+        // 🔧 Initialize jQuery UI Tabs
         $('#tabs').tabs({
             active: activeTabIndex,
             activate: function (event, ui) {
-                // Save the active tab index in sessionStorage when the tab changes
+                // 📦 Get new tab index and ID
                 var newActiveTabIndex = $('#tabs').tabs("option", "active");
-
                 var newActiveTabIndexId = $('#tabs > div').eq(newActiveTabIndex).attr('id');
+
+                // 📦 Get new tab label
+                var activeTabText = $("#btnList li:nth-child(" + (newActiveTabIndex + 1) + ") a").text();
+                var matchingAnchor = $("#btnList a").filter(function () {
+                    return $(this).text().trim() === activeTabText;
+                });
+
+                // Get the href (e.g., "#tabs-1"), then extract the ID
+                var tabHref = matchingAnchor.attr("href"); // e.g., "#tabs-1"
+                var tabId = tabHref ? tabHref.replace('#', '') : null;
+
+
+                // 💾 Store updated values in sessionStorage
                 sessionStorage.setItem('activeTabIndex', newActiveTabIndex);
                 sessionStorage.setItem('activeTabId', newActiveTabIndexId);
-                // Update ButtonEvent and call GetView for the active tab
-                var activeTabText = $("#btnList li:nth-child(" + (newActiveTabIndex + 1) + ") a").text();
-                sessionStorage.setItem('keyOption', activeTabText); // Store the active tab's text
-                ButtonEvent = activeTabText; // Update the global variable
+
+                sessionStorage.setItem('keyOption', activeTabText);
+                sessionStorage.setItem('keyOptionId', tabId);
+
+                // 🔁 Update global variables
+                ButtonEvent = activeTabText;
                 ButtonEventId = newActiveTabIndexId;
+
+                // 📡 Load tab content
                 GetView($('#CompanyCode').val(), ButtonEvent);
+                CheckPagePartAccessPrivilegeTab($('#CompanyCode').val(), ButtonEvent, "");
 
-                CheckPagePartAccessPrivilegeTab($('#CompanyCode').val(), ButtonEvent,"");
-
-                // Highlight the active tab by adding the class and removing it from others
+                // 🖍️ Highlight the active tab
                 $("#btnList li").removeClass('active-tab');
                 $("#btnList li:nth-child(" + (newActiveTabIndex + 1) + ")").addClass('active-tab');
             }
         });
 
-        // Populate fields with stored session data
+        // 🧾 Populate fields from sessionStorage
         $('#CompanyCode').val(sessionStorage.getItem('keyCompanyCode'));
 
-
-        // Initial content loading for the current tab
-        var initialButtonEvent = sessionStorage.getItem('keyOption') || "Entry License Info";
-        ButtonEvent = initialButtonEvent; // Initialize ButtonEvent
-        var initialButtonEventId = sessionStorage.getItem('keyOptionId') || "tabs-1";
-        ButtonEvent = initialButtonEvent; // Initialize ButtonEvent
-        ButtonEventId = initialButtonEventId; // Initialize ButtonEvent
+        // 📡 Initial content loading (after everything initialized)
         GetView($('#CompanyCode').val(), ButtonEvent);
 
-        // Mark the initially active tab
+        // 🖍️ Mark the initially active tab
         $("#btnList li").removeClass('active-tab');
         $("#btnList li:nth-child(" + (activeTabIndex + 1) + ")").addClass('active-tab');
 
-        // Tab click handler to update ButtonEvent and fetch content
+        // 🖱️ Manual tab click handler (in case user clicks tab header list)
         $("#btnList li").click(function () {
-            ButtonEvent = $(this).text(); // Update the global variable
-            const tabHref = $(this).find('a').attr('href'); // e.g., "#tabs-1"
-            const tabId = tabHref.replace('#', '');
-            ButtonEventId=tabId;
+            ButtonEvent = $(this).text();
+            var tabHref = $(this).find('a').attr('href'); // e.g., "#tabs-1"
+            var tabId = tabHref.replace('#', '');
+            ButtonEventId = tabId;
+
+            // 📡 Load tab content again for this click
             GetView($('#CompanyCode').val(), ButtonEvent);
 
-            // Highlight the clicked tab
+            // 🖍️ Highlight clicked tab
             $("#btnList li").removeClass('active-tab');
             $(this).addClass('active-tab');
         });
+
 
 
         function GetView(CompanyCode, ButtonEvent) {
@@ -492,6 +499,7 @@
             }
         }
         $('#btnViewMode').click(function () {
+            debugger;
             openTabModal(ButtonEventId, ButtonEvent);
         });
         $('#btnSearch').click(function () {

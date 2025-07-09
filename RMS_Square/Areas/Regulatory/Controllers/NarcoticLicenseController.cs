@@ -140,6 +140,13 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             return Redirect(string.Format("~/Home/frmHome"));
         }
         [HttpPost]
+        public ActionResult GetReportNarcoticLicense(NarcoticLicenseBEL model)
+        {
+            var data = _dalObj.GetReportNarcoticLicense(model);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
         public ActionResult GetInfoByParams(NarcoticLicenseBEL model)
         {
             var dMaster = _dalObj.GetAllInfo(model, orderBy: "DESC");
@@ -160,6 +167,15 @@ namespace RMS_Square.Areas.Regulatory.Controllers
 
 
         public ActionResult frmNarcoticLicenseRpt()
+        {
+            if (Session["UserID"] != null)
+            {
+                Session["FormNameTitle"] = "Narcotic License Report";
+                return View();
+            }
+            return Redirect(string.Format("~/Home/frmHome"));
+        }
+        public ActionResult frmNarcoticLicenseReport()
         {
             if (Session["UserID"] != null)
             {

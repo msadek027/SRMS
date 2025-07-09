@@ -7,9 +7,58 @@
 
 
 
+
 <link href="~/Content/CSS/InputText.css" rel="stylesheet" />
 
 <script>
+    let savedData = {};
+    let currentTabId = '';
+
+    // ✅ Collect form data from tab
+    function getTabData(container) {
+        const data = {};
+        $(container).find('input, select, textarea').each(function () {
+            const name = $(this).attr('name') || $(this).attr('id');
+            if (name) {
+                data[name] = $(this).val();
+            }
+        });
+        return data;
+    }
+    function enableViewMode() {
+        $('#modalBody').find('input, select, textarea, button, checkbox').attr('disabled', true);
+    }
+
+    // Clear view mode (enable inputs again)
+    function disableViewMode() {
+        $('#modalBody').find('input, select, textarea, button, checkbox').attr('disabled', false);
+    }
+    // ✅ Open modal with content from tab ID and set values if saved
+    function openTabModal(tabId, title) {
+
+        debugger;
+        currentTabId = tabId;
+
+        // Clone live DOM to preserve form values
+        const content = $(`#${tabId}`).clone();
+    $('#modalBody').html(content);
+    $('#modalTitle').text(title);
+
+    const contentTabCommonValue = $("#TabCommonValue").clone();
+    $('#modalCommonHeader').html(contentTabCommonValue)
+    //$('#modalCommonHeader').find('input, select, textarea, button, checkbox').attr('disabled', true);
+    $('#modalCommonHeader').find('button').hide();
+    $('#modalCommonHeader').find('#btnSave').attr('disabled', false).show();
+    enableViewMode();
+    // Refill form fields if saved previously
+    if (savedData[tabId]) {
+        for (const key in savedData[tabId]) {
+            $('#modalBody').find(`[name="${key}"], [id="${key}"]`).val(savedData[tabId][key]);
+        }
+    }
+
+    $('#tabModal').modal('show');
+    }
     function SetMasterDataTab(data, TabPrefix) {
         $.each(data, function (key, value) {
             $('#' + TabPrefix + key).val(value);
@@ -21,63 +70,97 @@
     $(document).ready(function () {
 
         debugger;
-        var activeTabIndex = 0; // Default to the first tab
-        var ButtonEvent = ''; // Declare ButtonEvent as a global variable
+        var activeTabIndex = 0;
+        var ButtonEvent = '';
+        var ButtonEventId = '';
 
-        // Retrieve the active tab index from sessionStorage
+        // 🔁 Retrieve last selected tab label & ID from sessionStorage
+        var storedButtonEvent = sessionStorage.getItem('keyOption') || "Entry License Info";
+        var storedButtonEventId = sessionStorage.getItem('keyOptionId') || "tabs-1";
+
+        // Update global variables
+        ButtonEvent = storedButtonEvent;
+        ButtonEventId = storedButtonEventId;
+
+        // Try to retrieve stored tab index
         if (sessionStorage.getItem('activeTabIndex') !== null) {
             activeTabIndex = parseInt(sessionStorage.getItem('activeTabIndex'), 10);
         }
 
-        // Handle specific tab options stored in sessionStorage
-        var keyOption = sessionStorage.getItem('keyOption');
-      if (keyOption === "Entry License Info") {
-            activeTabIndex = 0; // EmpContactAddress tab
-        }
-
-        // Initialize the jQuery UI tabs widget
+        // 🔧 Initialize jQuery UI Tabs
         $('#tabs').tabs({
             active: activeTabIndex,
             activate: function (event, ui) {
-                // Save the active tab index in sessionStorage when the tab changes
+                // 📦 Get new tab index and ID
                 var newActiveTabIndex = $('#tabs').tabs("option", "active");
-                sessionStorage.setItem('activeTabIndex', newActiveTabIndex);
+                var newActiveTabIndexId = $('#tabs > div').eq(newActiveTabIndex).attr('id');
 
-                // Update ButtonEvent and call GetView for the active tab
+                // 📦 Get new tab label
                 var activeTabText = $("#btnList li:nth-child(" + (newActiveTabIndex + 1) + ") a").text();
-                sessionStorage.setItem('keyOption', activeTabText); // Store the active tab's text
-                ButtonEvent = activeTabText; // Update the global variable
-                GetView($('#CompanyCode').val(), ButtonEvent);
+                var matchingAnchor = $("#btnList a").filter(function () {
+                    return $(this).text().trim() === activeTabText;
+                });
 
-                // Highlight the active tab by adding the class and removing it from others
+                // Get the href (e.g., "#tabs-1"), then extract the ID
+                var tabHref = matchingAnchor.attr("href"); // e.g., "#tabs-1"
+                var tabId = tabHref ? tabHref.replace('#', '') : null;
+
+
+                // 💾 Store updated values in sessionStorage
+                sessionStorage.setItem('activeTabIndex', newActiveTabIndex);
+                sessionStorage.setItem('activeTabId', newActiveTabIndexId);
+
+                sessionStorage.setItem('keyOption', activeTabText);
+                sessionStorage.setItem('keyOptionId', tabId);
+
+                // 🔁 Update global variables
+                ButtonEvent = activeTabText;
+                ButtonEventId = newActiveTabIndexId;
+
+                // 📡 Load tab content
+                GetView($('#CompanyCode').val(), ButtonEvent);
+               // CheckPagePartAccessPrivilegeTab($('#CompanyCode').val(), ButtonEvent, "");
+
+                // 🖍️ Highlight the active tab
                 $("#btnList li").removeClass('active-tab');
                 $("#btnList li:nth-child(" + (newActiveTabIndex + 1) + ")").addClass('active-tab');
             }
         });
 
-        // Populate fields with stored session data
+        // 🧾 Populate fields from sessionStorage
         $('#CompanyCode').val(sessionStorage.getItem('keyCompanyCode'));
 
-
-        // Initial content loading for the current tab
-        var initialButtonEvent = sessionStorage.getItem('keyOption') || "Entry License Info";
-        ButtonEvent = initialButtonEvent; // Initialize ButtonEvent
+        // 📡 Initial content loading (after everything initialized)
         GetView($('#CompanyCode').val(), ButtonEvent);
 
-        // Mark the initially active tab
+        // 🖍️ Mark the initially active tab
         $("#btnList li").removeClass('active-tab');
         $("#btnList li:nth-child(" + (activeTabIndex + 1) + ")").addClass('active-tab');
 
-        // Tab click handler to update ButtonEvent and fetch content
+        // 🖱️ Manual tab click handler (in case user clicks tab header list)
         $("#btnList li").click(function () {
-            ButtonEvent = $(this).text(); // Update the global variable
+            ButtonEvent = $(this).text();
+            var tabHref = $(this).find('a').attr('href'); // e.g., "#tabs-1"
+            var tabId = tabHref.replace('#', '');
+            ButtonEventId = tabId;
+
+            // 📡 Load tab content again for this click
             GetView($('#CompanyCode').val(), ButtonEvent);
 
-            // Highlight the clicked tab
+            // 🖍️ Highlight clicked tab
             $("#btnList li").removeClass('active-tab');
             $(this).addClass('active-tab');
         });
 
+
+
+
+        debugger;
+       
+
+       
+
+      
      
 
         function GetView(CompanyCode, ButtonEvent) {
@@ -289,6 +372,10 @@
             
 
         });
+        $('#btnViewMode').click(function () {
+            debugger;
+            openTabModal(ButtonEventId, ButtonEvent);
+        });
         $('#btnSearch').click(function () {
             debugger;
 
@@ -296,7 +383,6 @@
                 case "Entry License Info":
                     Tab1SearchBtn_PopupWindow.open();
                     Tab1SearchBtn_PopupWindow.center();
-
                     $.ajax({
                         url: '@Url.Action("GetAllInfo", "CompanyLicense")',
                         data: JSON.stringify({ CompanyCode: $("#CompanyCode").val() }),
@@ -311,7 +397,6 @@
                                 Tab1SearchBtn_PopupWindow.close();
                                 AcknowledgeMsg();
                             }
-
                         }
                     });
                     break;
@@ -347,8 +432,6 @@
                     else {
                         ValidationMsg();
                     }
-
-
                     break;
 
                 case "Entry GMP Certificate":
@@ -404,6 +487,7 @@
                     }
                     break;
                 case "Products":
+                    debugger;
                     $.ajax({
                         url: '/ProductInfo/GetProduct',
                         type: 'POST',
@@ -412,6 +496,7 @@
                         data: JSON.stringify({ "companyCode": $('#CompanyCode').val() }),
                         success: function (data) {
                             if (data != "") {
+                                debugger;
                                 $('#ProductInfoViewGrid1').data('kendoGrid').dataSource.data(data);
                             }
                             else {
@@ -425,9 +510,9 @@
                         },
                         //complete: function () { },
                     });
-                    debugger;
+                
                 default:
-                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
+                    //GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
                     break;
             }
 
@@ -1270,10 +1355,9 @@
             columns: [
                  { field: "CompanyCode", title: "CompanyCode", hidden: true, width: 80 },
                  { field: "CompanyName", title: "CompanyName", hidden: true, width: 150 },
-                 { field: "ProductCode", title: "Product Code", width: 80 },
                  { field: "SAPProductCode", title: "SAP Product Code", hidden: true, width: 80 },
-                 { field: "BrandName", title: "Brand Name", width: 100 },
-                 { field: "YearMonth", title: "SetYearMonth", width: 100 },
+                 { field: "ProductCode", title: "Product Code", width: 80 },           
+                 { field: "BrandName", title: "Brand Name", width: 100 },          
                  { field: "GenericCode", title: "Generic & Strength", width: 180 },
                  { field: "DosageFormName", title: "Dosage Form", width: 100 },
                  { field: "PackSizeName", title: "Pack Size", width: 100 },
@@ -1485,70 +1569,82 @@
     </ul>
      
           
-             <div class="box-header with-border">
-                 <div class="row">
-                     <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
-                         <div class="input-group">
-                             <input type="text" id="CompanyCode" name="CompanyCode" placeholder="Company Code" readonly="readonly" class="RequiredField form-control input-sm" />
-                             <span class="input-group-btn" style="width:0px;"></span>
-                             <input type="text" id="CompanyName" name="CompanyName" placeholder="Company Name" readonly="readonly" class="RequiredField form-control input-sm" />
-                             <span class="input-group-btn" style="width:0px;"></span>
-                             <input type="text" id="Address" name="Address" placeholder="Company Addess" readonly="readonly" class="RequiredField form-control input-sm" />
-                            </div>
-                     </div>
-                     <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"></div>
-                  
-                 </div>
-                 <div class="row">
-                   
-                     <div class="col-md-6"><div id="MessageText" style="text-align:center"></div></div>
-                     <div class="col-md-6">
-                         <div style="text-align:right;">
-                             <button id="btnReset" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
-                             <button id="btnSave" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-save"></i>Save</button>
-                             <button id="btnSearch" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
-                         </div>
-                     </div>
-                 </div>
-             </div>
+    <div class="box-header with-border" id="TabCommonValue">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+                <div class="input-group">
+                    <input type="text" id="CompanyCode" name="CompanyCode" placeholder="Company Code" readonly="readonly" class="RequiredField form-control input-sm" />
+                    <span class="input-group-btn" style="width:0px;"></span>
+                    <input type="text" id="CompanyName" name="CompanyName" placeholder="Company Name" readonly="readonly" class="RequiredField form-control input-sm" />
+                    <span class="input-group-btn" style="width:0px;"></span>
+                    <input type="text" id="Address" name="Address" placeholder="Company Addess" readonly="readonly" class="RequiredField form-control input-sm" />
+                </div>
+            </div>
+            <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"></div>
+
+        </div>
+        <div class="row">
+
+            <div class="col-md-6"><div id="MessageText" style="text-align:center"></div></div>
+            <div class="col-md-6">
+                <div style="text-align:right;">
+                    <button id="btnReset" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+                    <button id="btnSave" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-save"></i>Save</button>
+                    <button id="btnSearch" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+                    <button id="btnViewMode" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-plane"></i>View</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
              <div id="tabs-1">
                  <div class="row">                               
-                         <div class="col-sm-2">Revision No :</div>
-                         <div class="col-sm-3"><input type="text" id="Tab1RevisionNo" name="Tab1RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
-                         <div class="col-sm-2"><input type="hidden" id="Tab1CLID" name="Tab1CLID" class="txtBox" /></div>
+                     <div class="col-md-3">Revision No :</div>
+                     <div class="col-md-3"><input type="text" id="Tab1RevisionNo" name="Tab1RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
+                     <div class="col-md-3"><input type="hidden" id="Tab1CLID" name="Tab1CLID" class="txtBox" /></div>
                  </div>
-                 <div class="form-group">
+                 
                      <div class="row">
-                         <div class="col-sm-2">License Type & No<span style="color: red">*</span> :</div>
-                         <div class="col-sm-3"><input type="text" id="Tab1LicenseNo" name="Tab1LicenseNo" class="form-control txtBox" /></div>
-                         <div class="col-sm-2">Submission Type :</div>
-                         <div class="col-sm-3">
+                         <div class="col-md-3">License Type & No<span style="color: red">*</span> :</div>
+                         <div class="col-md-3"><input type="text" id="Tab1LicenseNo" name="Tab1LicenseNo" class="form-control txtBox" /></div>
+                         <div class="col-md-3">Submission Type :</div>
+                         <div class="col-md-3">
                              <select id="Tab1SubmissionType" class="txtBox" disabled="disabled">
                                  <option selected="selected" value="License">License</option>
                                  <option value="Renewal">Renewal</option>
                              </select>
                          </div>
-                         <div class="col-sm-2">
-                             <button id="btnRevisionTab1" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew</button>
+                     </div>
+                       
+                  
+                
+                     <div class="row">
+                         <div class="col-md-10"></div>
+
+                         <div class="col-md-2">
+                             <div style="text-align:right;">
+                                 <button id="btnRevisionTab1" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew</button>
+                             </div>
                          </div>
                      </div>
+               
+
                      <fieldset class="panel-border" id="divRenew">
                          <legend class="panel-border">License/Renew Info :</legend>
                          <div class="form-group">
                              <div class="row">
-                                 <div class="col-sm-1"> </div>
-                                 <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Submission Date : </div>
-                                 <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                             
+                                 <div class="col-md-3">Submission Date : </div>
+                                 <div class="col-md-3">
                                      <div class="input-group date">
                                          <input type="text" class="form-control" id="Tab1SubmissionDate" name="Tab1SubmissionDate" placeholder="dd/mm/yyyy">
                                          <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                                      </div>
                                  </div>
-                                 <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Factory Inspection Date: </div>
-                                 <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                 <div class="col-md-3">Factory Inspection Date: </div>
+                                 <div class="col-md-3">
                                      <div class="input-group date">
                                          <input type="text" class="form-control" id="Tab1InspectionDate" name="Tab1InspectionDate" placeholder="dd/mm/yyyy">
                                          <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
@@ -1557,33 +1653,44 @@
                              </div>
                          </div>
                          <div class="form-group">
+                             <div class="row">                                
+                                 <div class="col-md-3">Post Inspection Date: </div>
+                                 <div class="col-md-3">
+                                     <div class="input-group date">
+                                         <input type="text" class="form-control" id="Tab1PostInspectionDate" name="Tab1PostInspectionDate" placeholder="dd/mm/yyyy">
+                                         <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="form-group">
                              <div class="row">
-                                 <div class="col-sm-1"> </div>
-                                 <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Approval/Renewal Date : </div>
-                                 <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                              
+                                 <div class="col-md-3">Approval/Renewal Date : </div>
+                                 <div class="col-md-3">
                                      <div class="input-group date">
                                          <input type="text" class="form-control" id="Tab1ApprovalDate" name="Tab1ApprovalDate" placeholder="dd/mm/yyyy">
                                          <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                                      </div>
                                  </div>
-                                 <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Alarm Days : </div>
-                                 <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                 <div class="col-md-3">Alarm Days : </div>
+                                 <div class="col-md-3">
                                      <input type="text" id="Tab1AlarmDays" name="Tab1AlarmDays" maxlength="5" placeholder="Alarm Days" class="txtBox form-control numeric " />
                                  </div>
                              </div>
                          </div>
                          <div class="form-group">
                              <div class="row">
-                                 <div class="col-sm-1"> </div>
-                                 <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Valid Up To </div>
-                                 <div class="col-sm-3">
+                               
+                                 <div class="col-md-3">Valid Up To </div>
+                                 <div class="col-md-3">
                                      <div class="input-group date">
                                          <input type="text" class="form-control txtBox" id="Tab1ValidUpto" name="Tab1ValidUpto" placeholder="dd/mm/yyyy">
                                          <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                      </div>
                                  </div>
-                                 <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Entry Date : </div>
-                                 <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                 <div class="col-md-3">Entry Date : </div>
+                                 <div class="col-md-3">
                                      <input type="text" class="form-control" id="Tab1RevisionDate" name="Tab1RevisionDate" readonly>
                                  </div>
                              </div>
@@ -1595,13 +1702,14 @@
                              <fieldset class="panel-border">
                                  <legend class="panel-border">Upload Documents :</legend>
                                  <div class="row">
-                                     <div class="col-sm-2">
-                                         Document Name<span style="color: red">*</span>:
+                                     <div class="col-md-3">
+                                         Document Name:<span style="color: red">*</span>:
                                      </div>
-                                     <div class="col-sm-3">
+                                     <div class="col-md-3">
                                          <select id="Tab1RefNo" class="form-control txtBox" tabindex="" name="Tab1RefNo">
                                              <option value="">--Select Any--</option>
                                              <option value="Inspection Letter">Inspection Letter</option>
+                                             <option value="Post Inspection Letter">Post Inspection Letter</option>
                                              <option value="Inspection Report">Inspection Report</option>
                                              <option value="Original License">Original License</option>
                                              <option value="License Renewal Letter">License Renewal Letter</option>
@@ -1610,16 +1718,16 @@
                                              <option value="List of Machineries">List of Machineries</option>
                                          </select>
                                      </div>
-                                     <div class="col-sm-4">
+                                     <div class="col-md-4">
                                          <input type="file" class="txtBox" id="Tab1UploadFile" name="Tab1UploadFile" />
                                          <i class="fa fa-cloud-upload form-control-feedback"></i>
                                      </div>
-                                     <div class="col-sm-3">
+                                     <div class="col-md-2">
                                      </div>
                                  </div>
-                                 <div class="row">
-                                     <br />
-                                 </div>
+                           
+
+
                                  <div class="row">
                                      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                          <label>List of Document File</label>
@@ -1933,5 +2041,29 @@
                      </div>               
              
              </div>
-         
+       
+    
+    
+    <div class="modal fade" id="tabModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Tab Content</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-header" id="modalCommonHeader">
+                    <!-- Dynamic content goes here -->
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Dynamic content goes here -->
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+      
 </div>

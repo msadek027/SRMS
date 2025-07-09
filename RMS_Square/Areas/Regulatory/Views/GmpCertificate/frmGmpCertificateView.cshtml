@@ -19,10 +19,11 @@
     </div>
 </div>
 <div class="box-body">
-    
-        <div class="row">
-            <div class="col-md-2">Company: </div>
-            <div class="col-md-4">
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label required">Company:</label>
                 <select id="CompanyCode" class="txtBox">
                     <option selected value="All">All</option>
                     <option value="0001">SPPLC (Pabna Unit)</option>
@@ -37,11 +38,12 @@
             </div>
 
         </div>
-   
 
-        <div class="row">
-            <div class="col-md-2">Submission Type :</div>
-            <div class="col-md-4">
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label required">Submission Type:</label>
+
                 <select id="SubmissionType" class="txtBox">
                     <option selected value="All">All</option>
                     <option value="License">New</option>
@@ -52,9 +54,10 @@
 
         </div>
 
-        <div class="row">
-            <div class="col-md-2">Search Type : </div>
-            <div class="col-md-4">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label required">Search Type:</label>
+
                 <select id="SearchType" class="txtBox">
                     <option selected value="All">All</option>
                     <option value="Submission">Submission</option>
@@ -63,352 +66,353 @@
             </div>
 
         </div>
-        <div class="form-group">
-            <fieldset class="panel-border" id="divRenew">
-                <legend class="panel-border">License/Renewal Information :</legend>
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div id="LicenseInfoGrid" class=""></div>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-            <div class="row">
-                <div class="col-sm-12">
-                    <fieldset class="panel-border">
-                        <legend class="panel-border">Document Information :</legend>
-                        <div class="row">
-                            <br />
-                        </div>
+    </div>
+            <div class="form-group">
+                <fieldset class="panel-border" id="divRenew">
+                    <legend class="panel-border">License/Renewal Information :</legend>
+                    <div class="form-group">
                         <div class="row">
                             <div class="col-sm-12">
-                                <label>List of Uploaded Document File</label>
-                                <div id="FileGrid" class=""></div>
+                                <div id="LicenseInfoGrid" class=""></div>
                             </div>
                         </div>
-                    </fieldset>
+                    </div>
+                </fieldset>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <fieldset class="panel-border">
+                            <legend class="panel-border">Document Information :</legend>
+                            <div class="row">
+                                <br />
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label>List of Uploaded Document File</label>
+                                    <div id="FileGrid" class=""></div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
                 </div>
             </div>
+
         </div>
+        <div class="box-footer">@*Form Footer*@</div>
+        <div class="row">
+            <div id="DisplayPopupWindow" class="PopupWindowLayout" style="display: none;">
+                <div id="DisplayPopupWindowGrid" class="PopUpGrid"></div>
+            </div>
+            <div id="CompanyWindow" class="PopupWindowLayout" style="display: none;">
+                <div id="CompanyWindowGrid" class="PopUpGrid"></div>
+            </div>
+        </div>
+        <script type="text/javascript">
 
-    </div>
-<div class="box-footer">@*Form Footer*@</div>
-<div class="row">
-    <div id="DisplayPopupWindow" class="PopupWindowLayout" style="display: none;">
-        <div id="DisplayPopupWindowGrid" class="PopUpGrid"></div>
-    </div>
-    <div id="CompanyWindow" class="PopupWindowLayout" style="display: none;">
-        <div id="CompanyWindowGrid" class="PopUpGrid"></div>
-    </div>
-</div>
-<script type="text/javascript">
+            $('#btnReset').click(function () {
+                ResetData();
+                $("#SubmissionType").val("All");
+                $("#LicenseInfoGrid").data("kendoGrid").dataSource.data([]);
+                $("#FileGrid").data("kendoGrid").dataSource.data([]);
+            });
 
-    $('#btnReset').click(function () {
-        ResetData();
-        $("#SubmissionType").val("All");
-        $("#LicenseInfoGrid").data("kendoGrid").dataSource.data([]);
-        $("#FileGrid").data("kendoGrid").dataSource.data([]);
-    });
+            $(document).ready(function () {
+                $('.input-group.date').datepicker({
+                    format: "d/mm/yyyy",//dd M yyyy
+                    // daysOfWeekDisabled: "5,6",
+                    autoclose: true,
+                    todayHighlight: true
+                    //,todayBtn: true,
+                });
 
-    $(document).ready(function () {
-        $('.input-group.date').datepicker({
-            format: "d/mm/yyyy",//dd M yyyy
-            // daysOfWeekDisabled: "5,6",
-            autoclose: true,
-            todayHighlight: true
-            //,todayBtn: true,
-        });
-
-        // Company window for find button
-        var CompanyWindow = $("#CompanyWindow").kendoWindow({
-            actions: ["Minimize", "Maximize", "Close"],
-            width: "90%",
-            height: "80%",
-            draggable: true,
-            modal: true,
-            title: "List of Company."
-        }).data("kendoWindow").center();
+                // Company window for find button
+                var CompanyWindow = $("#CompanyWindow").kendoWindow({
+                    actions: ["Minimize", "Maximize", "Close"],
+                    width: "90%",
+                    height: "80%",
+                    draggable: true,
+                    modal: true,
+                    title: "List of Company."
+                }).data("kendoWindow").center();
 
 
-        $('#btnFind').click(function () {
-            CompanyWindow.open();
-            $.ajax({
-                url: '@Url.Action("GetAllCompany", "General")',
-                method: 'get',
-                data: 'json',
-                success: function (data) {
-                    if (data != "") {
-                        $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(data);
+                $('#btnFind').click(function () {
+                    CompanyWindow.open();
+                    $.ajax({
+                        url: '@Url.Action("GetAllCompany", "General")',
+                        method: 'get',
+                        data: 'json',
+                        success: function (data) {
+                            if (data != "") {
+                                $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(data);
+                            }
+                            else {
+                                CompanyWindow.close();
+                                AcknowledgeMsg();
+                            }
+
+                        }
+                    });
+
+                });
+
+                //Initializing Main page details Kendo Grid Colums
+                var companyGrid = $('#CompanyWindowGrid').kendoGrid({
+                    dataSource: new kendo.data.DataSource({
+                        batch: true,
+                        schema: {
+                            model: {
+                                id: "CompanyCode",
+                                fields: {
+                                    CompanyCode: { type: "string" },
+                                }
+                            }
+                        },
+                        pageSize: 10,
+                    }),
+                    pageable: {
+                        //refresh: true,
+                        pageSizes: true, buttonCount: 10
+                    },
+                    scrollable: true,
+                    sortable: true,
+                    filterable: true,
+                    editable: false,
+                    selectable: "row",
+                    //selectable: "multiple",
+                    toolbar: [{ template: "<input type='text' id='txtCompanyKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+                    navigatable: true,
+                    height: 430,
+                    // groupable: true,
+                    groupable: { messages: { empty: "Custom message text" } },
+                    columnMenu: true,
+                    reorderable: true,
+                    resizable: true,
+                    columns: [
+                         { field: "CompanyCode", title: "CompanyCode", width: 80 },
+                         { field: "CompanyName", title: "CompanyName", width: 100 },
+                         { field: "Address", title: "CompanyAddress", width: 160 },
+                         { field: "LicenseNo", title: "LicenseNo", width: 80 }
+                    ]
+
+                }).data('kendoGrid');
+
+                $('#CompanyWindowGrid').dblclick(function () {
+                    var grid = $(this).data('kendoGrid');
+                    var selectRow = grid.dataItem(grid.select());
+
+                    CompanyWindow.close();
+                    SetMasterData(selectRow);
+
+                });
+
+                //Company Name wise Filter table row
+                $("#txtCompanyKeyword").keyup(function () {
+                    var val = $(this).val();
+                    $("#CompanyWindowGrid").data("kendoGrid").dataSource.filter({
+                        logic: "or",
+                        filters: [
+                             { field: "CompanyCode", operator: "contains", value: val },
+                             { field: "CompanyName", operator: "contains", value: val },
+                             { field: "Address", operator: "contains", value: val },
+                        ]
+                    });
+                });
+
+
+
+                //Initializing Main page details Kendo Grid Colums
+                var licenseInfoGrid = $('#LicenseInfoGrid').kendoGrid({
+                    dataSource: new kendo.data.DataSource({
+                        batch: true,
+                        schema: {
+                            model: {
+                                id: "ID",
+                                fields: {
+                                    ID: { editable: true },
+                                    RevisionNo: { editable: true },
+                                    SubmissionDate: { editable: false },
+                                    InspectionDate: { editable: false },
+                                    ApprovalDate: { editable: false },
+                                    ValidUpto: { editable: false },
+                                    AlarmDays: { editable: false }
+                                }
+                            }
+                        },
+                        pageSize: 20
+                    }),
+                    pageable: {
+                        pageSizes: true, buttonCount: 5
+                    },
+                    scrollable: true,
+                    sortable: true,
+                    filterable: true,
+                    editable: true,
+                    height: 300,
+                    selectable: "row",
+                    toolbar: [{ template: "<input type='text' id='txtInputLicense'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+                    navigatable: true,
+                    groupable: true,
+                    columnMenu: true,
+                    reorderable: true,
+                    resizable: true,
+                    columns: [
+                    { field: "ID", hidden: true },
+                    { field: "RevisionNo", title: "RevisionNo", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+                    { field: "SubmissionType", title: "SubmissionType", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+                    { field: "SubmissionDate", title: "SubmissionDate", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+                    { field: "InspectionDate", title: "InspectionDate", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+                    { field: "ApprovalDate", title: "ApprovalDate", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+                    { field: "ValidUpto", title: "ValidUpto", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+                    { field: "AlarmDays", title: "AlarmDays", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+                    { command: [{ name: "View", text: "View", imageClass: "fa fa-hand-o-right", click: handleView }], title: "Action", width: "120px", attributes: { "class": "btnView" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } }
+                    ]
+                }).data('kendoGrid');
+                var paramModel = { "refLevel1": "", "refLevel2": "" }
+                // Download Button in Grid
+                function handleView(event) {
+                    event.preventDefault();
+                    var selectedRow = licenseInfoGrid.dataItem($(event.currentTarget).closest("tr"));
+
+                    $.ajax({
+                        url: '@Url.Action("GetFileByRefId", "GmpCertificate")',
+                        type: 'GET',
+                        data: { "refLevel1": selectRow.ID, "refLevel2": "" },
+                        success: function (data) {
+                            $("#FileGrid").data("kendoGrid").dataSource.data(data);
+                        }
+                    });
+                };
+
+                $('#LicenseInfoGrid').click(function () {
+                    var grid = $(this).data('kendoGrid');
+                    var selectRow = grid.dataItem(grid.select());
+                    paramModel.refLevel1 = selectRow.ID;
+                    paramModel.refLevel2 = selectRow.RevisionNo;
+                    $.ajax({
+                        url: '@Url.Action("GetFileByRefId", "GmpCertificate")',
+                        type: 'GET',
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: "JSON",
+                        data: { "refLevel1": selectRow.ID, "refLevel2": "" },
+                        success: function (data) {
+                            $("#FileGrid").data("kendoGrid").dataSource.data(data);
+                        }
+                    });
+                });
+
+                $("#txtInputLicense").keyup(function () {
+                    var val = $(this).val();
+                    $("#LicenseInfoGrid").data("kendoGrid").dataSource.filter({
+                        logic: "or",
+                        filters: [
+                             { field: "RevisionNo", operator: "contains", value: val },
+                             { field: "SubmissionType", operator: "contains", value: val },
+                             { field: "SubmissionDate", operator: "contains", value: val },
+                             { field: "InspectionDate", operator: "contains", value: val },
+                             { field: "ApprovalDate", operator: "contains", value: val },
+                             { field: "ValidUpto", operator: "contains", value: val },
+                             { field: "AlarmDays", operator: "contains", value: val }
+                        ]
+                    });
+                });
+
+
+
+                //Initializing Main page details Kendo Grid Colums
+                var grid = $('#FileGrid').kendoGrid({
+                    dataSource: new kendo.data.DataSource({
+                        batch: true,
+                        schema: {
+                            model: {
+                                id: "FileID",
+                                fields: {
+                                    FileID: { editable: false },
+                                    FileCode: { editable: false },
+                                    Extention: { editable: false },
+                                    FileName: { editable: false },
+                                    RefNo: { editable: false },
+                                    FileSize: { editable: false },
+                                    SetOn: { editable: false },
+                                    SetByName: { editable: false }
+                                }
+                            }
+                        },
+                        pageSize: 10
+                    }),
+                    pageable: {
+                        pageSizes: true, buttonCount: 5
+                    },
+                    scrollable: true,
+                    sortable: true,
+                    filterable: true,
+                    editable: true,
+                    selectable: "row",
+                    toolbar: [{ template: "<input type='text' id='txtInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+                    navigatable: true,
+                    groupable: true,
+                    columnMenu: true,
+                    reorderable: true,
+                    resizable: true,
+                    columns: [
+                    { field: "FileID", hidden: true },
+                    { field: "FileCode", hidden: true },
+                    { field: "Extention", hidden: true },
+                    { field: "RefNo", title: "Document Name", width: 150, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+                    { field: "FileName", title: "File Name", width: 350, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+                    { field: "FileSize", filterable: false, title: "Size(MB)", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+                    { command: [{ name: "Download", text: "Download", imageClass: "glyphicon glyphicon-download", click: handleDownload }], title: "Download Action", width: "120px", attributes: { "class": "btnDownload" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } }
+                    ]
+                }).data('kendoGrid');
+
+                $("#txtInput").keyup(function () {
+                    var val = $(this).val();
+                    $("#FileGrid").data("kendoGrid").dataSource.filter({
+                        logic: "or",
+                        filters: [
+                             { field: "RefNo", operator: "contains", value: val },
+                             { field: "FileName", operator: "contains", value: val },
+                             { field: "FileSize", operator: "contains", value: val }
+                        ]
+                    });
+                });
+
+                // Download Button in Grid
+                function handleDownload(event) {
+                    event.preventDefault();
+                    dataItemInfo = grid.dataItem($(event.currentTarget).closest("tr"));
+                    window.location.href = '@Url.Action("Download", "General")' + '?path=' + dataItemInfo.FileCode + dataItemInfo.Extention + '&fileName=' + dataItemInfo.FileName + '&fileId=' + dataItemInfo.FileID;
+                };
+
+                $('#btnSearch').click(function () {
+                    var checkInput = 0;
+                    if (checkInput == 0) {
+                        model.CompanyCode = $('#CompanyCode').val();
+                        model.SubmissionType = $('#SubmissionType').val();
+                        model.SearchType = $('#SearchType').val();
+
+                        $.ajax({
+                            url: '@Url.Action("GetReportInfoByParams", "GmpCertificate")',
+                            data: JSON.stringify(model),
+                            type: 'POST',
+                            contentType: 'application/json;',
+                            dataType: 'json',
+                            success: function (data) {
+                                $("#LicenseInfoGrid").data().kendoGrid.bind('dataBound', function (e) {
+                                    this.element.find('tbody tr:first').addClass('k-state-selected');
+                                });
+                                $("#LicenseInfoGrid").data("kendoGrid").dataSource.data(data.dataMaster);
+                                $("#FileGrid").data("kendoGrid").dataSource.data(data.dataLevel1);
+                            }
+                        }); //End of ajax call
                     }
                     else {
-                        CompanyWindow.close();
-                        AcknowledgeMsg();
+                        ValidationMsg();
                     }
 
-                }
+                });
+                var model = { "CompanyCode": "", "AlarmDays": "", "LicenseNo": "", "SubmissionType": "", "FromDate": "", "ToDate": "" };
+                var dataItemInfo = {};
+
             });
 
-        });
-
-        //Initializing Main page details Kendo Grid Colums
-        var companyGrid = $('#CompanyWindowGrid').kendoGrid({
-            dataSource: new kendo.data.DataSource({
-                batch: true,
-                schema: {
-                    model: {
-                        id: "CompanyCode",
-                        fields: {
-                            CompanyCode: { type: "string" },
-                        }
-                    }
-                },
-                pageSize: 10,
-            }),
-            pageable: {
-                //refresh: true,
-                pageSizes: true, buttonCount: 10
-            },
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            editable: false,
-            selectable: "row",
-            //selectable: "multiple",
-            toolbar: [{ template: "<input type='text' id='txtCompanyKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
-            navigatable: true,
-            height: 430,
-            // groupable: true,
-            groupable: { messages: { empty: "Custom message text" } },
-            columnMenu: true,
-            reorderable: true,
-            resizable: true,
-            columns: [
-                 { field: "CompanyCode", title: "CompanyCode", width: 80 },
-                 { field: "CompanyName", title: "CompanyName", width: 100 },
-                 { field: "Address", title: "CompanyAddress", width: 160 },
-                 { field: "LicenseNo", title: "LicenseNo", width: 80 }
-            ]
-
-        }).data('kendoGrid');
-
-        $('#CompanyWindowGrid').dblclick(function () {
-            var grid = $(this).data('kendoGrid');
-            var selectRow = grid.dataItem(grid.select());
-
-            CompanyWindow.close();
-            SetMasterData(selectRow);
-
-        });
-
-        //Company Name wise Filter table row
-        $("#txtCompanyKeyword").keyup(function () {
-            var val = $(this).val();
-            $("#CompanyWindowGrid").data("kendoGrid").dataSource.filter({
-                logic: "or",
-                filters: [
-                     { field: "CompanyCode", operator: "contains", value: val },
-                     { field: "CompanyName", operator: "contains", value: val },
-                     { field: "Address", operator: "contains", value: val },
-                ]
-            });
-        });
-
-  
-
-        //Initializing Main page details Kendo Grid Colums
-        var licenseInfoGrid = $('#LicenseInfoGrid').kendoGrid({
-            dataSource: new kendo.data.DataSource({
-                batch: true,
-                schema: {
-                    model: {
-                        id: "ID",
-                        fields: {
-                            ID: { editable: true },
-                            RevisionNo: { editable: true },
-                            SubmissionDate: { editable: false },
-                            InspectionDate: { editable: false },
-                            ApprovalDate: { editable: false },
-                            ValidUpto: { editable: false },
-                            AlarmDays: { editable: false }
-                        }
-                    }
-                },
-                pageSize: 20
-            }),
-            pageable: {
-                pageSizes: true, buttonCount: 5
-            },
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            editable: true,
-            height: 300,
-            selectable: "row",
-            toolbar: [{ template: "<input type='text' id='txtInputLicense'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
-            navigatable: true,
-            groupable: true,
-            columnMenu: true,
-            reorderable: true,
-            resizable: true,
-            columns: [
-            { field: "ID", hidden: true },
-            { field: "RevisionNo", title: "RevisionNo", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
-            { field: "SubmissionType", title: "SubmissionType", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
-            { field: "SubmissionDate", title: "SubmissionDate", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
-            { field: "InspectionDate", title: "InspectionDate", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
-            { field: "ApprovalDate", title: "ApprovalDate", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
-            { field: "ValidUpto", title: "ValidUpto", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
-            { field: "AlarmDays", title: "AlarmDays", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
-            { command: [{ name: "View", text: "View", imageClass: "fa fa-hand-o-right", click: handleView }], title: "Action", width: "120px", attributes: { "class": "btnView" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } }
-            ]
-        }).data('kendoGrid');
-        var paramModel = { "refLevel1": "", "refLevel2": "" }
-        // Download Button in Grid
-        function handleView(event) {
-            event.preventDefault();
-            var selectedRow = licenseInfoGrid.dataItem($(event.currentTarget).closest("tr"));
-
-            $.ajax({
-                url: '@Url.Action("GetFileByRefId", "GmpCertificate")',
-                type: 'GET',
-                data: { "refLevel1": selectRow.ID, "refLevel2": "" },
-                success: function (data) {
-                    $("#FileGrid").data("kendoGrid").dataSource.data(data);
-                }
-            });
-        };
-
-        $('#LicenseInfoGrid').click(function () {
-            var grid = $(this).data('kendoGrid');
-            var selectRow = grid.dataItem(grid.select());
-            paramModel.refLevel1 = selectRow.ID;
-            paramModel.refLevel2 = selectRow.RevisionNo;
-            $.ajax({
-                url: '@Url.Action("GetFileByRefId", "GmpCertificate")',
-                type: 'GET',
-                contentType: 'application/json; charset=utf-8',
-                dataType: "JSON",
-                data: { "refLevel1": selectRow.ID, "refLevel2": "" },
-                success: function (data) {
-                    $("#FileGrid").data("kendoGrid").dataSource.data(data);
-                }
-            });
-        });
-
-        $("#txtInputLicense").keyup(function () {
-            var val = $(this).val();
-            $("#LicenseInfoGrid").data("kendoGrid").dataSource.filter({
-                logic: "or",
-                filters: [
-                     { field: "RevisionNo", operator: "contains", value: val },
-                     { field: "SubmissionType", operator: "contains", value: val },
-                     { field: "SubmissionDate", operator: "contains", value: val },
-                     { field: "InspectionDate", operator: "contains", value: val },
-                     { field: "ApprovalDate", operator: "contains", value: val },
-                     { field: "ValidUpto", operator: "contains", value: val },
-                     { field: "AlarmDays", operator: "contains", value: val }
-                ]
-            });
-        });
-
-       
-
-        //Initializing Main page details Kendo Grid Colums
-        var grid = $('#FileGrid').kendoGrid({
-            dataSource: new kendo.data.DataSource({
-                batch: true,
-                schema: {
-                    model: {
-                        id: "FileID",
-                        fields: {
-                            FileID: { editable: false },
-                            FileCode: { editable: false },
-                            Extention: { editable: false },
-                            FileName: { editable: false },
-                            RefNo: { editable: false },
-                            FileSize: { editable: false },
-                            SetOn: { editable: false },
-                            SetByName: { editable: false }
-                        }
-                    }
-                },
-                pageSize: 10
-            }),
-            pageable: {
-                pageSizes: true, buttonCount: 5
-            },
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            editable: true,
-            selectable: "row",
-            toolbar: [{ template: "<input type='text' id='txtInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
-            navigatable: true,
-            groupable: true,
-            columnMenu: true,
-            reorderable: true,
-            resizable: true,
-            columns: [
-            { field: "FileID", hidden: true },
-            { field: "FileCode", hidden: true },
-            { field: "Extention", hidden: true },
-            { field: "RefNo",  title: "Document Name", width: 150, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
-            { field: "FileName", title: "File Name", width: 350, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
-            { field: "FileSize", filterable: false, title: "Size(MB)", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
-            { command: [{ name: "Download", text: "Download", imageClass: "glyphicon glyphicon-download", click: handleDownload }], title: "Download Action", width: "120px", attributes: { "class": "btnDownload" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } }
-            ]
-        }).data('kendoGrid');
-
-        $("#txtInput").keyup(function () {
-            var val = $(this).val();
-            $("#FileGrid").data("kendoGrid").dataSource.filter({
-                logic: "or",
-                filters: [
-                     { field: "RefNo", operator: "contains", value: val },
-                     { field: "FileName", operator: "contains", value: val },
-                     { field: "FileSize", operator: "contains", value: val }
-                ]
-            });
-        });
-
-        // Download Button in Grid
-        function handleDownload(event) {
-            event.preventDefault();
-            dataItemInfo = grid.dataItem($(event.currentTarget).closest("tr"));
-             window.location.href = '@Url.Action("Download", "General")' + '?path=' + dataItemInfo.FileCode + dataItemInfo.Extention + '&fileName=' + dataItemInfo.FileName + '&fileId=' + dataItemInfo.FileID;
-        };
-
-        $('#btnSearch').click(function () {
-            var checkInput = 0;
-            if (checkInput == 0) {
-                model.CompanyCode = $('#CompanyCode').val();              
-                model.SubmissionType = $('#SubmissionType').val();
-                model.SearchType = $('#SearchType').val();
-             
-                $.ajax({
-                    url: '@Url.Action("GetReportInfoByParams", "GmpCertificate")',
-                    data: JSON.stringify(model),
-                    type: 'POST',
-                    contentType: 'application/json;',
-                    dataType: 'json',
-                    success: function (data) {
-                        $("#LicenseInfoGrid").data().kendoGrid.bind('dataBound', function (e) {
-                            this.element.find('tbody tr:first').addClass('k-state-selected');
-                        });
-                        $("#LicenseInfoGrid").data("kendoGrid").dataSource.data(data.dataMaster);
-                        $("#FileGrid").data("kendoGrid").dataSource.data(data.dataLevel1);
-                    }
-                }); //End of ajax call
-            }
-            else {
-                ValidationMsg();
-            }
-
-        });
-        var model = { "CompanyCode": "","AlarmDays":"", "LicenseNo": "", "SubmissionType": "", "FromDate": "", "ToDate": "" };
-        var dataItemInfo = {};
-
-    });
-
-</script>
+        </script>

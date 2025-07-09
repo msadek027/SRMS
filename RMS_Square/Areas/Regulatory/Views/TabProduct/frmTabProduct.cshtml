@@ -35,6 +35,8 @@
     }
     // ✅ Open modal with content from tab ID and set values if saved
     function openTabModal(tabId, title) {
+
+        debugger;
         currentTabId = tabId;
 
         // Clone live DOM to preserve form values
@@ -77,6 +79,8 @@
                         options.push('<option  value="">--Select Any--</option>');
                         options.push('<option  value="Local Document">Local Document</option>');
                         options.push('<option  value="DCC Document">DCC Document</option>');
+                        options.push('<option  value="BCC Reference Document"">BCC Reference Document</option>');
+                        options.push('<option  value="Technical Document">Technical Document</option>');             
                         options.push('<option  value="Import Document">Import Document</option>');
                         options.push('<option  value="Approval Document">Approval Document</option>');
                         options.push('<option  value="Inspection Document">Inspection Document</option>');
@@ -87,6 +91,8 @@
                         options.push('<option  value="">--Select Any--</option>');
                         options.push('<option  value="Local Document">Local Document</option>');
                         options.push('<option  value="DCC Document">DCC Document</option>');
+                        options.push('<option  value="BCC Reference Document"">BCC Reference Document</option>');
+                        options.push('<option  value="Technical Document">Technical Document</option>');
                         options.push('<option  value="Import Document">Import Document</option>');
                         $("#Tab2RefNoTab").html(options.join(''));
                         break;
@@ -293,12 +299,6 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-
-      //  CheckUnSavedDataTab2();
-      
-   
- 
-
         $('.input-group.date').datepicker({
             format: "d/mm/yyyy",//dd M yyyy
             // daysOfWeekDisabled: "5,6",
@@ -307,77 +307,88 @@
             //,todayBtn: true,
         });
         debugger;
-        var activeTabIndex = 0; // Default to the first tab
-        var activeTabIndexId = 'tabs-1'; // Default to the first tab
-        var ButtonEvent = ''; // Declare ButtonEvent as a global variable
-        var ButtonEventId = ''; // Declare ButtonEvent as a global variable
-        // Retrieve the active tab index from sessionStorage
+        var activeTabIndex = 0;
+        var ButtonEvent = '';
+        var ButtonEventId = '';
+
+        // 🔁 Retrieve last selected tab label & ID from sessionStorage
+        var storedButtonEvent = sessionStorage.getItem('keyOption') || "Product Info";
+        var storedButtonEventId = sessionStorage.getItem('keyOptionId') || "tabs-1";
+
+        // Update global variables
+        ButtonEvent = storedButtonEvent;
+        ButtonEventId = storedButtonEventId;
+
+        // Try to retrieve stored tab index
         if (sessionStorage.getItem('activeTabIndex') !== null) {
             activeTabIndex = parseInt(sessionStorage.getItem('activeTabIndex'), 10);
-            activeTabIndexId = sessionStorage.getItem('activeTabId');
         }
 
-        // Handle specific tab options stored in sessionStorage
-        var keyOption = sessionStorage.getItem('keyOption');
-        var keyOptionId = sessionStorage.getItem('keyOptionId');
-        if (keyOption === "Entry License Info") {
-            activeTabIndex = 0; // EmpContactAddress tab
-            activeTabIndexId = 'tabs-1';
-        }
-
-        // Initialize the jQuery UI tabs widget
+        // 🔧 Initialize jQuery UI Tabs
         $('#tabs').tabs({
             active: activeTabIndex,
             activate: function (event, ui) {
-                // Save the active tab index in sessionStorage when the tab changes
+                // 📦 Get new tab index and ID
                 var newActiveTabIndex = $('#tabs').tabs("option", "active");
-
                 var newActiveTabIndexId = $('#tabs > div').eq(newActiveTabIndex).attr('id');
+
+                // 📦 Get new tab label
+                var activeTabText = $("#btnList li:nth-child(" + (newActiveTabIndex + 1) + ") a").text();
+                var matchingAnchor = $("#btnList a").filter(function () {
+                    return $(this).text().trim() === activeTabText;
+                });
+
+                // Get the href (e.g., "#tabs-1"), then extract the ID
+                var tabHref = matchingAnchor.attr("href"); // e.g., "#tabs-1"
+                var tabId = tabHref ? tabHref.replace('#', '') : null;
+
+
+                // 💾 Store updated values in sessionStorage
                 sessionStorage.setItem('activeTabIndex', newActiveTabIndex);
                 sessionStorage.setItem('activeTabId', newActiveTabIndexId);
-                // Update ButtonEvent and call GetView for the active tab
-                var activeTabText = $("#btnList li:nth-child(" + (newActiveTabIndex + 1) + ") a").text();
-                sessionStorage.setItem('keyOption', activeTabText); // Store the active tab's text
-                ButtonEvent = activeTabText; // Update the global variable
+
+                sessionStorage.setItem('keyOption', activeTabText);
+                sessionStorage.setItem('keyOptionId', tabId);
+
+                // 🔁 Update global variables
+                ButtonEvent = activeTabText;
                 ButtonEventId = newActiveTabIndexId;
+
+                // 📡 Load tab content
                 GetView($('#CompanyCode').val(), ButtonEvent);
+                CheckPagePartAccessPrivilegeTab($('#CompanyCode').val(), ButtonEvent, "");
 
-                CheckPagePartAccessPrivilegeTab($('#CompanyCode').val(), ButtonEvent,"");
-
-                // Highlight the active tab by adding the class and removing it from others
+                // 🖍️ Highlight the active tab
                 $("#btnList li").removeClass('active-tab');
                 $("#btnList li:nth-child(" + (newActiveTabIndex + 1) + ")").addClass('active-tab');
             }
         });
 
-        // Populate fields with stored session data
+        // 🧾 Populate fields from sessionStorage
         $('#CompanyCode').val(sessionStorage.getItem('keyCompanyCode'));
 
-
-        // Initial content loading for the current tab
-        var initialButtonEvent = sessionStorage.getItem('keyOption') || "Entry License Info";
-        ButtonEvent = initialButtonEvent; // Initialize ButtonEvent
-        var initialButtonEventId = sessionStorage.getItem('keyOptionId') || "tabs-1";
-        ButtonEvent = initialButtonEvent; // Initialize ButtonEvent
-        ButtonEventId = initialButtonEventId; // Initialize ButtonEvent
+        // 📡 Initial content loading (after everything initialized)
         GetView($('#CompanyCode').val(), ButtonEvent);
 
-        // Mark the initially active tab
+        // 🖍️ Mark the initially active tab
         $("#btnList li").removeClass('active-tab');
         $("#btnList li:nth-child(" + (activeTabIndex + 1) + ")").addClass('active-tab');
 
-        // Tab click handler to update ButtonEvent and fetch content
+        // 🖱️ Manual tab click handler (in case user clicks tab header list)
         $("#btnList li").click(function () {
-            ButtonEvent = $(this).text(); // Update the global variable
-            const tabHref = $(this).find('a').attr('href'); // e.g., "#tabs-1"
-            const tabId = tabHref.replace('#', '');
-            ButtonEventId=tabId;
+            ButtonEvent = $(this).text();
+            var tabHref = $(this).find('a').attr('href'); // e.g., "#tabs-1"
+            var tabId = tabHref.replace('#', '');
+            ButtonEventId = tabId;
+
+            // 📡 Load tab content again for this click
             GetView($('#CompanyCode').val(), ButtonEvent);
 
-            // Highlight the clicked tab
+            // 🖍️ Highlight clicked tab
             $("#btnList li").removeClass('active-tab');
             $(this).addClass('active-tab');
         });
+
 
 
         function GetView(CompanyCode, ButtonEvent) {
@@ -492,6 +503,7 @@
             }
         }
         $('#btnViewMode').click(function () {
+            debugger;
             openTabModal(ButtonEventId, ButtonEvent);
         });
         $('#btnSearch').click(function () {
@@ -2018,8 +2030,8 @@
             var Tab4FindAnnexureBtn = $(this).data('kendoGrid');
             var selectRow = Tab4FindAnnexureBtn.dataItem(Tab4FindAnnexureBtn.select());
             Tab4FindAnnexureBtn_PopupWindow.close();
-            SetMasterData(selectRow);
-            changeAny = 1;
+            SetMasterDataTab(selectRow,'Tab4');
+       
         });
 
         //Annexure Name wise Filter table row
@@ -3084,13 +3096,13 @@
                     <div id="tabs-2">
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-sm-2">Recipe No :</div>
-                                <div class="col-sm-2"><input type="text" id="Tab2SlNo" name="Tab2SlNo" class="form-control" placeholder="Auto" readonly /></div>
+                                <div class="col-md-2">Recipe No :</div>
+                                <div class="col-md-2"><input type="text" id="Tab2SlNo" name="Tab2SlNo" class="form-control" placeholder="Auto" readonly /></div>
                                 <input type="hidden" id="Tab2ID" name="Tab2ID" class="txtBox" />
-                                <div class="col-sm-1"></div>
-                                <div class="col-sm-2">Revision No :</div>
-                                <div class="col-sm-2"><input type="text" id="Tab2RevisionNo" name="Tab2RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
-                                <div class="col-sm-3">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-2">Revision No :</div>
+                                <div class="col-md-2"><input type="text" id="Tab2RevisionNo" name="Tab2RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
+                                <div class="col-md-3">
                                     <button id="btnRevisionTab2" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Add Revision</button>
                                 </div>
                             </div>
@@ -3101,29 +3113,29 @@
                                 <legend class="panel-border">Product Information :</legend>
                                 <div class="form-group">
                                     <div class="row">
-                                        <div class="col-sm-2">Product Code<span style="color: red">*</span> : </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-md-2">Product Code<span style="color: red">*</span> : </div>
+                                        <div class="col-md-2">
                                             <input type="text" id="Tab2ProductCode" name="Tab2ProductCode" class="form-control txtBox" readonly />
                                         </div>
-                                        <div class="col-sm-1"><button id="btnFindProduct" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
-                                        <div class="col-sm-0"></div>
-                                        <div class="col-sm-2">PackSize:</div>
-                                        <div class="col-sm-5"><input type="text" id="Tab2PackSizeName" name="Tab2PackSizeName" class="form-control" readonly /></div>
+                                        <div class="col-md-1"><button id="btnFindProduct" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+                                   
+                                        <div class="col-md-2">&nbsp;&nbsp; PackSize:</div>
+                                        <div class="col-md-5"><input type="text" id="Tab2PackSizeName" name="Tab2PackSizeName" class="form-control" readonly /></div>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="row">
-                                        <div class="col-sm-2">
+                                        <div class="col-md-2">
                                             Product Specification :
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-md-2">
                                             <input type="text" id="Tab2ProductSpecification" name="Tab2ProductSpecification" class="form-control txtBox" readonly />
                                         </div>
-                                        <div class="col-sm-3">Introduced in Bangladesh : </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-md-3">Introduced in Bangladesh : </div>
+                                        <div class="col-md-2">
                                             <input type="text" id="Tab2IntroducedInBD" name="Tab2IntroducedInBD" class="form-control txtBox" readonly />
                                         </div>
-                                        <div class="col-sm-1">SAP Code</div>
+                                        <div class="col-md-1">SAP Code</div>
                                         <div class="col-sm-2"><input type="text" id="Tab2SAPProductCode" name="Tab2SAPProductCode" class="form-control" readonly /></div>
                                     </div>
                                 </div>
@@ -3143,16 +3155,16 @@
                         </div>
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-sm-1"></div>
-                                <div class="col-sm-2">Submission Type :</div>
-                                <div class="col-sm-3">
+                             
+                                <div class="col-md-3">Submission Type :</div>
+                                <div class="col-md-3">
                                     <select class="form-control txtBox" id="Tab2MeetingType">
                                         <option selected="selected" value="Local">Local</option>
                                         <option value="DCC">DCC</option>
                                     </select>
                                 </div>
-                                <div class="col-sm-2">Manufacturing Type :</div>
-                                <div class="col-sm-3">
+                                <div class="col-md-3">Manufacturing Type :</div>
+                                <div class="col-md-3">
                                     <select class="form-control txtBox" id="Tab2ManufacturerType">
                                         <option selected="selected" value="Local">Local</option>
                                         <option value="Import">Import</option>
@@ -3359,13 +3371,13 @@
                                     <fieldset class="panel-border">
                                         <legend class="panel-border">Upload Documents :</legend>
                                         <div class="row">
-                                            <div class="col-sm-2">
-                                                Document Name<span style="color: red">*</span>:
+                                            <div class="col-md-3">
+                                                Document Name:<span style="color: red">*</span>:
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div class="col-md-3">
                                                 <select id="Tab2RefNoTab" class="form-control txtBox" tabindex="" name="Tab2RefNoTab"></select>
                                             </div>
-                                            <div class="col-sm-4">
+                                            <div class="col-md-4">
                                                 <input type="file" class="txtBox" id="Tab2UploadFile" name="Tab2UploadFile" />
                                                 <i class="glyphicon glyphicon-upload form-control-feedback"></i>
                                             </div>
@@ -3399,34 +3411,40 @@
                     <div id="tabs-3">
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-sm-2">Recipe No<span style="color: red">*</span> :</div>
-                                <div class="col-sm-2"><input type="text" id="Tab3SlNo" name="Tab3SlNo" class="form-control" placeholder="Get from Find" readonly /></div>
+                                <div class="col-md-2">Recipe No<span style="color: red">*</span> :</div>
+                                <div class="col-md-3"><input type="text" id="Tab3SlNo" name="Tab3SlNo" class="form-control" placeholder="Get from Find" readonly /></div>
                                 <input type="hidden" id="Tab3RecipeId" name="Tab3RecipeId" class="txtBox" />
-                                <div class="col-sm-1"><button id="btnFindRecipeTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
-                                <div class="col-sm-1">Annex No:</div>
-                                <div class="col-sm-2"><input type="text" id="Tab3AnnexureNo" name="Tab3AnnexureNo" placeholder="Auto" class="form-control" readonly /></div>
+                                <div class="col-md-2"><button id="btnFindRecipeTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+                                <div class="col-md-2">Annex No:</div>
+                                <div class="col-md-3"><input type="text" id="Tab3AnnexureNo" name="Tab3AnnexureNo" placeholder="Auto" class="form-control" readonly /></div>
                                 <input type="hidden" id="Tab3AnnexId" name="Tab3AnnexId" class="txtBox" />
-                                <div class="col-sm-2">Revision No :</div>
-                                <div class="col-sm-2"><input type="text" id="Tab3AnnexRevisionNo" name="Tab3AnnexRevisionNo" placeholder="Auto" class="form-control" readonly /></div>
-
+                              
                             </div>
                         </div>
 
-                        <div class="form-group">
+                    
                             <div class="row">
-                                <div class="col-sm-4"> </div>
-                                <div class="col-sm-2">Record Status :</div>
-                                <div class="col-sm-3">
+                                <div class="col-md-2">Revision No :</div>
+                                <div class="col-md-3"><input type="text" id="Tab3AnnexRevisionNo" name="Tab3AnnexRevisionNo" placeholder="Auto" class="form-control" readonly /></div>
+                                <div class="col-md-2"></div>
+                                <div class="col-md-2">Record Status :</div>
+                                <div class="col-md-3">
                                     <select id="Tab3StateStatus" class="form-control txtBox" tabindex="" name="Tab3StateStatus"></select>
                                 </div>
-                                <div class="col-sm-2">
+                             
+                                
+                            </div>
+                      
+                      
+                            <div class="row">
+                                <div class="col-md-9"></div>
+                             
+                                <div class="col-md-3">
                                     <button id="btnRevisionTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew/Amendment</button>
                                 </div>
-                                <div class="col-sm-1"></div>
+
                             </div>
-                        </div>
-
-
+                      
                         <div class="form-group">
                             <fieldset class="panel-border">
                                 <legend class="panel-border">Product Information :</legend>
@@ -3623,18 +3641,17 @@
                                     <fieldset class="panel-border">
                                         <legend class="panel-border">Upload Documents :</legend>
                                         <div class="row">
-                                            <div class="col-sm-2">
-                                                Document Name<span style="color: red">*</span>:
+                                            <div class="col-md-3">
+                                                Document Name:<span style="color: red">*</span>:
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div class="col-md-3">
                                                 <select id="Tab3RefNo" class="form-control txtBox" tabindex="" name="Tab3RefNo"></select>
                                             </div>
-                                            <div class="col-sm-4">
+                                            <div class="col-md-4">
                                                 <input type="file" class="txtBox" id="Tab3UploadFile" name="Tab3UploadFile" />
                                                 <i class="glyphicon glyphicon-upload form-control-feedback"></i>
                                             </div>
-                                            <div class="col-sm-3">
-                                            </div>
+                                         
                                         </div>
                                         <div class="row">
                                             <br />
@@ -3877,6 +3894,23 @@
 
 
                     <div id="tabs-5">
+
+                        <div class="row">
+                            <div class="col-md-2">Revision No :</div>
+                            <div class="col-md-2"><input type="text" id="Tab3AnnexRevisionNo" name="Tab3AnnexRevisionNo" placeholder="Auto" class="form-control" readonly /></div>
+                        
+                            <div class="col-md-2">Record Status :</div>
+                            <div class="col-md-3">
+                                <select id="Tab3StateStatus" class="form-control txtBox" tabindex="" name="Tab3StateStatus"></select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <button id="btnRevisionTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew/Amendment</button>
+                            </div>
+                        </div>
+
+
+                    
 
                         <div class="row">
                             <div class="col-sm-12">
