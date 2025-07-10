@@ -37,7 +37,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                     RefNo = model.RevisionNo;
                     IUMode = "U";
                     query.Append(" UPDATE COMPANY_LICENSE SET COMPANY_CODE='" + model.CompanyCode + "', LICENSE_NO='" + model.LicenseNo + "',SUBMISSION_TYPE='" + model.SubmissionType + "',");
-                    query.Append(" SUBMISSION_DATE =(TO_DATE('" + model.SubmissionDate + "','dd/MM/yyyy')), INSPECTION_DATE =(TO_DATE('" + model.InspectionDate + "','dd/MM/yyyy')),");
+                    query.Append(" SUBMISSION_DATE =(TO_DATE('" + model.SubmissionDate + "','dd/MM/yyyy')), INSPECTION_DATE =(TO_DATE('" + model.InspectionDate + "','dd/MM/yyyy')),POST_INSPECTION_DATE =(TO_DATE('" + model.PostInspectionDate + "','dd/MM/yyyy')),");
                     query.Append(" VALID_UPTO =(TO_DATE('" + model.ValidUpto + "','dd/MM/yyyy')), APPROVAL_DATE =(TO_DATE('" + model.ApprovalDate + "','dd/MM/yyyy')), NOTIFICATION_DAYS ='" + model.AlarmDays + "',");
                     query.Append(" UPDATE_DATE =(TO_DATE('" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") + "','dd/MM/yyyy HH24:mi:ss')),UPDATE_BY='" + userId + "'");
                     query.Append(" WHERE CLID='" + model.CLID + "'");
@@ -59,8 +59,8 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                     }
                     
                     IUMode = "I";
-                    query.Append(" INSERT INTO COMPANY_LICENSE(CLID,COMP_LICENSE_SLNO,COMPANY_CODE,LICENSE_NO,REVISION_NO,SUBMISSION_TYPE,SUBMISSION_DATE,INSPECTION_DATE,VALID_UPTO,APPROVAL_DATE,NOTIFICATION_DAYS,SET_BY,SET_ON,IS_DELETE) ");
-                    query.Append(" VALUES( '" + ReturnMaxID + "','" + MaxID + "','" + model.CompanyCode + "','" + model.LicenseNo + "','" + RefNo + "','" + model.SubmissionType + "',(TO_DATE('" + model.SubmissionDate + "','dd/MM/yyyy')),(TO_DATE('" + model.InspectionDate + "','dd/MM/yyyy')),(TO_DATE('" + model.ValidUpto + "','dd/MM/yyyy')),(TO_DATE('" + model.ApprovalDate + "','dd/MM/yyyy')),");
+                    query.Append(" INSERT INTO COMPANY_LICENSE(CLID,COMP_LICENSE_SLNO,COMPANY_CODE,LICENSE_NO,REVISION_NO,SUBMISSION_TYPE,SUBMISSION_DATE,POST_INSPECTION_DATE,INSPECTION_DATE,VALID_UPTO,APPROVAL_DATE,NOTIFICATION_DAYS,SET_BY,SET_ON,IS_DELETE) ");
+                    query.Append(" VALUES( '" + ReturnMaxID + "','" + MaxID + "','" + model.CompanyCode + "','" + model.LicenseNo + "','" + RefNo + "','" + model.SubmissionType + "',(TO_DATE('" + model.SubmissionDate + "','dd/MM/yyyy')),(TO_DATE('" + model.PostInspectionDate + "','dd/MM/yyyy')),(TO_DATE('" + model.InspectionDate + "','dd/MM/yyyy')),(TO_DATE('" + model.ValidUpto + "','dd/MM/yyyy')),(TO_DATE('" + model.ApprovalDate + "','dd/MM/yyyy')),");
                     query.Append(" '" + model.AlarmDays + "','" + userId + "',(TO_DATE('" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") + "','dd/MM/yyyy HH24:mi:ss'))");
                     query.Append(" ,'N')");
                 }
@@ -83,7 +83,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
         {
             var query = new StringBuilder();
             query.Append(" SELECT CL.CLID, CL.COMP_LICENSE_SLNO,CL.REVISION_NO,CL.COMPANY_CODE,CL.LICENSE_NO,CL.SUBMISSION_TYPE,TO_CHAR(CL.SUBMISSION_DATE, 'dd/mm/yyyy')SUBMISSION_DATE ,");
-            query.Append(" TO_CHAR(CL.INSPECTION_DATE, 'dd/mm/yyyy')INSPECTION_DATE,TO_CHAR(CL.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO,TO_CHAR(CL.APPROVAL_DATE, 'dd/mm/yyyy')APPROVAL_DATE,CL.NOTIFICATION_DAYS,TO_CHAR(CL.SET_ON, 'dd/mm/yyyy')SET_ON,");
+            query.Append(" TO_CHAR(CL.POST_INSPECTION_DATE, 'dd/mm/yyyy') POST_INSPECTION_DATE,TO_CHAR(CL.INSPECTION_DATE, 'dd/mm/yyyy')INSPECTION_DATE,TO_CHAR(CL.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO,TO_CHAR(CL.APPROVAL_DATE, 'dd/mm/yyyy')APPROVAL_DATE,CL.NOTIFICATION_DAYS,TO_CHAR(CL.SET_ON, 'dd/mm/yyyy')SET_ON,");
             query.Append(" C.COMPANY_NAME,C.ADDRESS");
             query.Append(" FROM COMPANY_LICENSE CL");
             query.Append(" LEFT JOIN  COMPANY_INFO C ON C.COMPANY_CODE=CL.COMPANY_CODE");
@@ -126,6 +126,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                             LicenseNo = row["LICENSE_NO"].ToString(),
                             SubmissionType = row["SUBMISSION_TYPE"].ToString(),
                             SubmissionDate = row["SUBMISSION_DATE"].ToString(),
+                            PostInspectionDate = row["POST_INSPECTION_DATE"].ToString(),
                             InspectionDate = row["INSPECTION_DATE"].ToString(),
                             ValidUpto = row["VALID_UPTO"].ToString(),
                             ApprovalDate = row["APPROVAL_DATE"].ToString(),
@@ -139,7 +140,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
         {
             var query = new StringBuilder();
             query.Append(" SELECT CL.CLID, CL.COMP_LICENSE_SLNO,CL.REVISION_NO,CL.COMPANY_CODE,CL.LICENSE_NO,CL.SUBMISSION_TYPE,TO_CHAR(CL.SUBMISSION_DATE, 'dd/mm/yyyy')SUBMISSION_DATE ,");
-            query.Append(" TO_CHAR(CL.INSPECTION_DATE, 'dd/mm/yyyy')INSPECTION_DATE,TO_CHAR(CL.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO,TO_CHAR(CL.APPROVAL_DATE, 'dd/mm/yyyy')APPROVAL_DATE,CL.NOTIFICATION_DAYS,TO_CHAR(CL.SET_ON, 'dd/mm/yyyy')SET_ON,");
+            query.Append(" TO_CHAR(CL.POST_INSPECTION_DATE, 'dd/mm/yyyy') POST_INSPECTION_DATE,TO_CHAR(CL.INSPECTION_DATE, 'dd/mm/yyyy')INSPECTION_DATE,TO_CHAR(CL.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO,TO_CHAR(CL.APPROVAL_DATE, 'dd/mm/yyyy')APPROVAL_DATE,CL.NOTIFICATION_DAYS,TO_CHAR(CL.SET_ON, 'dd/mm/yyyy')SET_ON,");
             query.Append(" C.COMPANY_NAME,C.ADDRESS");
             query.Append(" FROM COMPANY_LICENSE CL");
             query.Append(" LEFT JOIN  COMPANY_INFO C ON C.COMPANY_CODE=CL.COMPANY_CODE");
@@ -183,6 +184,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                             LicenseNo = row["LICENSE_NO"].ToString(),
                             SubmissionType = row["SUBMISSION_TYPE"].ToString(),
                             SubmissionDate = row["SUBMISSION_DATE"].ToString(),
+                            PostInspectionDate = row["POST_INSPECTION_DATE"].ToString(),
                             InspectionDate = row["INSPECTION_DATE"].ToString(),
                             ValidUpto = row["VALID_UPTO"].ToString(),
                             ApprovalDate = row["APPROVAL_DATE"].ToString(),
@@ -196,7 +198,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
         {
             var query = new StringBuilder();
             query.Append(" SELECT CL.CLID, CL.COMP_LICENSE_SLNO,CL.REVISION_NO,CL.COMPANY_CODE,CL.LICENSE_NO,CL.SUBMISSION_TYPE,TO_CHAR(CL.SUBMISSION_DATE, 'dd/mm/yyyy')SUBMISSION_DATE ,");
-            query.Append(" TO_CHAR(CL.INSPECTION_DATE, 'dd/mm/yyyy')INSPECTION_DATE,TO_CHAR(CL.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO,TO_CHAR(CL.APPROVAL_DATE, 'dd/mm/yyyy')APPROVAL_DATE,CL.NOTIFICATION_DAYS,TO_CHAR(CL.SET_ON, 'dd/mm/yyyy')SET_ON,");
+            query.Append(" TO_CHAR(CL.POST_INSPECTION_DATE, 'dd/mm/yyyy') POST_INSPECTION_DATE,TO_CHAR(CL.INSPECTION_DATE, 'dd/mm/yyyy')INSPECTION_DATE,TO_CHAR(CL.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO,TO_CHAR(CL.APPROVAL_DATE, 'dd/mm/yyyy')APPROVAL_DATE,CL.NOTIFICATION_DAYS,TO_CHAR(CL.SET_ON, 'dd/mm/yyyy')SET_ON,");
             query.Append(" C.COMPANY_NAME,C.ADDRESS");
             query.Append(" FROM COMPANY_LICENSE CL");
             query.Append(" LEFT JOIN  COMPANY_INFO C ON C.COMPANY_CODE=CL.COMPANY_CODE");
@@ -245,6 +247,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                             LicenseNo = row["LICENSE_NO"].ToString(),
                             SubmissionType = row["SUBMISSION_TYPE"].ToString(),
                             SubmissionDate = row["SUBMISSION_DATE"].ToString(),
+                            PostInspectionDate = row["POST_INSPECTION_DATE"].ToString(),
                             InspectionDate = row["INSPECTION_DATE"].ToString(),
                             ValidUpto = row["VALID_UPTO"].ToString(),
                             ApprovalDate = row["APPROVAL_DATE"].ToString(),
@@ -259,7 +262,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             var query = new StringBuilder();
             query.Append(" SELECT A.CLID, A.COMP_LICENSE_SLNO,A.REVISION_NO,A.COMPANY_CODE,A.LICENSE_NO,A.SUBMISSION_TYPE,A.SUBMISSION_DATE ,");
             query.Append(" ROUND(((NVL(A.VALID_UPTO, TO_DATE('12/31/2099', 'mm/dd/yyyy')))-(SELECT  SYSDATE FROM DUAL)),0)DateDiff,");
-            query.Append(" A.INSPECTION_DATE,TO_CHAR(A.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO,A.APPROVAL_DATE,A.NOTIFICATION_DAYS,A.SET_ON, A.COMPANY_NAME,A.ADDRESS FROM");
+            query.Append(" A.POST_INSPECTION_DATE,A.INSPECTION_DATE,TO_CHAR(A.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO,A.APPROVAL_DATE,A.NOTIFICATION_DAYS,A.SET_ON, A.COMPANY_NAME,A.ADDRESS FROM");
             query.Append(" ( SELECT CL.CLID, CL.COMP_LICENSE_SLNO,CL.REVISION_NO,CL.COMPANY_CODE,CL.LICENSE_NO,CL.SUBMISSION_TYPE,");
             query.Append(" TO_CHAR(CL.SUBMISSION_DATE, 'dd/mm/yyyy')SUBMISSION_DATE , TO_CHAR(CL.INSPECTION_DATE, 'dd/mm/yyyy')INSPECTION_DATE,CL.VALID_UPTO,");
             query.Append(" TO_CHAR(CL.APPROVAL_DATE, 'dd/mm/yyyy')APPROVAL_DATE,CL.NOTIFICATION_DAYS,TO_CHAR(CL.SET_ON, 'dd/mm/yyyy')SET_ON, C.COMPANY_NAME,C.ADDRESS");
@@ -309,6 +312,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                             LicenseNo = row["LICENSE_NO"].ToString(),
                             SubmissionType = row["SUBMISSION_TYPE"].ToString(),
                             SubmissionDate = row["SUBMISSION_DATE"].ToString(),
+                            PostInspectionDate = row["POST_INSPECTION_DATE"].ToString(),
                             InspectionDate = row["INSPECTION_DATE"].ToString(),
                             ValidUpto = row["VALID_UPTO"].ToString(),
                             ApprovalDate = row["APPROVAL_DATE"].ToString(),

@@ -16,6 +16,42 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
         DBConnection dbConn = new DBConnection();
         DBHelper dbHelper = new DBHelper();
         IDGenerated idGenerated = new IDGenerated();
+        public List<ProductInfoBEL> GetTabProductList(string companyCode)
+        {
+            string Qry = @"SELECT D.PRICE_PER_UNIT, P.PRODUCT_CODE,PR.DAR_NO,C.COMPANY_CODE,C.COMPANY_NAME,C.LICENSE_NO, P.SAP_PRODUCT_CODE,P.GENERIC_CODE,P.BRAND_NAME,P.PACK_SIZE_NAME
+                        FROM PRODUCT_PRICE D 
+                        LEFT JOIN  PRODUCT_REGISTRATION_INFO PR ON PR.ANNEX_ID=D.ANNEX_ID 
+                        LEFT JOIN  RECIPE_INFO R ON R.ID=PR.RECIPE_ID 
+                        LEFT JOIN  COMPANY_INFO C ON C.COMPANY_CODE=R.COMPANY_CODE 
+                        LEFT JOIN  PRODUCT_INFO P ON P.PRODUCT_CODE=R.PRODUCT_CODE 
+                        LEFT JOIN  DOSAGE_FORM_INFO DF ON DF.DOSAGE_FORM_CODE=P.DOSAGE_FORM_CODE 
+                        WHERE D.IS_DELETE <>'Y'  AND P.STATUS = 'Active'";
+
+            if (!string.IsNullOrEmpty(companyCode))
+            {
+                Qry = Qry + " AND C.COMPANY_CODE='" + companyCode + "' ";
+            }
+            Qry = Qry + " ORDER BY PR.DAR_NO DESC";
+            DataTable dt = dbHelper.GetDataTable(dbConn.SAConnStrReader(), Qry);
+            List<ProductInfoBEL> item;
+
+            item = (from DataRow row in dt.Rows
+                    select new ProductInfoBEL
+                    {
+                        ProductCode = row["PRODUCT_CODE"].ToString(),
+                        SAPProductCode = row["SAP_PRODUCT_CODE"].ToString(),
+                        GenericCode = row["GENERIC_CODE"].ToString(),
+                        GenAndStrength = row["GENERIC_CODE"].ToString(),
+                        Price = row["PRICE_PER_UNIT"].ToString(),
+                        DarNo = row["DAR_NO"].ToString(),
+                        BrandName = row["BRAND_NAME"].ToString(),
+                        CompanyCode = row["COMPANY_CODE"].ToString(),
+                        CompanyName = row["COMPANY_NAME"].ToString(),
+                   
+
+                    }).ToList();
+            return item;
+        }
         public List<ProductInfoBEL> GetProductList(string companyCode)
         {
             string Qry = "SELECT C.COMPANY_CODE,C.COMPANY_NAME,C.LICENSE_NO, P.PRODUCT_CODE,P.SAP_PRODUCT_CODE,P.GENERIC_CODE ,P.STRENGTH_CODE,S.STRENGTH_NAME,P.DOSAGE_FORM_CODE,D.DOSAGE_FORM_NAME,P.PACK_SIZE_NAME," +

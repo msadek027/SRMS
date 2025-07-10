@@ -34,7 +34,6 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string Remarks { get; set; }
         public string YearMonth { get; set; }
 
-       // public string SapProductCode { get; set; }
         public string GenericStrength { get; set; }
         public string DosageForm { get; set; }
         public string PackSize { get; set; }
@@ -48,5 +47,7 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string Type { get; set; }
 
         public string Year { get; set; }
+
+        public string Price { get; set; }
     }
 }

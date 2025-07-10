@@ -64,7 +64,15 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             var data = primaryDAO.GetProductList(companyCode);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
+        public ActionResult GetTabProduct(string companyCode)
+        {
 
+            var listData = primaryDAO.GetTabProductList(companyCode);
+            var data = Json(listData, JsonRequestBehavior.AllowGet);
+            data.MaxJsonLength = int.MaxValue;
+            return data;
+        }
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult GetProductFromAnnex(string companyCode)
         {

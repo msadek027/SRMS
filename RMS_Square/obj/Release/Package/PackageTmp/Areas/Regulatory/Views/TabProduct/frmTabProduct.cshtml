@@ -79,6 +79,8 @@
                         options.push('<option  value="">--Select Any--</option>');
                         options.push('<option  value="Local Document">Local Document</option>');
                         options.push('<option  value="DCC Document">DCC Document</option>');
+                        options.push('<option  value="BCC Reference Document"">BCC Reference Document</option>');
+                        options.push('<option  value="Technical Document">Technical Document</option>');             
                         options.push('<option  value="Import Document">Import Document</option>');
                         options.push('<option  value="Approval Document">Approval Document</option>');
                         options.push('<option  value="Inspection Document">Inspection Document</option>');
@@ -89,6 +91,8 @@
                         options.push('<option  value="">--Select Any--</option>');
                         options.push('<option  value="Local Document">Local Document</option>');
                         options.push('<option  value="DCC Document">DCC Document</option>');
+                        options.push('<option  value="BCC Reference Document"">BCC Reference Document</option>');
+                        options.push('<option  value="Technical Document">Technical Document</option>');
                         options.push('<option  value="Import Document">Import Document</option>');
                         $("#Tab2RefNoTab").html(options.join(''));
                         break;
@@ -2026,8 +2030,8 @@
             var Tab4FindAnnexureBtn = $(this).data('kendoGrid');
             var selectRow = Tab4FindAnnexureBtn.dataItem(Tab4FindAnnexureBtn.select());
             Tab4FindAnnexureBtn_PopupWindow.close();
-            SetMasterData(selectRow);
-            changeAny = 1;
+            SetMasterDataTab(selectRow,'Tab4');
+       
         });
 
         //Annexure Name wise Filter table row
@@ -3092,13 +3096,13 @@
                     <div id="tabs-2">
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-sm-2">Recipe No :</div>
-                                <div class="col-sm-2"><input type="text" id="Tab2SlNo" name="Tab2SlNo" class="form-control" placeholder="Auto" readonly /></div>
+                                <div class="col-md-2">Recipe No :</div>
+                                <div class="col-md-2"><input type="text" id="Tab2SlNo" name="Tab2SlNo" class="form-control" placeholder="Auto" readonly /></div>
                                 <input type="hidden" id="Tab2ID" name="Tab2ID" class="txtBox" />
-                                <div class="col-sm-1"></div>
-                                <div class="col-sm-2">Revision No :</div>
-                                <div class="col-sm-2"><input type="text" id="Tab2RevisionNo" name="Tab2RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
-                                <div class="col-sm-3">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-2">Revision No :</div>
+                                <div class="col-md-2"><input type="text" id="Tab2RevisionNo" name="Tab2RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
+                                <div class="col-md-3">
                                     <button id="btnRevisionTab2" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Add Revision</button>
                                 </div>
                             </div>
@@ -3109,29 +3113,29 @@
                                 <legend class="panel-border">Product Information :</legend>
                                 <div class="form-group">
                                     <div class="row">
-                                        <div class="col-sm-2">Product Code<span style="color: red">*</span> : </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-md-2">Product Code<span style="color: red">*</span> : </div>
+                                        <div class="col-md-2">
                                             <input type="text" id="Tab2ProductCode" name="Tab2ProductCode" class="form-control txtBox" readonly />
                                         </div>
-                                        <div class="col-sm-1"><button id="btnFindProduct" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
-                                        <div class="col-sm-0"></div>
-                                        <div class="col-sm-2">PackSize:</div>
-                                        <div class="col-sm-5"><input type="text" id="Tab2PackSizeName" name="Tab2PackSizeName" class="form-control" readonly /></div>
+                                        <div class="col-md-1"><button id="btnFindProduct" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+                                   
+                                        <div class="col-md-2">&nbsp;&nbsp; PackSize:</div>
+                                        <div class="col-md-5"><input type="text" id="Tab2PackSizeName" name="Tab2PackSizeName" class="form-control" readonly /></div>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="row">
-                                        <div class="col-sm-2">
+                                        <div class="col-md-2">
                                             Product Specification :
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-md-2">
                                             <input type="text" id="Tab2ProductSpecification" name="Tab2ProductSpecification" class="form-control txtBox" readonly />
                                         </div>
-                                        <div class="col-sm-3">Introduced in Bangladesh : </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-md-3">Introduced in Bangladesh : </div>
+                                        <div class="col-md-2">
                                             <input type="text" id="Tab2IntroducedInBD" name="Tab2IntroducedInBD" class="form-control txtBox" readonly />
                                         </div>
-                                        <div class="col-sm-1">SAP Code</div>
+                                        <div class="col-md-1">SAP Code</div>
                                         <div class="col-sm-2"><input type="text" id="Tab2SAPProductCode" name="Tab2SAPProductCode" class="form-control" readonly /></div>
                                     </div>
                                 </div>
@@ -3151,16 +3155,16 @@
                         </div>
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-sm-1"></div>
-                                <div class="col-sm-2">Submission Type :</div>
-                                <div class="col-sm-3">
+                             
+                                <div class="col-md-3">Submission Type :</div>
+                                <div class="col-md-3">
                                     <select class="form-control txtBox" id="Tab2MeetingType">
                                         <option selected="selected" value="Local">Local</option>
                                         <option value="DCC">DCC</option>
                                     </select>
                                 </div>
-                                <div class="col-sm-2">Manufacturing Type :</div>
-                                <div class="col-sm-3">
+                                <div class="col-md-3">Manufacturing Type :</div>
+                                <div class="col-md-3">
                                     <select class="form-control txtBox" id="Tab2ManufacturerType">
                                         <option selected="selected" value="Local">Local</option>
                                         <option value="Import">Import</option>
@@ -3367,13 +3371,13 @@
                                     <fieldset class="panel-border">
                                         <legend class="panel-border">Upload Documents :</legend>
                                         <div class="row">
-                                            <div class="col-sm-2">
-                                                Document Name<span style="color: red">*</span>:
+                                            <div class="col-md-3">
+                                                Document Name:<span style="color: red">*</span>:
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div class="col-md-3">
                                                 <select id="Tab2RefNoTab" class="form-control txtBox" tabindex="" name="Tab2RefNoTab"></select>
                                             </div>
-                                            <div class="col-sm-4">
+                                            <div class="col-md-4">
                                                 <input type="file" class="txtBox" id="Tab2UploadFile" name="Tab2UploadFile" />
                                                 <i class="glyphicon glyphicon-upload form-control-feedback"></i>
                                             </div>
@@ -3407,34 +3411,40 @@
                     <div id="tabs-3">
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-sm-2">Recipe No<span style="color: red">*</span> :</div>
-                                <div class="col-sm-2"><input type="text" id="Tab3SlNo" name="Tab3SlNo" class="form-control" placeholder="Get from Find" readonly /></div>
+                                <div class="col-md-2">Recipe No<span style="color: red">*</span> :</div>
+                                <div class="col-md-3"><input type="text" id="Tab3SlNo" name="Tab3SlNo" class="form-control" placeholder="Get from Find" readonly /></div>
                                 <input type="hidden" id="Tab3RecipeId" name="Tab3RecipeId" class="txtBox" />
-                                <div class="col-sm-1"><button id="btnFindRecipeTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
-                                <div class="col-sm-1">Annex No:</div>
-                                <div class="col-sm-2"><input type="text" id="Tab3AnnexureNo" name="Tab3AnnexureNo" placeholder="Auto" class="form-control" readonly /></div>
+                                <div class="col-md-2"><button id="btnFindRecipeTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+                                <div class="col-md-2">Annex No:</div>
+                                <div class="col-md-3"><input type="text" id="Tab3AnnexureNo" name="Tab3AnnexureNo" placeholder="Auto" class="form-control" readonly /></div>
                                 <input type="hidden" id="Tab3AnnexId" name="Tab3AnnexId" class="txtBox" />
-                                <div class="col-sm-2">Revision No :</div>
-                                <div class="col-sm-2"><input type="text" id="Tab3AnnexRevisionNo" name="Tab3AnnexRevisionNo" placeholder="Auto" class="form-control" readonly /></div>
-
+                              
                             </div>
                         </div>
 
-                        <div class="form-group">
+                    
                             <div class="row">
-                                <div class="col-sm-4"> </div>
-                                <div class="col-sm-2">Record Status :</div>
-                                <div class="col-sm-3">
+                                <div class="col-md-2">Revision No :</div>
+                                <div class="col-md-3"><input type="text" id="Tab3AnnexRevisionNo" name="Tab3AnnexRevisionNo" placeholder="Auto" class="form-control" readonly /></div>
+                                <div class="col-md-2"></div>
+                                <div class="col-md-2">Record Status :</div>
+                                <div class="col-md-3">
                                     <select id="Tab3StateStatus" class="form-control txtBox" tabindex="" name="Tab3StateStatus"></select>
                                 </div>
-                                <div class="col-sm-2">
+                             
+                                
+                            </div>
+                      
+                      
+                            <div class="row">
+                                <div class="col-md-9"></div>
+                             
+                                <div class="col-md-3">
                                     <button id="btnRevisionTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew/Amendment</button>
                                 </div>
-                                <div class="col-sm-1"></div>
+
                             </div>
-                        </div>
-
-
+                      
                         <div class="form-group">
                             <fieldset class="panel-border">
                                 <legend class="panel-border">Product Information :</legend>
@@ -3631,18 +3641,17 @@
                                     <fieldset class="panel-border">
                                         <legend class="panel-border">Upload Documents :</legend>
                                         <div class="row">
-                                            <div class="col-sm-2">
-                                                Document Name<span style="color: red">*</span>:
+                                            <div class="col-md-3">
+                                                Document Name:<span style="color: red">*</span>:
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div class="col-md-3">
                                                 <select id="Tab3RefNo" class="form-control txtBox" tabindex="" name="Tab3RefNo"></select>
                                             </div>
-                                            <div class="col-sm-4">
+                                            <div class="col-md-4">
                                                 <input type="file" class="txtBox" id="Tab3UploadFile" name="Tab3UploadFile" />
                                                 <i class="glyphicon glyphicon-upload form-control-feedback"></i>
                                             </div>
-                                            <div class="col-sm-3">
-                                            </div>
+                                         
                                         </div>
                                         <div class="row">
                                             <br />
@@ -3885,6 +3894,23 @@
 
 
                     <div id="tabs-5">
+
+                        <div class="row">
+                            <div class="col-md-2">Revision No :</div>
+                            <div class="col-md-2"><input type="text" id="Tab3AnnexRevisionNo" name="Tab3AnnexRevisionNo" placeholder="Auto" class="form-control" readonly /></div>
+                        
+                            <div class="col-md-2">Record Status :</div>
+                            <div class="col-md-3">
+                                <select id="Tab3StateStatus" class="form-control txtBox" tabindex="" name="Tab3StateStatus"></select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <button id="btnRevisionTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew/Amendment</button>
+                            </div>
+                        </div>
+
+
+                    
 
                         <div class="row">
                             <div class="col-sm-12">

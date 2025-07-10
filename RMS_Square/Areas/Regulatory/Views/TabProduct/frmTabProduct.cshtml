@@ -4,9 +4,6 @@
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <link href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" rel="stylesheet" />
-
-
-
 <link href="~/Content/CSS/InputText.css" rel="stylesheet" />
 
 <script>
@@ -306,6 +303,7 @@
             todayHighlight: true
             //,todayBtn: true,
         });
+
         debugger;
         var activeTabIndex = 0;
         var ButtonEvent = '';
@@ -1428,11 +1426,13 @@
             $('#btnFind').attr('disabled', 'disabled');
             $('#btnFindProduct').attr('disabled', 'disabled');
 
+            debugger;
             $.ajax({
                 url: '@Url.Action("GetFileByRefId", "RecipeInfo")',
                 type: 'GET',
                 data: { refLevel1: selectRow.ID },
                 success: function (data) {
+                    debugger;
                     $("#Tab2FileGrid1").data("kendoGrid").dataSource.data(data);
                 }
             });
@@ -3259,17 +3259,17 @@
                                 <legend class="panel-border">Approval Information :</legend>
                                 <div class="form-group">
                                     <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Status : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                    
+                                        <div class="col-md-3">Status : </div>
+                                        <div class="col-md-3">
                                             <select class="form-control txtBox" id="Tab2ApprovalStatus">
                                                 <option selected="selected" value="Approved">Approved</option>
                                                 <option value="Not Approved">Not Approved</option>
                                                 <option value="Inspection">Inspection</option>
                                             </select>
                                         </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Submission Date : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                        <div class="col-md-3">Submission Date : </div>
+                                        <div class="col-md-3">
                                             <div class="input-group date">
                                                 <input type="text" class="form-control" id="Tab2ApvSubmissionDate" name="Tab2ApvSubmissionDate" placeholder="dd/mm/yyyy">
                                                 <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
@@ -3279,52 +3279,52 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Meeting Date : </div>
-                                        <div class="col-sm-3">
+                                     
+                                        <div class="col-md-3">Meeting Date : </div>
+                                        <div class="col-md-3">
                                             <div class="input-group date">
                                                 <input type="text" class="form-control txtBox" id="Tab2ApvMeetingDate" name="Tab2ApvMeetingDate" placeholder="dd/mm/yyyy">
                                                 <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                                             </div>
                                         </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Approval Date : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                        <div class="col-md-3">Approval Date : </div>
+                                        <div class="col-md-3">
                                             <div class="input-group date">
                                                 <input type="text" class="form-control" id="Tab2ApvApprovalDate" name="Tab2ApvApprovalDate" placeholder="dd/mm/yyyy">
                                                 <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                                             </div>
                                         </div>
-                                        <div class="col-sm-1"> </div>
+                              
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Valid Up To : </div>
-                                        <div class="col-sm-3">
+                                   
+                                        <div class="col-md-3">Valid Up To : </div>
+                                        <div class="col-md-3">
                                             <div class="input-group date">
                                                 <input type="text" class="form-control txtBox" id="Tab2ApvValidUptoDate" name="Tab2ApvValidUptoDate" placeholder="dd/mm/yyyy">
                                                 <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                                             </div>
                                         </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Date of Extension : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                        <div class="col-md-3">Date of Extension : </div>
+                                        <div class="col-md-3">
                                             <div class="input-group date">
                                                 <input type="text" class="form-control" id="Tab2ApvDateOfExtension" name="Tab2ApvDateOfExtension" placeholder="dd/mm/yyyy">
                                                 <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                                             </div>
                                         </div>
-                                        <div class="col-sm-1"> </div>
+                                
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-sm-2">Remarks : </div>
+                                     
+                                        <div class="col-md-3">Remarks : </div>
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control txtBox" id="Tab2ApvRemarks" name="Tab2ApvRemarks" placeholder="Remarks" maxlength="300">
                                         </div>
-                                        <div class="col-sm-1"> </div>
+                                   
                                     </div>
                                 </div>
                             </fieldset>

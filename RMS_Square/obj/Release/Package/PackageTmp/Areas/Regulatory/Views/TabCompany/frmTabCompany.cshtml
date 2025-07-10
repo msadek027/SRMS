@@ -489,7 +489,7 @@
                 case "Products":
                     debugger;
                     $.ajax({
-                        url: '/ProductInfo/GetProduct',
+                        url: '/ProductInfo/GetTabProduct',
                         type: 'POST',
                         contentType: 'application/json;',
                         dataType: 'json',
@@ -1355,14 +1355,13 @@
             columns: [
                  { field: "CompanyCode", title: "CompanyCode", hidden: true, width: 80 },
                  { field: "CompanyName", title: "CompanyName", hidden: true, width: 150 },
-                 { field: "ProductCode", title: "Product Code", width: 80 },
                  { field: "SAPProductCode", title: "SAP Product Code", hidden: true, width: 80 },
-                 { field: "BrandName", title: "Brand Name", width: 100 },
-                 { field: "YearMonth", title: "SetYearMonth", width: 100 },
+                 { field: "ProductCode", title: "Product Code", width: 80 },           
+                 { field: "BrandName", title: "Brand Name", width: 100 },          
                  { field: "GenericCode", title: "Generic & Strength", width: 180 },
-                 { field: "DosageFormName", title: "Dosage Form", width: 100 },
-                 { field: "PackSizeName", title: "Pack Size", width: 100 },
-                 { field: "ProductCategory", title: "Product Category", width: 100 }
+                 { field: "DarNo", title: "DarNo", width: 100 },
+                 { field: "Price", title: "Price", width: 100 },
+   
             ]
 
         }).data('kendoGrid');
@@ -1602,39 +1601,50 @@
 
              <div id="tabs-1">
                  <div class="row">                               
-                         <div class="col-sm-2">Revision No :</div>
-                         <div class="col-sm-3"><input type="text" id="Tab1RevisionNo" name="Tab1RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
-                         <div class="col-sm-2"><input type="hidden" id="Tab1CLID" name="Tab1CLID" class="txtBox" /></div>
+                     <div class="col-md-3">Revision No :</div>
+                     <div class="col-md-3"><input type="text" id="Tab1RevisionNo" name="Tab1RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
+                     <div class="col-md-3"><input type="hidden" id="Tab1CLID" name="Tab1CLID" class="txtBox" /></div>
                  </div>
-                 <div class="form-group">
+                 
                      <div class="row">
-                         <div class="col-sm-2">License Type & No<span style="color: red">*</span> :</div>
-                         <div class="col-sm-3"><input type="text" id="Tab1LicenseNo" name="Tab1LicenseNo" class="form-control txtBox" /></div>
-                         <div class="col-sm-2">Submission Type :</div>
-                         <div class="col-sm-3">
+                         <div class="col-md-3">License Type & No<span style="color: red">*</span> :</div>
+                         <div class="col-md-3"><input type="text" id="Tab1LicenseNo" name="Tab1LicenseNo" class="form-control txtBox" /></div>
+                         <div class="col-md-3">Submission Type :</div>
+                         <div class="col-md-3">
                              <select id="Tab1SubmissionType" class="txtBox" disabled="disabled">
                                  <option selected="selected" value="License">License</option>
                                  <option value="Renewal">Renewal</option>
                              </select>
                          </div>
-                         <div class="col-sm-2">
-                             <button id="btnRevisionTab1" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew</button>
+                     </div>
+                       
+                  
+                
+                     <div class="row">
+                         <div class="col-md-10"></div>
+
+                         <div class="col-md-2">
+                             <div style="text-align:right;">
+                                 <button id="btnRevisionTab1" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew</button>
+                             </div>
                          </div>
                      </div>
+               
+
                      <fieldset class="panel-border" id="divRenew">
                          <legend class="panel-border">License/Renew Info :</legend>
                          <div class="form-group">
                              <div class="row">
-                                 <div class="col-sm-1"> </div>
-                                 <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Submission Date : </div>
-                                 <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                             
+                                 <div class="col-md-3">Submission Date : </div>
+                                 <div class="col-md-3">
                                      <div class="input-group date">
                                          <input type="text" class="form-control" id="Tab1SubmissionDate" name="Tab1SubmissionDate" placeholder="dd/mm/yyyy">
                                          <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                                      </div>
                                  </div>
-                                 <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Factory Inspection Date: </div>
-                                 <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                 <div class="col-md-3">Factory Inspection Date: </div>
+                                 <div class="col-md-3">
                                      <div class="input-group date">
                                          <input type="text" class="form-control" id="Tab1InspectionDate" name="Tab1InspectionDate" placeholder="dd/mm/yyyy">
                                          <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
@@ -1643,33 +1653,44 @@
                              </div>
                          </div>
                          <div class="form-group">
+                             <div class="row">                                
+                                 <div class="col-md-3">Post Inspection Date: </div>
+                                 <div class="col-md-3">
+                                     <div class="input-group date">
+                                         <input type="text" class="form-control" id="Tab1PostInspectionDate" name="Tab1PostInspectionDate" placeholder="dd/mm/yyyy">
+                                         <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="form-group">
                              <div class="row">
-                                 <div class="col-sm-1"> </div>
-                                 <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Approval/Renewal Date : </div>
-                                 <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                              
+                                 <div class="col-md-3">Approval/Renewal Date : </div>
+                                 <div class="col-md-3">
                                      <div class="input-group date">
                                          <input type="text" class="form-control" id="Tab1ApprovalDate" name="Tab1ApprovalDate" placeholder="dd/mm/yyyy">
                                          <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                                      </div>
                                  </div>
-                                 <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Alarm Days : </div>
-                                 <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                 <div class="col-md-3">Alarm Days : </div>
+                                 <div class="col-md-3">
                                      <input type="text" id="Tab1AlarmDays" name="Tab1AlarmDays" maxlength="5" placeholder="Alarm Days" class="txtBox form-control numeric " />
                                  </div>
                              </div>
                          </div>
                          <div class="form-group">
                              <div class="row">
-                                 <div class="col-sm-1"> </div>
-                                 <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Valid Up To </div>
-                                 <div class="col-sm-3">
+                               
+                                 <div class="col-md-3">Valid Up To </div>
+                                 <div class="col-md-3">
                                      <div class="input-group date">
                                          <input type="text" class="form-control txtBox" id="Tab1ValidUpto" name="Tab1ValidUpto" placeholder="dd/mm/yyyy">
                                          <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                      </div>
                                  </div>
-                                 <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Entry Date : </div>
-                                 <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                 <div class="col-md-3">Entry Date : </div>
+                                 <div class="col-md-3">
                                      <input type="text" class="form-control" id="Tab1RevisionDate" name="Tab1RevisionDate" readonly>
                                  </div>
                              </div>
@@ -1681,13 +1702,14 @@
                              <fieldset class="panel-border">
                                  <legend class="panel-border">Upload Documents :</legend>
                                  <div class="row">
-                                     <div class="col-sm-2">
-                                         Document Name<span style="color: red">*</span>:
+                                     <div class="col-md-3">
+                                         Document Name:<span style="color: red">*</span>:
                                      </div>
-                                     <div class="col-sm-3">
+                                     <div class="col-md-3">
                                          <select id="Tab1RefNo" class="form-control txtBox" tabindex="" name="Tab1RefNo">
                                              <option value="">--Select Any--</option>
                                              <option value="Inspection Letter">Inspection Letter</option>
+                                             <option value="Post Inspection Letter">Post Inspection Letter</option>
                                              <option value="Inspection Report">Inspection Report</option>
                                              <option value="Original License">Original License</option>
                                              <option value="License Renewal Letter">License Renewal Letter</option>
@@ -1696,16 +1718,16 @@
                                              <option value="List of Machineries">List of Machineries</option>
                                          </select>
                                      </div>
-                                     <div class="col-sm-4">
+                                     <div class="col-md-4">
                                          <input type="file" class="txtBox" id="Tab1UploadFile" name="Tab1UploadFile" />
                                          <i class="fa fa-cloud-upload form-control-feedback"></i>
                                      </div>
-                                     <div class="col-sm-3">
+                                     <div class="col-md-2">
                                      </div>
                                  </div>
-                                 <div class="row">
-                                     <br />
-                                 </div>
+                           
+
+
                                  <div class="row">
                                      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                          <label>List of Document File</label>
@@ -1715,7 +1737,7 @@
                              </fieldset>
                          </div>
                      </div>
-                 </div>
+               
                  <div class="row">
                      <div class="col-sm-9">
                      </div>
