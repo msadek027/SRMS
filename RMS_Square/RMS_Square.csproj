@@ -1436,7 +1436,6 @@
     <Content Include="Content\css\cssTree\ico-jsplumb.woff" />
     <Content Include="Areas\Regulatory\Views\TabProduct\frmTabProduct.cshtml" />
     <Content Include="Areas\Regulatory\Views\TabNarcotics\frmTabNarcotics.cshtml" />
-    <Content Include="Areas\Regulatory\Views\TabProduct\Popup.cshtml" />
     <Content Include="Areas\Regulatory\Views\NarcoticLicense\frmNarcoticLicenseReport.cshtml" />
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="fonts\fontawesome-webfont.ttf" />

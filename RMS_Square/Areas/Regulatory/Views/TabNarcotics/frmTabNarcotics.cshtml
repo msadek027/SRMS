@@ -9,8 +9,16 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#btnReset').click(function () {debugger
+        $('#btnReset').click(function () {
+            debugger
+            var companyCode = $("#CompanyCode").val();
+            var companyName = $("#CompanyName").val();
+            var companyAddress = $("#Address").val();
             ResetData();
+            // Restore the preserved values
+            $("#CompanyCode").val(companyCode);
+            $("#CompanyName").val(companyName);
+            $("#Address").val(companyAddress);
             $("#ItemWindowGrid").data("kendoGrid").dataSource.data([]);
             //$("#SubmissionType ").val('License');
             $("#frameID").attr("height", 0);
@@ -194,6 +202,25 @@
 
 
 
+        //function GetNarcoticsDetails(URL) {
+        //    $.ajax({
+        //        url: URL,
+        //        type: 'POST',
+        //        contentType: 'application/json;',
+        //        dataType: 'json',
+        //        success: function (data) {
+        //            if (data && data.length > 0) {
+        //                PopulateTab2Table(data);
+        //            } else {
+        //                toastr.info("No data found!");
+        //                $("#tblItems tbody").empty().append("<tr><td colspan='2'>No data found.</td></tr>");
+        //            }
+        //        },
+        //        error: function () {
+        //            alert('Error occurred while fetching items.');
+        //        },
+        //    });
+        //}
         function GetNarcoticsDetails(URL) {
             $.ajax({
                 url: URL,
@@ -202,10 +229,15 @@
                 dataType: 'json',
                 success: function (data) {
                     if (data && data.length > 0) {
-                        PopulateTab2Table(data);
+                        // Initialize or update the grid with the data
+                        InitializeNarcoticsGrid(data);
                     } else {
                         toastr.info("No data found!");
-                        $("#tblItems tbody").empty().append("<tr><td colspan='2'>No data found.</td></tr>");
+                        // Clear the grid if no data
+                        var grid = $("#narcoticsGrid").data("kendoGrid");
+                        if (grid) {
+                            grid.dataSource.data([]);
+                        }
                     }
                 },
                 error: function () {
@@ -213,6 +245,89 @@
                 },
             });
         }
+
+        function InitializeNarcoticsGrid(data) {
+            // Store the original data for resetting
+            var originalData = data.slice(); // Create a copy of the original data
+
+            // Check if grid already exists
+            var grid = $("#narcoticsGrid").data("kendoGrid");
+
+            if (!grid) {
+                // Create the grid if it doesn't exist
+                grid = $("#narcoticsGrid").kendoGrid({
+                    dataSource: {
+                        data: originalData, // Use the original data
+                        pageSize: 10,
+                        schema: {
+                            model: {
+                                fields: {
+                                    NarcoticSetupSl: { type: "number" },
+                                    GenericName: { type: "string" }
+                                }
+                            }
+                        }
+                    },
+                    height: 400,
+                    scrollable: true,
+                    sortable: true,
+                    pageable: {
+                        refresh: true,
+                        pageSizes: true,
+                        buttonCount: 5
+                    },
+                    columns: [
+                        { field: "NarcoticSetupSl", title: "ID", width: 100 },
+                        { field: "GenericName", title: "Generic/Brand Name" }
+                    ],
+                    toolbar: [
+                        "excel",
+                        {
+                            template: '<input id="narcoticsSearchBox" type="text" placeholder="Search..." style="float:right; margin: 0 10px; width: 200px;" />'
+                        }
+                    ],
+                    excel: {
+                        fileName: "Narcotics_Export.xlsx",
+                        allPages: true
+                    }
+                }).data("kendoGrid");
+
+                // Store original data in the grid element for later access
+                grid.element.data("originalData", originalData);
+
+                // Add search functionality
+                $("#narcoticsSearchBox").on("keyup", function () {
+                    var searchValue = this.value.toLowerCase();
+                    var grid = $("#narcoticsGrid").data("kendoGrid");
+                    var originalData = grid.element.data("originalData");
+
+                    if (!searchValue) {
+                        // If search box is empty, restore original data
+                        grid.dataSource.data(originalData);
+                        return;
+                    }
+
+                    // Filter the data
+                    var filteredData = $.grep(originalData, function (item) {
+                        return (
+                            (item.NarcoticSetupSl && item.NarcoticSetupSl.toString().toLowerCase().includes(searchValue)) ||
+                            (item.GenericName && item.GenericName.toLowerCase().includes(searchValue))
+                        );
+                    });
+
+                    grid.dataSource.data(filteredData);
+                });
+
+            } else {
+                // Update the existing grid's data
+                grid.dataSource.data(data);
+                // Store the new original data
+                grid.element.data("originalData", data.slice());
+                // Clear any existing search
+                $("#narcoticsSearchBox").val("");
+            }
+        }
+
 
         function PopulateTab2Table(data) {
             var tbody = $("#tblItems tbody");
@@ -344,6 +459,43 @@
             resizable: true,
             columns: [] // Initialize with empty columns, will be set dynamically
         }).data('kendoGrid');
+        // Store original data reference
+        var originalGridData = [];
+
+
+        // Search functionality
+        $(document).on('keyup', '#gridSearchBox', function () {debugger
+            var searchValue = this.value.toLowerCase();
+            var grid = PopupGrid;
+
+            if (!searchValue) {
+                // Restore original data if search is empty
+                grid.dataSource.data(originalGridData);
+                return;
+            }
+
+            // Filter the data
+            var filteredData = $.grep(originalGridData, function (item) {
+                // Check all string fields (modify as needed)
+                for (var key in item) {
+                    if (item.hasOwnProperty(key) && typeof item[key] === 'string') {
+                        if (item[key].toLowerCase().includes(searchValue)) {
+                            return true;
+                        }
+                    }
+                    // Also check numeric fields if needed
+                    if (item.hasOwnProperty(key) && typeof item[key] === 'number') {
+                        if (item[key].toString().includes(searchValue)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            });
+
+            grid.dataSource.data(filteredData);
+        });
+
 
         $('#btnView').click(function () {
             debugger;
@@ -357,6 +509,7 @@
                     dataType: 'json',
                     success: function (data) {
                         if (data && data.length > 0) {
+                            originalGridData = data.slice();
                             // Set columns for Tab 1
                             PopupGrid.setOptions({
                                 columns: [
@@ -366,6 +519,8 @@
                                 ]
                             });
                             PopupGrid.dataSource.data(data);
+                            // Clear search box
+                            $('#gridSearchBox').val('');
                         } else {
                             ViewPopupWindow.close();
                             AcknowledgeMsg();
@@ -385,6 +540,7 @@
                     dataType: 'json',
                     success: function (data) {
                         if (data && data.length > 0) {
+                            originalGridData = data.slice();
                             // Set columns for Tab 2
                             PopupGrid.setOptions({
                                 columns: [
@@ -397,6 +553,7 @@
                                 ]
                             });
                             PopupGrid.dataSource.data(data);
+                            $('#gridSearchBox').val('');
                         } else {
                             ViewPopupWindow.close();
                             AcknowledgeMsg();
@@ -751,7 +908,7 @@
                 <div style="text-align:right;">
                     <button id="btnReset" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
                     <button id="btnSave" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-save"></i>Save</button>
-                    <button id="btnView" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>View</button>
+                    <button id="btnView" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
                 </div>
             </div>
         </div>
@@ -769,7 +926,7 @@
 
     </div> @*tab1 closed*@
 
-    <div id="tabs-2">
+    @*<div id="tabs-2">
         <div id="tab2Content">
             <table class="table table-bordered" id="tblItems">
                 <thead>
@@ -780,6 +937,12 @@
                 </thead>
                 <tbody></tbody>
             </table>
+        </div>
+    </div>*@
+
+    <div id="tabs-2">
+        <div id="tab2Content">
+            <div id="narcoticsGrid"></div>
         </div>
     </div>
         @*Tab2 Closed*@
