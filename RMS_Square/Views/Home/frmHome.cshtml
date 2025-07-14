@@ -208,11 +208,14 @@
                 <li><a href="/Regulatory/NarcoticLicense/frmNarcoticLicenseReport">Narcotics Item info & License</a></li>          
             </ul>
         </div>
+       
         <div class="dropdown" style="margin: 10px; display: inline-block;">
-            <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="pendingButton" data-toggle="collapse" data-target="#collapsePending" aria-expanded="false" aria-haspopup="true">
                 <i class="glyphicon glyphicon-time"></i> Pending Work
             </button>
         </div>
+
+
         <div class="dropdown" style="margin: 20px; display: inline-block;">
             <button class="btn btn-default btn-lg dropdown-toggle" type="button" id="btnNotification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <i class="glyphicon glyphicon-bell"></i> Notification
@@ -268,7 +271,7 @@
     </div>
     <br />
 
-    <div class="row" id="pendingButton">
+    @*<div class="row" id="pendingButton">
         <div class="col-md-3"></div>
         <div class="col-md-6">
             <button class="btn btn-lg btn-primary" style="width:100%;" type="button" data-toggle="collapse" data-target="#collapsePending" aria-expanded="false" aria-controls="collapsePending">
@@ -276,59 +279,59 @@
             </button>
         </div>
         <div class="col-md-3"></div>
-    </div>
+    </div>*@
+
+
     <br />
-    <div class="collapse" id="collapsePending">
-        <div class="card card-body" style="border: solid; color: aliceblue; background-color: aliceblue;">
-            <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-2">
-                    <div class="input-group date">
-                        <input type="text" class="form-control txtBox" id="pendingFromDt" name="pendingFromDt" placeholder="From Date">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+    <div id="divPending">
+        <div class="collapse" id="collapsePending">
+            <div class="card card-body" style="border: solid; color: aliceblue; background-color: aliceblue;">
+                <div class="row">
+
+                    <div class="col-md-2">
+                        <div class="input-group date">
+                            <input type="text" class="form-control txtBox" id="pendingFromDt" name="pendingFromDt" placeholder="From Date">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="input-group date">
+                            <input type="text" class="form-control txtBox" id="pendingToDt" name="pendingToDt" placeholder="To Date">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control txtBox" id="CompanyName" name="CompanyName" placeholder="Double Click to Select" readonly>
+                        <input type="hidden" class="form-control txtBox" id="CompanyCode" name="CompanyCode">
+                    </div>
+
+                    <div class="col-md-2">
+                        <select id="rptType" class="form-control txtBox" tabindex="" name="rptType">
+                            <option value="">--Select Any--</option>
+                            <option value="Recipe">Recipe</option>
+                            <option value="DTL">DTL</option>
+                            <option value="Product">Product Registration</option>
+                            <option value="Price">Price</option>
+                            <option value="MA">MA Certificate</option>
+                            <option value="Amendment">Amendment</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button id="btnShowPending" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Find</button>
                     </div>
                 </div>
 
-                <div class="col-md-2">
-                    <div class="input-group date">
-                        <input type="text" class="form-control txtBox" id="pendingToDt" name="pendingToDt" placeholder="To Date">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                <div class="row" id="pendingGrid">
+                    <div class="col-sm-12">
+                        <div id="PendingDetailGrid" class=""></div>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <input type="text" class="form-control txtBox" id="CompanyName" name="CompanyName" placeholder="Double Click to Select" readonly>
-                    <input type="hidden" class="form-control txtBox" id="CompanyCode" name="CompanyCode">
-                </div>
 
-                <div class="col-md-2">
-                    <select id="rptType" class="form-control txtBox" tabindex="" name="rptType">
-                        <option value="">--Select Any--</option>
-                        <option value="Recipe">Recipe</option>
-                        <option value="DTL">DTL</option>
-                        <option value="Product">Product Registration</option>
-                        <option value="Price">Price</option>
-                        <option value="MA">MA Certificate</option>
-                        <option value="Amendment">Amendment</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button id="btnShowPending" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Find</button>
-                </div>
             </div>
         </div>
     </div>
-
-    <br />
-
-
-
-
-    <div class="row" id="pendingGrid">
-        <div class="col-sm-12">
-            <div id="PendingDetailGrid" class=""></div>
-        </div>
-    </div>
-    <br />
+ 
 
 
 
@@ -575,7 +578,10 @@
         $('#btnRefreshData').on("click", function () {
             LoadGrid();
         });
-
+        document.getElementById("pendingButton").onclick = function () {
+            $("#divPending").show();
+            document.getElementById("divPending").scrollIntoView({ behavior: "smooth" });
+        };
         function LoadGrid() {
             $.ajax({
                 url: '/Home/GetAllInfo',
@@ -596,28 +602,27 @@
         }
 
         //--------------------------------------Start of defining Datagrid--------------------------------------------------------
-        var itemGridDataSource = new kendo.data.DataSource({
-            schema: {
-                model: {
-                    id: "ID",
-                    fields: {
-                        ID: { editable: true },
-                        //GenericCode: { editable: true },
-                        CompanyName: { editable: false },
-                        Recipe: { editable: false },//type: "number", validation: { min: 0, max: 999999999999 }, defaultValue: ''
-                        DTL: { editable: false },
-                        Prod_Reg: { editable: false },
-                        Price: { editable: false },
-                        MA: { editable: false },
-                        Amendment: { editable: false }
-                    }
-                }
-            },
-            pageSize: 50
-        });
+ 
 
         var genericItemGrid = $("#GenericDetailGrid").kendoGrid({
-            dataSource: itemGridDataSource,
+            dataSource:  new kendo.data.DataSource({
+                schema: {
+                    model: {
+                        id: "ID",
+                        fields: {
+                            ID: { editable: true },                       
+                            CompanyName: { editable: false },
+                            Recipe: { editable: false },
+                            DTL: { editable: false },
+                            Prod_Reg: { editable: false },
+                            Price: { editable: false },
+                            MA: { editable: false },
+                            Amendment: { editable: false }
+                        }
+                    }
+                },
+                pageSize: 50
+            }),
             pageable: true,
             editable: true,
             selectable: "row",
@@ -699,10 +704,11 @@
             draggable: true,
             modal: true,
             title: "List of Company."
-        }).data("kendoWindow").center();
+        }).data("kendoWindow");
 
 
         $('#CompanyName').on("dblclick", function () {
+            CompanyWindow.center();
             CompanyWindow.open();
             $.ajax({
                 url: '@Url.Action("GetAllCompany", "General")',
@@ -721,6 +727,7 @@
         });
 
         $('#CompanyNameSummary').on("dblclick", function () {
+            CompanyWindow.center();
             CompanyWindow.open();
             $.ajax({
                 url: '@Url.Action("GetAllCompany", "General")',
@@ -764,9 +771,7 @@
             //selectable: "multiple",
             toolbar: [{ template: "<input type='text' id='txtCompanyKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             navigatable: true,
-            height: 430,
-            // groupable: true,
-            groupable: { messages: { empty: "Custom message text" } },
+            height: 430,       
             columnMenu: true,
             reorderable: true,
             resizable: true,
@@ -805,6 +810,8 @@
         /*****************************  Pending Grid Start  *************************************/
 
         $('#btnShowPending').on("click", function () {
+
+            debugger;
             $("#PendingDetailGrid").data("kendoGrid").dataSource.data([]);
             LoadPending();
         });
@@ -821,31 +828,31 @@
                         $('#PendingDetailGrid').data('kendoGrid').dataSource.data(data);
                     }
                     else {
-                        DisplayPopupWindow.close();
+                       // DisplayPopupWindow.close();
                         AcknowledgeMsg();
                     }
                 }
             });
         }
 
-        var pendingitemGridDataSource = new kendo.data.DataSource({
-            schema: {
-                model: {
-                    id: "ID",
-                    fields: {
-                        ID: { editable: true },
-                        BrandName: { editable: false },
-                        GenericName: { editable: false },
-                        SubmissionDate: { editable: false },
-                        Remarks: { editable: false }
-                    }
-                }
-            },
-            pageSize: 50
-        });
+       
 
         var pendingDetailGrid = $("#PendingDetailGrid").kendoGrid({
-            dataSource: pendingitemGridDataSource,
+            dataSource: new kendo.data.DataSource({
+                schema: {
+                    model: {
+                        id: "ID",
+                        fields: {
+                            ID: { editable: true },
+                            BrandName: { editable: false },
+                            GenericName: { editable: false },
+                            SubmissionDate: { editable: false },
+                            Remarks: { editable: false }
+                        }
+                    }
+                },
+                pageSize: 50
+            }),
             pageable: true,
             editable: true,
             selectable: "row",
@@ -921,9 +928,10 @@
             draggable: true,
             modal: true,
             title: "List of Product."
-        }).data("kendoWindow").center();
+        }).data("kendoWindow");
 
         $('#BrandNameSummary').on("dblclick", function () {
+            ProductWindow.center();
             ProductWindow.open();
             $.ajax({
                 url: '@Url.Action("GetProductFromRecipe", "ProductInfo")',
@@ -974,16 +982,14 @@
                 filterable: true
             },
             navigatable: true,
-            height: 430,
-            // groupable: true,
-            groupable: { messages: { empty: "Custom message text" } },
+            height: 430,  
             columnMenu: true,
             reorderable: true,
             resizable: true,
             columns: [
                  { field: "ProductCode", title: "Product Code", width: 100 },
-                 { field: "SAPProductCode", title: "SAP Product Code", width: 100 },
-                 { field: "CompanyCode", title: "CompanyCode", width: 100 },
+                 { field: "SAPProductCode", title: "SAP Product Code", width: 100,hidden:true },
+                 { field: "CompanyCode", title: "CompanyCode", width: 100,hidden:true },
                  { field: "CompanyName", title: "CompanyName", width: 150 },
                  { field: "GenericStrength", title: "Generic", width: 200 },
                  { field: "PackSize", title: "Pack Size ", width: 100 },
@@ -1032,9 +1038,7 @@
                 alert("Please Select Product First!");
                 return false;
             }
-            //if ($('#CompanyCodeSummary').val() == "") {
-            //    alert("Please Select Company First!");
-            //    return false;}
+            
             $.ajax({
                 url: '/Home/ShowProductSummary',
                 method: 'post',
@@ -1090,7 +1094,7 @@
             draggable: true,
             modal: true,
             title: "Product Summary"
-        }).data("kendoWindow").center();
+        }).data("kendoWindow");
 
         /******************************** File Download Start  ***************************************/
 
@@ -1103,7 +1107,7 @@
             draggable: true,
             modal: true,
             title: "Product Summary"
-        }).data("kendoWindow").center();
+        }).data("kendoWindow");
 
         $('#btnRecipeDownload').click(function () {
             filePath = "RecipeInfo";
@@ -1113,6 +1117,7 @@
                 data: { refLevel1: $("#RCPID").val() },
                 success: function (data) {
                     $("#FileGrid").data("kendoGrid").dataSource.data(data);
+                    FileWindow.center();
                     FileWindow.open();
                 }
             });
@@ -1127,6 +1132,7 @@
                 data: { refLevel1: $("#MRKID").val() },
                 success: function (data) {
                     $("#FileGrid").data("kendoGrid").dataSource.data(data);
+                    FileWindow.center();
                     FileWindow.open();
                 }
             });
@@ -1140,6 +1146,8 @@
                 data: { refLevel1: $("#REGID").val() },
                 success: function (data) {
                     $("#FileGrid").data("kendoGrid").dataSource.data(data);
+                 
+                    FileWindow.center();
                     FileWindow.open();
                 }
             });
@@ -1153,6 +1161,8 @@
                 data: { refLevel1: $("#REGID").val() },
                 success: function (data) {
                     $("#FileGrid").data("kendoGrid").dataSource.data(data);
+                  
+                    FileWindow.center();
                     FileWindow.open();
                 }
             });
@@ -1167,6 +1177,7 @@
                 data: { refLevel1: $("#PRCID").val() },
                 success: function (data) {
                     $("#FileGrid").data("kendoGrid").dataSource.data(data);
+                    FileWindow.center();
                     FileWindow.open();
                 }
             });
@@ -1281,7 +1292,7 @@
             draggable: true,
             modal: true,
             title: "Meeting Info"
-        }).data("kendoWindow").center();
+        }).data("kendoWindow");
 
         //Initializing Main page details Kendo Grid Colums
         var licenseInfoGrid = $('#LicenseInfoGrid').kendoGrid({
@@ -1407,11 +1418,12 @@
             dataType: 'json',
             success: function (data) {
                 if (data != "") {
+                    ProductListWindow.center();
                     ProductListWindow.open();
                     $('#ProductListGrid').data('kendoGrid').dataSource.data(data);
                 }
                 else {
-                    DisplayPopupWindow.close();
+                    ProductListWindow.close();
                     AcknowledgeMsg();
                 }
             }
@@ -1441,7 +1453,7 @@
         draggable: true,
         modal: true,
         title: "Product List"
-    }).data("kendoWindow").center();
+    }).data("kendoWindow");
 
 
     //Initializing Main page details Kendo Grid Colums

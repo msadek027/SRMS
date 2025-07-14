@@ -4,9 +4,6 @@
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <link href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" rel="stylesheet" />
-
-
-
 <link href="~/Content/CSS/InputText.css" rel="stylesheet" />
 
 <script>
@@ -306,6 +303,7 @@
             todayHighlight: true
             //,todayBtn: true,
         });
+
         debugger;
         var activeTabIndex = 0;
         var ButtonEvent = '';
@@ -639,11 +637,12 @@
 
         });
         $('#btnReset').click(function () {
-
+            CompanyCode=$('#CompanyCode').val();
             switch (ButtonEvent) {
                 case "Product Info":
                     ResetData();
                     $("#Status").val("Active");
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent)
                     break;
 
                 case "Recipe":
@@ -653,6 +652,7 @@
                     $('#btnFindProduct').removeAttr('disabled');
                     $("#Tab2FileGrid1").data("kendoGrid").dataSource.data([]);
                     DisplayPageViewTab2();
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent)
                     break;
 
                 case "Registration":
@@ -664,6 +664,7 @@
                     $("#Tab3RefNo").empty();
                     $('#Tab3StateStatus').empty();
                     $("#Tab3FileGrid1").data("kendoGrid").dataSource.data([]);
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent)
                     break;
 
                 case "Price":
@@ -671,12 +672,14 @@
                     $('#btnFindAnnexureTab4').removeAttr('disabled');
                     $("#Tab4FileGrid1").data("kendoGrid").dataSource.data([]);
                     $("#Tab4PriceType").val('New');
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent)
                     break;
                 case "MA Certificate":
                     ResetData();
                     //$('#btnFindCom').removeAttr('disabled');
                     $('#btnFindProdTab5').removeAttr('disabled');
                     $("#Tab5FileGrid1").data("kendoGrid").dataSource.data([]);
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent)
                     break;
 
                 default:
@@ -906,6 +909,7 @@
                         model.ID = $('#Tab5ID').val();
                         model.SlNo = $('#Tab5SlNo').val();
                         model.RevisionNo = $('#Tab5RevisionNo').val();
+                        model.StateStatus = $('#Tab5StateStatus').val();
                         model.CompanyCode = $('#CompanyCode').val();
                         model.ProductCode = $('#Tab5ProductCode').val();
                         model.SubmissionDate = $('#Tab5SubmissionDate').val();
@@ -1428,11 +1432,13 @@
             $('#btnFind').attr('disabled', 'disabled');
             $('#btnFindProduct').attr('disabled', 'disabled');
 
+            debugger;
             $.ajax({
                 url: '@Url.Action("GetFileByRefId", "RecipeInfo")',
                 type: 'GET',
                 data: { refLevel1: selectRow.ID },
                 success: function (data) {
+                    debugger;
                     $("#Tab2FileGrid1").data("kendoGrid").dataSource.data(data);
                 }
             });
@@ -2280,7 +2286,19 @@
         };
 
 
-        //Start tab5 *****************************************************************************************************
+        //Start tab5 ***************************
+        $("#btnRevisionTab5").click(function () {
+            debugger;
+            $('#Tab5ID').val('');
+            $('#Tab5RevisionNo').val('');
+            var options = new Array();
+            options.push('<option  value="">--Select Any--</option>');
+            options.push('<option  value="Renew">Renew</option>');
+            options.push('<option  value="Annexure Amendment">Annexure Amendment</option>');
+            options.push('<option  value="Packaging Amendment">Packaging Amendment</option>');
+            $("#Tab5StateStatus").html(options.join(''));
+            $("#Tab5FileGrid1").data("kendoGrid").dataSource.data([]);
+        });
         var Tab5SearchBtn_PopupWindow = $("#Tab5SearchBtn_PopupWindow").kendoWindow({
             actions: ["Minimize", "Maximize", "Close"],
             width: "95%",
@@ -3259,17 +3277,17 @@
                                 <legend class="panel-border">Approval Information :</legend>
                                 <div class="form-group">
                                     <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Status : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                    
+                                        <div class="col-md-3">Status : </div>
+                                        <div class="col-md-3">
                                             <select class="form-control txtBox" id="Tab2ApprovalStatus">
                                                 <option selected="selected" value="Approved">Approved</option>
                                                 <option value="Not Approved">Not Approved</option>
                                                 <option value="Inspection">Inspection</option>
                                             </select>
                                         </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Submission Date : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                        <div class="col-md-3">Submission Date : </div>
+                                        <div class="col-md-3">
                                             <div class="input-group date">
                                                 <input type="text" class="form-control" id="Tab2ApvSubmissionDate" name="Tab2ApvSubmissionDate" placeholder="dd/mm/yyyy">
                                                 <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
@@ -3279,52 +3297,52 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Meeting Date : </div>
-                                        <div class="col-sm-3">
+                                     
+                                        <div class="col-md-3">Meeting Date : </div>
+                                        <div class="col-md-3">
                                             <div class="input-group date">
                                                 <input type="text" class="form-control txtBox" id="Tab2ApvMeetingDate" name="Tab2ApvMeetingDate" placeholder="dd/mm/yyyy">
                                                 <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                                             </div>
                                         </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Approval Date : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                        <div class="col-md-3">Approval Date : </div>
+                                        <div class="col-md-3">
                                             <div class="input-group date">
                                                 <input type="text" class="form-control" id="Tab2ApvApprovalDate" name="Tab2ApvApprovalDate" placeholder="dd/mm/yyyy">
                                                 <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                                             </div>
                                         </div>
-                                        <div class="col-sm-1"> </div>
+                              
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Valid Up To : </div>
-                                        <div class="col-sm-3">
+                                   
+                                        <div class="col-md-3">Valid Up To : </div>
+                                        <div class="col-md-3">
                                             <div class="input-group date">
                                                 <input type="text" class="form-control txtBox" id="Tab2ApvValidUptoDate" name="Tab2ApvValidUptoDate" placeholder="dd/mm/yyyy">
                                                 <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                                             </div>
                                         </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Date of Extension : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                        <div class="col-md-3">Date of Extension : </div>
+                                        <div class="col-md-3">
                                             <div class="input-group date">
                                                 <input type="text" class="form-control" id="Tab2ApvDateOfExtension" name="Tab2ApvDateOfExtension" placeholder="dd/mm/yyyy">
                                                 <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                                             </div>
                                         </div>
-                                        <div class="col-sm-1"> </div>
+                                
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-sm-2">Remarks : </div>
+                                     
+                                        <div class="col-md-3">Remarks : </div>
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control txtBox" id="Tab2ApvRemarks" name="Tab2ApvRemarks" placeholder="Remarks" maxlength="300">
                                         </div>
-                                        <div class="col-sm-1"> </div>
+                                   
                                     </div>
                                 </div>
                             </fieldset>
@@ -3897,15 +3915,22 @@
 
                         <div class="row">
                             <div class="col-md-2">Revision No :</div>
-                            <div class="col-md-2"><input type="text" id="Tab3AnnexRevisionNo" name="Tab3AnnexRevisionNo" placeholder="Auto" class="form-control" readonly /></div>
+                            <div class="col-md-2">
+                            <input type="text" id="Tab5RevisionNo" name="Tab5RevisionNo" placeholder="Auto" class="form-control" readonly />
+                            
+                           
+                                <input type="hidden" id="Tab5ID" name="Tab5ID" placeholder="ID" class="txtBox form-control" />
+                             
+                            
+                            </div>
                         
                             <div class="col-md-2">Record Status :</div>
                             <div class="col-md-3">
-                                <select id="Tab3StateStatus" class="form-control txtBox" tabindex="" name="Tab3StateStatus"></select>
+                                <select id="Tab5StateStatus" class="form-control txtBox" tabindex="" name="Tab5StateStatus"></select>
                             </div>
 
                             <div class="col-md-3">
-                                <button id="btnRevisionTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew/Amendment</button>
+                                <button id="btnRevisionTab5" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew/Amendment</button>
                             </div>
                         </div>
 
@@ -3918,19 +3943,19 @@
                                     <legend class="panel-border">Product Information :</legend>
                                   
                                         <div class="row">
-                                            <div class="col-md-2">Product Code<span style="color: red">*</span></div>
+                                            <div class="col-md-3">Product Code<span style="color: red">*</span></div>
                                             <div class="col-md-2"><input type="text" maxlength="50" id="Tab5ProductCode" name="Tab5ProductCode" readonly="readonly" class="RequiredField form-control" /></div>
                                             <div class="col-md-2"><button id="btnFindProdTab5" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
-                                            <div class="col-md-1"></div>
+                                       
                                             <div class="col-md-2">SAP Product Code</div>
                                             <div class="col-md-3"><input type="text" maxlength="50" id="Tab5SapProductCode" name="Tab5SapProductCode" readonly="readonly" class="RequiredField form-control" /></div>
                                         </div>
                                     
                           
                                         <div class="row">
-                                            <div class="col-md-2">Generic and Strength</div>
+                                            <div class="col-md-3">Generic and Strength</div>
                                             <div class="col-md-4"><textarea id="Tab5GenericStrength" name="Tab5GenericStrength" readonly="readonly" class="RequiredField form-control"> </textarea></div>
-                                            <div class="col-md-1"></div>
+                                       
                                             <div class="col-md-2">Pack Size</div>
                                             <div class="col-md-3"><input type="text" maxlength="50" id="Tab5PackSize" name="Tab5PackSize" readonly="readonly" class="RequiredField form-control" /></div>
 
@@ -3939,9 +3964,9 @@
 
                                         <div class="row">
                                       
-                                            <div class="col-md-2">Dosage Form</div>
-                                            <div class="col-md-3"><input type="text" maxlength="50" id="Tab5DosageForm" name="Tab5DosageForm" readonly="readonly" class="RequiredField form-control" /></div>
-                                            <div class="col-md-2"></div>
+                                            <div class="col-md-3">Dosage Form</div>
+                                            <div class="col-md-4"><input type="text" maxlength="50" id="Tab5DosageForm" name="Tab5DosageForm" readonly="readonly" class="RequiredField form-control" /></div>
+                                         
                                              <div class="col-md-2">DAR No</div>
                                             <div class="col-md-3"><input type="text" maxlength="50" id="Tab5DarNo" name="Tab5DarNo" readonly="readonly" class="RequiredField form-control" /></div>
 
@@ -3950,8 +3975,8 @@
 
                               
                                         <div class="row">                                     
-                                            <div class="col-md-2">Brand Name</div>
-                                            <div class="col-md-3"><input type="text" maxlength="50" id="Tab5BrandName" name="Tab5BrandName" readonly="readonly" class="RequiredField form-control" /></div>
+                                            <div class="col-md-3">Brand Name</div>
+                                            <div class="col-md-4"><input type="text" maxlength="50" id="Tab5BrandName" name="Tab5BrandName" readonly="readonly" class="RequiredField form-control" /></div>
                                         </div>
                                     
                                 </fieldset>
@@ -4029,7 +4054,7 @@
                                 <fieldset class="panel-border">
                                     <legend class="panel-border">Upload Documents :</legend>
                                     <div class="row">
-                                        <div class="col-sm-2">
+                                        <div class="col-md-3">
                                             Document Name<span style="color: red">*</span>:
                                         </div>
                                         <div class="col-sm-4">
@@ -4039,14 +4064,11 @@
                                             <input type="file" class="txtBox" id="Tab5UploadFile" name="Tab5UploadFile" />
                                             <i class="glyphicon glyphicon-upload form-control-feedback"></i>
                                         </div>
-                                        <div class="col-sm-3">
-                                        </div>
+                                      
                                     </div>
+                                  
                                     <div class="row">
-                                        <br />
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-12">
+                                        <div class="col-md-12">
                                             <label>List of Document File</label>
                                             <div id="Tab5FileGrid1" class=""></div>
                                         </div>

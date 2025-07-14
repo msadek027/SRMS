@@ -94,8 +94,6 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string ToDate { get; set; }
         public string DtlRemarks { get; set; }
 
-        public string ItemName { get; set; }
-
         public string Type { get; set; }
 
         public string FiscalYear { get; set; }

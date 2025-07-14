@@ -18,7 +18,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
     
         public object CompanyDeatils(string CompanyCode)
         {
-            string Qry = "SELECT COMPANY_CODE,COMPANY_NAME,ADDRESS,LICENSE_NO,CONTACT_NO,EMAIL_ID,FACILITY,LICENSE_NO from COMPANY_INFO";
+            string Qry = "SELECT COMPANY_CODE,COMPANY_NAME,ADDRESS,LICENSE_NO,CONTACT_NO,EMAIL_ID,FACILITY,SEQ from COMPANY_INFO";
             if (CompanyCode != "" && CompanyCode != null )
             {
                 Qry = Qry + " Where COMPANY_CODE ='" + CompanyCode + "'";

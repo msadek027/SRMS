@@ -241,39 +241,47 @@
             }
         }
         $('#btnReset').click(function () {
+
+            debugger;
+            CompanyCode=$('#CompanyCode').val();
             switch (ButtonEvent) {
                 case "Entry License Info":
-                  //  ResetData();
-                    $("#FileGrid").data("kendoGrid").dataSource.data([]);
+                    ResetData();
+                    $("#Tab1FileGrid1").data("kendoGrid").dataSource.data([]);
                     //$("#SubmissionType ").val('License');
                     $("#frameID").attr("height", 0);
                     $("#frameID").attr("src", "");
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
                     break;
 
                 case "View License":
-                   // ResetData();
+                    ResetData();
                     $("#Tab2SubmissionType").val("All");
-                    $("#Tab2LicenseInfoGrid").data("kendoGrid").dataSource.data([]);
+                    $("#Tab2LicenseViewGrid2").data("kendoGrid").dataSource.data([]);
                     $("#Tab2FileGrid1").data("kendoGrid").dataSource.data([]);
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
                     break;
 
 
                 case "Entry GMP Certificate":
-                    //ResetData();
+                    ResetData();
                     $("#Tab3FileGrid1").data("kendoGrid").dataSource.data([]);
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
                     break;
 
                 case "View GMP Certificate":
-                  //  ResetData();
+                     ResetData();
                     $("#Tab4SubmissionType").val("All");
                     $("#Tab4GmpCerificateViewGrid2").data("kendoGrid").dataSource.data([]);
                     $("#Tab4FileGrid1").data("kendoGrid").dataSource.data([]);
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
                     break;
 
                 default:
                     GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
                     break;
             }
+           
         });
         $('#btnSave').click(function () {
             var model = {};
@@ -381,7 +389,19 @@
         });
         $('#btnSearch').click(function () {
             debugger;
+            $("#Tab1FileGrid1").data("kendoGrid").dataSource.data([]);
 
+            $("#Tab2LicenseViewGrid2").data("kendoGrid").dataSource.data([]);
+            $("#Tab2FileGrid1").data("kendoGrid").dataSource.data([]);
+
+
+            $("#Tab3FileGrid1").data("kendoGrid").dataSource.data([]);
+
+            $("#Tab4GmpCerificateViewGrid2").data("kendoGrid").dataSource.data([]);
+            $("#Tab4FileGrid1").data("kendoGrid").dataSource.data([]);
+
+            $("#ProductInfoViewGrid1").data("kendoGrid").dataSource.data([]);
+            
             switch (ButtonEvent) {
                 case "Entry License Info":
                     Tab1SearchBtn_PopupWindow.open();
@@ -831,7 +851,7 @@
             $.ajax({
                 url: '@Url.Action("GetFileByRefId", "CompanyLicense")',
                 type: 'GET',
-                data: { "refLevel1": selectRow.CLID, "refLevel2": "" },
+                data: { "refLevel1": selectedRow.CLID, "refLevel2": "" },
                 success: function (data) {
                     $("#Tab1FileGrid1").data("kendoGrid").dataSource.data(data);
                 }
@@ -1008,9 +1028,10 @@
 
         $('#Tab3SearchBtn_PopupWindowGrid').dblclick(function () {
 
+            $("#Tab3FileGrid1").data("kendoGrid").dataSource.data([]);
             debugger;
-            var grid = $(this).data('kendoGrid');
-            var selectRow = grid.dataItem(grid.select());
+            var grid1 = $(this).data('kendoGrid');
+            var selectRow = grid1.dataItem(grid1.select());
             Tab3SearchBtn_PopupWindow.close();
             SetMasterDataTab(selectRow,'Tab3');
             $.ajax({
@@ -1117,6 +1138,8 @@
             event.preventDefault();
             dataItemInfo = Tab3FileGrid1.dataItem($(event.currentTarget).closest("tr"));
 
+            $("#Tab3FileGrid1").data("kendoGrid").dataSource.data([]);
+
             if (confirm('Do you really want to delete this file?')) {
                 //event.preventDefault();
                 //event.stopPropagation();
@@ -1202,13 +1225,14 @@
         var paramModel = { "refLevel1": "", "refLevel2": "" }
         // Download Button in Grid
         function handleView_Tab4GmpCerificateViewGrid2(event) {
+            debugger;
             event.preventDefault();
             var selectedRow = Tab4GmpCerificateViewGrid2.dataItem($(event.currentTarget).closest("tr"));
-
+            $("#Tab4FileGrid1").data("kendoGrid").dataSource.data([]);
             $.ajax({
                 url: '@Url.Action("GetFileByRefId", "GmpCertificate")',
                 type: 'GET',
-                data: { "refLevel1": selectRow.ID, "refLevel2": "" },
+                data: { "refLevel1": selectedRow.ID, "refLevel2": "" },
                 success: function (data) {
                     $("#Tab4FileGrid1").data("kendoGrid").dataSource.data(data);
                 }
@@ -1839,9 +1863,17 @@
         @*Tab2 Closed*@
     </div>
     <div id="tabs-3">
-        <div class="form-group">
+    
             <div class="row">
-                <div class="col-md-3">License Type & No<span style="color: red">*</span> :</div>
+                <div class="col-md-3">Revision No :</div>
+                <div class="col-md-3"><input type="text" id="Tab3RevisionNo" name="Tab3RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
+                <div class="col-md-3"></div>
+                <div class="col-md-3">
+                    <input type="hidden" id="Tab3ID" name="Tab3ID" class="txtBox" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">License Type & No:<span style="color: red">*</span> :</div>
                 <div class="col-md-3"><input type="text" id="Tab3LicenseNo" name="Tab3LicenseNo" class="form-control txtBox" /></div>
                 <div class="col-md-3">Submission Type :</div>
                 <div class="col-md-3">
@@ -1944,7 +1976,7 @@
                     </fieldset>
                 </div>
             </div>
-        </div>
+       
         <div class="row">
             <div class="col-sm-8">
             </div>

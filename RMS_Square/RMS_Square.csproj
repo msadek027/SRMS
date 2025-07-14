@@ -1435,7 +1435,6 @@
     <Content Include="Content\css\cssTree\ico-jsplumb.ttf" />
     <Content Include="Content\css\cssTree\ico-jsplumb.woff" />
     <Content Include="Areas\Regulatory\Views\TabProduct\frmTabProduct.cshtml" />
-    <Content Include="Areas\Regulatory\Views\TabNarcotics\frmNarcotics.cshtml" />
     <Content Include="Areas\Regulatory\Views\TabNarcotics\frmTabNarcotics.cshtml" />
     <Content Include="Areas\Regulatory\Views\TabProduct\Popup.cshtml" />
     <Content Include="Areas\Regulatory\Views\NarcoticLicense\frmNarcoticLicenseReport.cshtml" />
@@ -1734,6 +1733,7 @@
     <Compile Include="Areas\Regulatory\Models\BEL\DepartmentInfoBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\DesignationInfoBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\DocumentFileInfoBEL.cs" />
+    <Compile Include="Areas\Regulatory\Models\BEL\DocumentUpload.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\DosageFormInfoBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\EmployeeInfoBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\ExportDetailBEL.cs" />
@@ -1744,6 +1744,7 @@
     <Compile Include="Areas\Regulatory\Models\BEL\ImportProductRegistrationBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\MarketAuthCertificateBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\MeetingInfoBEL.cs" />
+    <Compile Include="Areas\Regulatory\Models\BEL\NarcoticEntryItemInfo.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\NarcoticLicenseBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\NarcoticLicenseDetailBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\NocDetailInfo.cs" />
@@ -1784,6 +1785,7 @@
     <Compile Include="Areas\Regulatory\Models\DAO\ImportProductRegistrationDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\MarketAuthCertificateDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\MeetingInfoDAO.cs" />
+    <Compile Include="Areas\Regulatory\Models\DAO\NarcoticInfoDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\NarcoticLicenseDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\NocInfoDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\PackSizeInfoDAO.cs" />
