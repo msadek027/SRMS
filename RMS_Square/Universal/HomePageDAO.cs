@@ -485,15 +485,12 @@ namespace RMS_Square.Universal
         public IList<MeetingInfoBEL> GetMeetingInfo()
         {
             string setDate = DateTime.Today.ToString("dd/MM/yyyy");
-            var query = new StringBuilder();
-            query.Append(" SELECT D.ID, D.MEETING_TYPE, D.REMARKS, D.MEETING_NAME,TO_CHAR(D.MEETING_DATE, 'dd/mm/yyyy')MEETING_DATE, TO_CHAR(D.MEETING_DATE,'RRRR') MEETING_YEAR,TO_CHAR(D.SET_ON, 'dd/mm/yyyy')SET_ON, REMARKS ");
-            query.Append(" FROM MEETING_INFO D");
-            query.Append(" WHERE 1=1 ");
-            query.Append(" AND EXTRACT(YEAR FROM D.MEETING_DATE) IN (EXTRACT(YEAR FROM SYSDATE), EXTRACT(YEAR FROM SYSDATE) - 1) ");
-            query.Append(" ORDER BY  D.ID DESC ");
+        
 
-            string qry = string.Format(query.ToString());
-            DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), string.Format(query.ToString()));
+            string qry = @"SELECT D.ID, D.MEETING_TYPE, D.REMARKS, D.MEETING_NAME,TO_CHAR(D.MEETING_DATE, 'dd/mm/yyyy')MEETING_DATE, TO_CHAR(D.MEETING_DATE,'RRRR') MEETING_YEAR,TO_CHAR(D.SET_ON, 'dd/mm/yyyy')SET_ON,
+                           DF.FILEID,DF.REFNO,DF.FILECODE,DF.FILENAME,DF.EXTENTION,DF.FILESIZE,DF.REFLEVEL1,DF.REFLEVEL2,DF.FILETYPE
+                           FROM MEETING_INFO D,(Select * FROM DOCUMENTFILEINFO Where FILETYPE=7) DF WHere  D.ID=DF.REFLEVEL1(+) AND EXTRACT(YEAR FROM D.MEETING_DATE) IN (EXTRACT(YEAR FROM SYSDATE), EXTRACT(YEAR FROM SYSDATE) - 1) ORDER BY  D.ID DESC";
+            DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), qry);
 
             var item = (from DataRow row in dt.Rows
                         select new MeetingInfoBEL
@@ -505,6 +502,12 @@ namespace RMS_Square.Universal
                             MeetingDate = row["MEETING_DATE"].ToString(),
                             MeetingYear = row["MEETING_YEAR"].ToString(),
                             SetOn = row["SET_ON"].ToString(),
+
+                            FileID = row["FILEID"].ToString(),
+                            FileCode = row["FILECODE"].ToString(),
+                            Extention = row["EXTENTION"].ToString(),
+                            FileName = row["FILENAME"].ToString(),
+
                         }).ToList();
             return item;
         }

@@ -150,7 +150,7 @@
             //,todayBtn: true,
         });
         $('#btnView').click(function () {
-
+            DisplayPopupWindow.center();
             DisplayPopupWindow.open();
 
             $.ajax({
@@ -195,7 +195,7 @@
             editable: false,
             selectable: "row",
             //selectable: "multiple",
-            toolbar: ["excel",{ template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: ["excel", { template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, { template: "<input type='text' id='txtPopupInputID'  style='float:right' placeholder='ID...' class='k-textbox'>" }],
             excel: {
                 fileName: "Export.xlsx",
                 allPages: true,
@@ -203,8 +203,7 @@
             },
             navigatable: true,
             height: "100%",
-            // groupable: true,
-            groupable: { messages: { empty: "Custom message text" } },
+  
             columnMenu: true,
             reorderable: true,
             resizable: true,
@@ -248,7 +247,16 @@
                 ]
             });
         });
-
+        $("#txtPopupInputID").keyup(function () {
+            var val = $(this).val();
+            $("#DisplayPopupWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "ID", operator: "contains", value: val },
+                   
+                ]
+            });
+        });
         //Display window
         var DisplayPopupWindow = $("#DisplayPopupWindow").kendoWindow({
             actions: ["Minimize", "Maximize", "Close"],
@@ -257,7 +265,7 @@
             draggable: true,
             modal: true,
             title: "List of Record."
-        }).data("kendoWindow").center();
+        }).data("kendoWindow");
 
 
         //To Define Data  for Kendo Grid

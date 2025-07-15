@@ -20,5 +20,13 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public virtual ICollection<DocumentFileInfoBEL> FileDetail { get; set; }
         public string FromDate { get; set; }
         public string ToDate { get; set; }
+
+        public string FileID { get; set; }
+
+        public string FileCode { get; set; }
+
+        public string Extention { get; set; }
+
+        public string FileName { get; set; }
     }
 }

@@ -2281,6 +2281,7 @@
         };
         // Download Button in Grid
         function handleDownload_Tab4FileGrid1(event) {
+            event.preventDefault(); 
             dataItemInfo = Tab4FileGrid1.dataItem($(event.currentTarget).closest("tr"));
             window.location.href = '@Url.Action("Download", "General")' + '?path=' + dataItemInfo.FileCode + dataItemInfo.Extention + '&fileName=' + dataItemInfo.FileName + '&fileId=' + dataItemInfo.FileID;
         };
