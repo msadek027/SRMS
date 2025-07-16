@@ -91,8 +91,31 @@
 
 
 
-</style>
 
+    .dropdown:hover > .dropdown-menu {
+        display: block;
+    }
+
+    /* Optional – keep the caret pointing up while open on hover */
+    .dropdown:hover > .dropdown-toggle .caret {
+        transform: rotate(180deg);
+    }
+
+</style>
+<script>
+    $(function () {
+        var $dd = $('.dropdown');
+
+        $dd.hover(
+            function () {              // mouseenter
+                $(this).addClass('open');
+            },
+            function () {              // mouseleave
+                $(this).removeClass('open');
+            }
+        );
+    });
+</script>
 <div class="box-body" id="divFirst">
     <div class="row">
         <input type="hidden" id="UserRole" data-value="@Session["RoleName"]" />
@@ -166,6 +189,8 @@
                 <li><a href="#" onclick="openCompanyTab('0007')">SLL</a></li>
             </ul>
         </div>
+   
+
         <!-- Products Dropdown -->
         <div class="dropdown" style="margin: 10px; display: inline-block;">
             <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -1303,7 +1328,7 @@
             sortable: true,
             filterable: true,
             editable: true,
-            height: 350,
+            height:250,
             selectable: "row",
             toolbar: ["excel", { template: "<input type='text' id='txtInputLicense'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             excel: {
@@ -1312,20 +1337,55 @@
                 filterable: true
             },
             navigatable: true,
-            groupable: true,
+            //groupable: true,
             columnMenu: true,
             reorderable: true,
             resizable: true,
+            dataBound: onDataBound,  
             columns: [
-                 { field: "ID", title: "ID", width: 70 },
+                 { field: "ID", title: "ID", width: 50 },
                  { field: "SlNo ", hidden: true, title: "SlNo", width: 70 },
                  { field: "MeetingType", title: "Meeting Type", width: 100 },
                  { field: "MeetingYear", title: "Year", width: 80, hidden: true,},
-                 { field: "MeetingSubject", title: "Meeting Subject", width: 200 },
-                 { field: "MeetingDate", title: "MeetingDate", width: 100 },
-                 { field: "Remarks", title: "Remarks", width: 100 }
+                 { field: "MeetingSubject", title: "Meeting Subject", width: 150 },
+                 { field: "MeetingDate", title: "MeetingDate", width: 90 },
+                 { field: "Remarks", title: "Remarks", width: 100 },
+               
+
+
+            { field: "FileID", hidden: true },
+            { field: "FileCode", hidden: true },
+            { field: "Extention", hidden: true },
+            { field: "FileName", title: "File Name",  hidden: true,width: 300, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+
+            { command: [{ name: "Download", text: "Download", imageClass: "glyphicon glyphicon-download", click: handleDownload }], title: "Download Action", width: "120px", attributes: { "class": "btnDownload" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
             ]
         }).data('kendoGrid');
+
+        var dataItemInfo={};
+        function handleDownload(event) {
+            debugger;
+            event.preventDefault(); 
+            dataItemInfo = licenseInfoGrid.dataItem($(event.currentTarget).closest("tr"));
+            window.location.href = '@Url.Action("Download", "General")' + '?path=' + dataItemInfo.FileCode + dataItemInfo.Extention + '&fileName=' + dataItemInfo.FileName + '&fileId=' + dataItemInfo.FileID;
+        };
+        function onDataBound() {
+            var grid = this;
+
+            grid.tbody.find("tr").each(function () {
+                var dataItem = grid.dataItem(this);
+
+                if (!dataItem.FileID) {                 // null / undefined / empty
+                    // grab the link that Kendo rendered for the command
+                    var $btn = $(this).find(".k-grid-Download");
+
+                    // visually grey‑out and make it inert
+                    $btn.addClass("k-state-disabled")    // Kendo disabled style
+                        .attr("disabled", "disabled")   // for keyboard users
+                        .css({ "pointer-events": "none", "opacity": 0.5 });
+                }
+            });
+        }
 
         function scrollTicker() {
             var $msg = $('#MessageScrolling');
@@ -1385,6 +1445,7 @@
             success: function (data) {
                 if (data != "") {
                     $("#LicenseInfoGrid").data("kendoGrid").dataSource.data(data);
+                    MeetingWindow.center();
                     MeetingWindow.open();
                 }
                 else {

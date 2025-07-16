@@ -91,6 +91,8 @@
 
 
 
+
+
 </style>
 
 <div class="box-body" id="divFirst">
@@ -150,12 +152,12 @@
    
 
     <hr />
-    <div class="row">      
+    <div class="row" hidden>      
         <!-- Company Dropdown -->
         <div class="dropdown" style="margin: 10px; display: inline-block;">
-            <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <i class="glyphicon glyphicon-arrow-down"></i> Company
-                <span class="caret"></span>
+                @*<span class="caret"></span>*@
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                 <li><a href="#" onclick="openCompanyTab('0001')" >SPPLC (Pabna Unit)</a></li>
@@ -166,12 +168,13 @@
                 <li><a href="#" onclick="openCompanyTab('0007')">SLL</a></li>
             </ul>
         </div>
+   
+
         <!-- Products Dropdown -->
         <div class="dropdown" style="margin: 10px; display: inline-block;">
-            <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <i class="glyphicon glyphicon-shopping-cart"></i> Products
-                <span class="caret"></span>
-            </button>
+            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <i class="glyphicon glyphicon-shopping-cart"></i> Products      
+            </button>       
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
                 <li><a href="#" onclick="openProductTab('0001')">SPPLC (Pabna Unit)</a></li>
                 <li><a href="#" onclick="openProductTab('0002')">SPPLC (Dhaka Unit)</a></li>
@@ -180,10 +183,9 @@
                 <li><a href="#" onclick="openProductTab('0006')">SPPLC (Ayurvedic)</a></li>
                 <li><a href="#" onclick="openProductTab('0007')">SLL</a></li>
             </ul>
-        </div>
-     
+        </div>     
         <div class="dropdown" style="margin: 10px; display: inline-block;">
-            <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <i class="glyphicon glyphicon-plus"></i> Narcotics
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -197,7 +199,7 @@
         </div>
 
         <div class="dropdown" style="margin: 10px; display: inline-block;">
-            <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <i class="glyphicon glyphicon-file"></i> View Reports
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -210,14 +212,14 @@
         </div>
        
         <div class="dropdown" style="margin: 10px; display: inline-block;">
-            <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="pendingButton" data-toggle="collapse" data-target="#collapsePending" aria-expanded="false" aria-haspopup="true">
+            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="pendingButton" data-toggle="collapse" data-target="#collapsePending" aria-expanded="false" aria-haspopup="true">
                 <i class="glyphicon glyphicon-time"></i> Pending Work
             </button>
         </div>
 
 
         <div class="dropdown" style="margin: 20px; display: inline-block;">
-            <button class="btn btn-default btn-lg dropdown-toggle" type="button" id="btnNotification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="btnNotification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <i class="glyphicon glyphicon-bell"></i> Notification
             </button>
         </div>

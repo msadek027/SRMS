@@ -1366,7 +1366,7 @@
             editable: false,
             selectable: "row",
             //selectable: "multiple",
-            toolbar: ["excel", { template: "<input type='text' id='txtPopupInput_ProductInfoViewGrid1'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: ["excel", { template: "<input type='text' id='txtPopupInput_ProductBrand'  style='float:right' placeholder='Brand...' class='k-textbox'>" } ,{ template: "<input type='text' id='txtPopupInput_ProductGeneric'  style='float:right' placeholder='Generic...' class='k-textbox'>" }, ],
             excel: {
                 fileName: "Export.xlsx",
                 allPages: true,
@@ -1393,18 +1393,27 @@
 
         }).data('kendoGrid');
 
-        $("#txtPopupInput_ProductInfoViewGrid1").keyup(function () {
+        $("#txtPopupInput_ProductBrand").keyup(function () {
             var val = $(this).val();
             $("#ProductInfoViewGrid1").data("kendoGrid").dataSource.filter({
                 logic: "or",
                 filters: [
-                     { field: "ProductCode", operator: "contains", value: val },
+                     { field: "BrandName", operator: "contains", value: val },
        
                 ]
             });
         });
 
-
+        $("#txtPopupInput_ProductGeneric").keyup(function () {
+            var val = $(this).val();
+            $("#ProductInfoViewGrid1").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "GenericCode", operator: "contains", value: val },
+       
+                ]
+            });
+        });
 
       
 
