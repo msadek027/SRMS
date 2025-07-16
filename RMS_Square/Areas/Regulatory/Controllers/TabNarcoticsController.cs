@@ -6,11 +6,16 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Systems.Controllers;
+using Systems.Models;
 
 namespace RMS_Square.Areas.Regulatory.Controllers
 {
-    public class TabNarcoticsController : Controller
+    public class TabNarcoticsController : ControllerController
     {
+        private FileDetailModel _fileModel = null;
+        private static string _serverFilePath = string.Empty;
+        private NarcoticInfoDAO _dalObj = null;
         NarcoticInfoDAO primaryDAO = new NarcoticInfoDAO();
         //
         // GET: /Regulatory/TabNarcotics/
@@ -119,50 +124,55 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             }
         }
 
-        [HttpPost]
-        public ActionResult UploadNarcoticFile(decimal entryInfoId, string documentName)
+        public ActionResult UploadFile(string refLevel1, string refLevel2, string fileSize, string refNo)
         {
             try
             {
-                foreach (string file in Request.Files)
+                var obj = PutUploadFile(refLevel1, refLevel2, fileSize, _serverFilePath, (int)Enums.E_FormFileType.NarcoticsEntryInfo, refNo);
+                if (obj.Item1 == "S")
                 {
-                    var upload = Request.Files[file];
-                    if (upload != null && upload.ContentLength > 0)
+                    _fileModel = new FileDetailModel();
+                    _fileModel.FileName = obj.Item2.FileName;
+                    _fileModel.FileCode = obj.Item2.FileCode;
+                    _fileModel.FileSize = obj.Item2.FileSize;
+                    _fileModel.FileType = obj.Item2.FileType;
+                    _fileModel.RefNo = obj.Item2.RefNo;
+                    _fileModel.RefLevel1 = obj.Item2.RefLevel1;
+                    _fileModel.RefLevel2 = obj.Item2.RefLevel2;
+                    _fileModel.Extention = obj.Item2.Extention;
+
+                    bool isSave = SaveUploadFileInfo(_fileModel, Session["UserID"] as string);
+
+                    if (isSave)
                     {
-                        string fileName = Path.GetFileName(upload.FileName);
-                        string folderPath = Server.MapPath("~/UploadedFiles/Narcotics");
-                        if (!Directory.Exists(folderPath))
-                        {
-                            Directory.CreateDirectory(folderPath);
-                        }
-                        string filePath = Path.Combine(folderPath, fileName);
-                        upload.SaveAs(filePath);
-
-                        // Save in DB
-                        DocumentUpload model = new DocumentUpload()
-                        {
-                            EntryInfoId = entryInfoId,
-                            DocumentName = documentName,
-                            FilePath = "/UploadedFiles/Narcotics/" + fileName
-                        };
-
-                        string userId = Session["UserID"] as string;
-                        bool saved = primaryDAO.SaveDocumentUpload(model, userId);
-
-                        if (!saved)
-                        {
-                            return Json(new { msgType = "FUE" });
-                        }
+                        return Json(new { msgType = "FUS", Status = "Yes", FileList = GetFileByParameters(_fileModel).OrderByDescending(o => o.FileID) }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { msgType = "FUE", Status = "Error saving file information to database", FileList = "" }, JsonRequestBehavior.AllowGet);
                     }
                 }
-
-                return Json(new { msgType = "FUS" });
+                else if (obj.Item1 == "L")
+                {
+                    return Json(new { msgType = "FLI", Status = "File size limit exceeded", FileList = "" }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(new { msgType = "FUE", Status = "Error uploading file", FileList = "" }, JsonRequestBehavior.AllowGet);
+                }
             }
             catch (Exception ex)
             {
-                return Json(new { msgType = "FUE", error = ex.Message });
+                return Json(new { msgType = "FUE", Status = "Error: " + ex.Message, FileList = "" }, JsonRequestBehavior.AllowGet);
             }
         }
-
+        public ActionResult GetFileByRefId(string refLevel1, string refLevel2)
+        {
+            _fileModel = new FileDetailModel();
+            _fileModel.FileType = (int)Enums.E_FormFileType.MeetingInfo;
+            _fileModel.RefLevel1 = refLevel1;
+            _fileModel.RefLevel2 = refLevel2;
+            return Json(GetFileByParameters(_fileModel).OrderBy(o => o.FileID), JsonRequestBehavior.AllowGet);
+        }
 	}
 }
