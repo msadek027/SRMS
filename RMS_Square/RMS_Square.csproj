@@ -1149,6 +1149,7 @@
     <Content Include="Content\CustomCSS\InputText.css" />
     <Content Include="Content\CustomCSS\toastr.css" />
     <Content Include="Content\Images\ajax-loader1.gif" />
+    <Content Include="Content\Images\avatar60x60.png" />
     <Content Include="Content\Images\bg_img.jpg" />
     <Content Include="Content\Images\crossicon.png" />
     <Content Include="Content\Images\forgotpassword.png" />

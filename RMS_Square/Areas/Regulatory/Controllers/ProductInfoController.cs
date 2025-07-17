@@ -85,6 +85,12 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             var data = primaryDAO.GetProductFromRecipe(companyCode);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
+        public ActionResult GetProductFromRecipe2(string CompanyCode)
+        {
+            var data = primaryDAO.GetProductFromRecipe(CompanyCode);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
 
         [ActionAuth]
         public ActionResult frmProductInfoView()

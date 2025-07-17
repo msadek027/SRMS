@@ -4,6 +4,7 @@
 }
 <script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
 <style type="text/css">
     .k-grid-toolbar {
         background-color: white;
@@ -91,421 +92,379 @@
 
 
 
+    .select2-container--default .select2-selection--single {
+        height: 40px !important;
+        font-size: 14px !important;
+        line-height: 1 !important;
+        display: flex !important;
+        align-items: center !important;
+      
+        border-radius: 0px !important;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__clear {
+            margin-left: 8px; /* Add space between text and "x" */
+            font-size: 14px; /* Optional: resize "x" icon */
+            color: #999; /* Optional: gray tone */
+            cursor: pointer;
+            visibility:hidden;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            padding-left: 0 !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+            line-height: 1 !important;
+            font-size: 14px !important;
+            margin-top: 0px !important;
+        }
+
+        /* Arrow adjustment */
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 40px !important;          
+            right: 4px !important;
+            visibility:hidden;
+        }
 
 
+    .select2-search--dropdown {
+        position: relative;
+    }
+
+        .select2-search--dropdown:after {
+            content: "\f002"; /* FontAwesome search icon */
+            font-family: FontAwesome;
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            color: #999;
+            font-size: 12px;
+            pointer-events: none;
+        }
+
+        .select2-search--dropdown .select2-search__field {
+            padding-right: 20px !important;
+        }
 </style>
 
 <div class="box-body" id="divFirst">
+    <div class="row">  <input type="hidden" id="UserRole" data-value="@Session["RoleName"]" />   </div>
     <div class="row">
-        <input type="hidden" id="UserRole" data-value="@Session["RoleName"]" />
-     
-        <div class="col-md-6">
-            <div class="row">
-                <div class="col-md-12">
-                    <button class="btn btn-lg btn-primary" style="width:100%;" type="button" data-toggle="collapse" data-target="#collapseSummary" aria-expanded="false" aria-controls="collapseSummary">
-                        Find A Product
-                    </button>
+        <div class="col-md-7">
+            @*<i class="glyphicon glyphicon-filter"></i>*@
+            <div class="btn-group" style="display: flex; align-items: center; gap: 0px;">               
+                <select id="CompanyCode" name="CompanyCode" class="form-control input-sm" style="height: 40px; font-size: 14px; width:15%">
+                    <option value="All">&#x1F50D;</option>   
+                 
+                  
+                
 
-                </div>
+                    <option value="0001">SPPLC (Pabna Unit)</option>
+                    <option value="0002">SPPLC (Dhaka Unit)</option>
+                    <option value="0004">SPPLC (CD)</option>
+                    <option value="0005">SPPLC (Herbal)</option>
+                    <option value="0006">SPPLC (Ayurvedic)</option>
+                    <option value="0007">SLL</option>
+                </select>
+                <select id="ProductCode" name="ProductCode" class="form-control input-sm" style="height: 40px; font-size: 14px; width: 80%">
+                    <option></option>
+                </select>
+                <button id="btnShowSummary" class="btn btn-default" type="button" style="height: 40px; font-size: 14px; width: 5%">
+                    <i class="glyphicon glyphicon-search"></i>&nbsp; 
+                   
+                </button>
             </div>
-                <div class="row collapse" id="collapseSummary">              
-                            <div class="col-md-5">
-                                <input type="text" id="BrandNameSummary" name="BrandNameSummary" class="form-control" readonly placeholder="Brand Name / Generic Name" />
-                                <input type="hidden" class="form-control txtBox" id="ProductCodeSummary" name=" ProductCodeSummary">
+
+        </div>
+        
+   
+                <div class="col-md-5">
+                    <div class="text-right">
+                        <div class="btn-group d-flex align-items-center" style="display: flex; gap: 0px;">
+                            <button type="button" class="btn btn-default" id="btnMeetingSearch">
+                                <i class="glyphicon glyphicon-bell"></i> Meeting
+                            </button>
+
+                            <div id="MessageScrollingWrapper" style="flex: 1;">
+                                <div id="MessageScrolling"></div>
                             </div>
-                            <div class="col-md-4">
-                                <input type="text" class="form-control txtBox" id="CompanyNameSummary" name="CompanyNameSummary" placeholder="Double Click to Select" readonly>
-                                <input type="hidden" class="form-control txtBox" id="CompanyCodeSummary" name=" CompanyCodeSummary">
-                            </div>
-                            <div class="col-md-2">
-                                <button id="btnShowSummary" class="btn btn-default btn-md" type="button"><i class="glyphicon glyphicon-search"></i>View Details</button>
-                            </div>
-                            <div class="col-md-1">  </div>
                         </div>
-              
-            </div>
-    
-        <div class="col-md-6">
-            <div class="text-right">
-                <div class="btn-group d-flex align-items-center" style="display: flex; gap: 10px;">
-                    <button type="button" class="btn btn-default" id="btnMeetingSearch">
-                        <i class="glyphicon glyphicon-bell"></i> Meeting
-                    </button>
-
-                    <div id="MessageScrollingWrapper" style="flex: 1;">
-                        <div id="MessageScrolling"></div>
                     </div>
+
                 </div>
             </div>
-
-        </div>   
-    </div>
-    <br />
-
-
-
-    <br />
-
-
-
-
-   
-
     <hr />
-    <div class="row" hidden>      
-        <!-- Company Dropdown -->
-        <div class="dropdown" style="margin: 10px; display: inline-block;">
-            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <i class="glyphicon glyphicon-arrow-down"></i> Company
-                @*<span class="caret"></span>*@
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                <li><a href="#" onclick="openCompanyTab('0001')" >SPPLC (Pabna Unit)</a></li>
-                <li><a href="#" onclick="openCompanyTab('0002')" >SPPLC (Dhaka Unit)</a></li>
-                <li><a href="#" onclick="openCompanyTab('0004')" >SPPLC (CD)</a></li>               
-                <li><a href="#" onclick="openCompanyTab('0005')">SPPLC (Herbal)</a></li>
-                <li><a href="#" onclick="openCompanyTab('0006')">SPPLC (Ayurvedic)</a></li>
-                <li><a href="#" onclick="openCompanyTab('0007')">SLL</a></li>
-            </ul>
-        </div>
-   
-
-        <!-- Products Dropdown -->
-        <div class="dropdown" style="margin: 10px; display: inline-block;">
-            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <i class="glyphicon glyphicon-shopping-cart"></i> Products      
-            </button>       
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                <li><a href="#" onclick="openProductTab('0001')">SPPLC (Pabna Unit)</a></li>
-                <li><a href="#" onclick="openProductTab('0002')">SPPLC (Dhaka Unit)</a></li>
-                <li><a href="#" onclick="openProductTab('0004')">SPPLC (CD)</a></li>
-                <li><a href="#" onclick="openProductTab('0005')">SPPLC (Herbal)</a></li>
-                <li><a href="#" onclick="openProductTab('0006')">SPPLC (Ayurvedic)</a></li>
-                <li><a href="#" onclick="openProductTab('0007')">SLL</a></li>
-            </ul>
-        </div>     
-        <div class="dropdown" style="margin: 10px; display: inline-block;">
-            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <i class="glyphicon glyphicon-plus"></i> Narcotics
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                <li><a href="#" onclick="openNarcoticsTab('0001')">SPPLC (Pabna Unit)</a></li>
-                <li><a href="#" onclick="openNarcoticsTab('0002')">SPPLC (Dhaka Unit)</a></li>
-                <li><a href="#" onclick="openNarcoticsTab('0004')">SPPLC (CD)</a></li>
-                <li><a href="#" onclick="openNarcoticsTab('0005')">SPPLC (Herbal)</a></li>
-                <li><a href="#" onclick="openNarcoticsTab('0006')">SPPLC (Ayurvedic)</a></li>
-                <li><a href="#" onclick="openNarcoticsTab('0007')">SLL</a></li>
-            </ul>
-        </div>
-
-        <div class="dropdown" style="margin: 10px; display: inline-block;">
-            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <i class="glyphicon glyphicon-file"></i> View Reports
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                <li><a href="/Regulatory/CompanyLicense/frmCompanyLicenseView">Manufacturing License</a></li>
-                <li><a href="/Regulatory/GmpCertificate/frmGmpCertificateView">GMP Certificate</a></li>
-                <li><a href="/Regulatory/ProductInfo/frmProductInfoView">Products</a></li>
-                <li><a href="/Regulatory/MeetingInfo/frmMeetingInfoView">Meeting Info</a></li>
-                <li><a href="/Regulatory/NarcoticLicense/frmNarcoticLicenseReport">Narcotics Item info & License</a></li>          
-            </ul>
-        </div>
-       
-        <div class="dropdown" style="margin: 10px; display: inline-block;">
-            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="pendingButton" data-toggle="collapse" data-target="#collapsePending" aria-expanded="false" aria-haspopup="true">
-                <i class="glyphicon glyphicon-time"></i> Pending Work
-            </button>
-        </div>
-
-
-        <div class="dropdown" style="margin: 20px; display: inline-block;">
-            <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="btnNotification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <i class="glyphicon glyphicon-bell"></i> Notification
-            </button>
-        </div>
-    </div>
-    <hr />
-
-    <div class="row">
-        <div class="col-md-3"></div>
-        <div class="col-md-6">
-            <button class="btn btn-lg btn-primary" style="width:100%;" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                Approval Summary
-            </button>
-        </div>
-        <div class="col-md-1"></div>
-        <div class="col-md-2">
-            @*<a href="../Home/frmNewIndex" id="btnMore" class="btn btn-lg btn-bitbucket"> More  </a>*@
-        </div>
-    </div>
-    <br />
-    <div class="collapse" id="collapseExample">
-        <div class="card card-body" style="border: solid; color: aliceblue; background-color: aliceblue;">
-            <div class="row">
-                <div class="col-md-3"></div>
-                <div class="col-md-2">
-                    <div class="input-group date">
-                        <input type="text" class="form-control txtBox" id="fromDt" name="fromDt" placeholder="From Date">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                    </div>
-                </div>
-                <div class="col-md-1"></div>
-                <div class="col-md-2">
-                    <div class="input-group date">
-                        <input type="text" class="form-control txtBox" id="toDt" name="toDt" placeholder="To Date">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                    </div>
-                </div>
-                <div class="col-md-1">
-                    <button id="btnRefreshData" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Refresh</button>
-                </div>
-                <div class="col-md-2"></div>
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <button class="btn btn-lg btn-primary" style="width:100%;" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Approval Summary
+                </button>
+            </div>
+            <div class="col-md-3">
+      
             </div>
         </div>
-    </div>
-
-
-    <br />
-    <div class="row">
-        <div class="col-sm-12">
-            <div id="GenericDetailGrid" class="" style="cursor: pointer;"></div>
-        </div>
-    </div>
-    <br />
-
-    @*<div class="row" id="pendingButton">
-        <div class="col-md-3"></div>
-        <div class="col-md-6">
-            <button class="btn btn-lg btn-primary" style="width:100%;" type="button" data-toggle="collapse" data-target="#collapsePending" aria-expanded="false" aria-controls="collapsePending">
-                Pending Work
-            </button>
-        </div>
-        <div class="col-md-3"></div>
-    </div>*@
-
-
-    <br />
-    <div id="divPending">
-        <div class="collapse" id="collapsePending">
+     
+        <div class="collapse" id="collapseExample">
             <div class="card card-body" style="border: solid; color: aliceblue; background-color: aliceblue;">
                 <div class="row">
-
+                    <div class="col-md-3"></div>
                     <div class="col-md-2">
                         <div class="input-group date">
-                            <input type="text" class="form-control txtBox" id="pendingFromDt" name="pendingFromDt" placeholder="From Date">
+                            <input type="text" class="form-control txtBox" id="fromDt" name="fromDt" placeholder="From Date">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                         </div>
                     </div>
-
+                    <div class="col-md-1"></div>
                     <div class="col-md-2">
                         <div class="input-group date">
-                            <input type="text" class="form-control txtBox" id="pendingToDt" name="pendingToDt" placeholder="To Date">
+                            <input type="text" class="form-control txtBox" id="toDt" name="toDt" placeholder="To Date">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                         </div>
                     </div>
-                    <div class="col-md-2">
-                        <input type="text" class="form-control txtBox" id="CompanyName" name="CompanyName" placeholder="Double Click to Select" readonly>
-                        <input type="hidden" class="form-control txtBox" id="CompanyCode" name="CompanyCode">
+                    <div class="col-md-1">
+                        <button id="btnRefreshData" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Refresh</button>
                     </div>
-
-                    <div class="col-md-2">
-                        <select id="rptType" class="form-control txtBox" tabindex="" name="rptType">
-                            <option value="">--Select Any--</option>
-                            <option value="Recipe">Recipe</option>
-                            <option value="DTL">DTL</option>
-                            <option value="Product">Product Registration</option>
-                            <option value="Price">Price</option>
-                            <option value="MA">MA Certificate</option>
-                            <option value="Amendment">Amendment</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <button id="btnShowPending" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Find</button>
-                    </div>
+                    <div class="col-md-2"></div>
                 </div>
-
-                <div class="row" id="pendingGrid">
-                    <div class="col-sm-12">
-                        <div id="PendingDetailGrid" class=""></div>
-                    </div>
-                </div>
-
             </div>
         </div>
-    </div>
- 
 
 
-
-    <div id="ProductWindow" class="PopupWindowLayout" style="display: none;">
-        <div id="ProductWindowGrid" class="PopUpGrid"></div>
-    </div>
-
-    <div id="FileWindow" class="PopupWindowLayout" style="display: none;">
-        <div id="FileGrid" class="PopUpGrid"></div>
-    </div>
-
-    <div id="MeetingWindow" class="PopupWindowLayout" style="display: none;">
-        <div id="LicenseInfoGrid" class="PopUpGrid"></div>
-    </div>
-
-    <div id="ProductListWindow" class="PopupWindowLayout" style="display: none;">
-        <div id="ProductListGrid" class="PopUpGrid"></div>
-    </div>
-
-    <div id="ProductSummaryWindow" class="PopupWindowLayout" style="display: none;">
-        <h1 style="text-align:center;"><u><b>Product Summary</b></u></h1>
-        <br />
+      
         <div class="row">
-            <div class="form-group">
-                <div class="col-md-1"></div>
-                <div class="col-md-1"><b>Brand Name</b></div>
-                <div class="col-md-2"><input type="text" id="BrandNameModal" name="BrandNameModal" maxlength="50" style="width:100%" readonly /></div>
-                <div class="col-md-1"><b>Generic Name</b></div>
-                <div class="col-md-2"><input type="text" id="GenericNameModal" name="GenericNameModal" maxlength="50" style="width:100%" readonly /></div>
-                <div class="col-md-1"><b>Company</b></div>
-                <div class="col-md-2"><input type="text" id="CompanyNameModal" name="CompanyNameModal" maxlength="50" style="width:100%" readonly /></div>
+            <div class="col-sm-12">
+                <div id="GenericDetailGrid" class="" style="cursor: pointer;"></div>
             </div>
         </div>
         <br />
-        <div class="row">
-            <div class="col-md-3 BoxStyle">
-                <h3 style="text-align:center">Recipe</h3>
-                <div class="form-group">
-                    <div class="col-xs-5">Submission</div>
-                    <div class="col-xs-3">
-                        <input type="text" id="RCPSubmissionDate" name="RCPSubmissionDate" maxlength="50" readonly />
-                        <input type="hidden" id="RCPID" name="RCPID" maxlength="50" readonly />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-xs-5">Approval</div>
-                    <div class="col-xs-3"><input type="text" id="RCPApprovalDate" name="RCPApprovalDate" maxlength="50" readonly /></div>
-                </div>
-                <div class="form-group">
-                    <div class="col-xs-5">Valid To</div>
-                    <div class="col-xs-3"><input type="text" id="RCPValidUpto" name="RCPValidUpto" maxlength="50" readonly /></div>
-                </div>
-                <div class="form-group">
-                    <div class="col-xs-5">Remarks</div>
-                    <div class="col-xs-3"><input type="text" id="RCPRemarks" name="RCPRemarks" maxlength="50" readonly /></div>
-                </div>
-                <div class="col-lg-5"><button class="btn btn-md btn-flat" id="btnRecipeDownload"> Download </button></div>
-            </div>
 
-            <div class="col-md-3 BoxStyle">
-                <h3 style="text-align:center">DTL</h3>
-                <div class="form-group">
-                    <div class="col-md-5">Submission</div>
-                    <div class="col-md-3">
-                        <input type="text" id="DTLSubmissionDate" name="DTLSubmissionDate" maxlength="50" readonly />
-                        <input type="hidden" id="REGID" name="REGID" maxlength="50" readonly />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-5">Approval</div>
-                    <div class="col-md-3"><input type="text" id="DTLApprovalDate" name="DTLApprovalDate" maxlength="50" readonly /></div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-5">Specification</div>
-                    <div class="col-md-3"><input type="text" id="ProductSpecification" name="ProductSpecification" maxlength="50" readonly /></div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-5">Remarks</div>
-                    <div class="col-md-3"><input type="text" id="DTLRemarks" name="DTLRemarks" maxlength="50" readonly /></div>
-                </div>
-                <div class="col-lg-5"><button class="btn btn-md btn-flat" id="btnDTLDownload"> Download </button></div>
-            </div>
 
-            <div class="col-md-3 BoxStyle">
-                <h3 style="text-align:center">Product Registration</h3>
+
+        <br />
+        <div id="divPending">
+            <div class="collapse" id="collapsePending">
+                <div class="card card-body" style="border: solid; color: aliceblue; background-color: aliceblue;">
+                    <div class="row">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-6">
+                            <button class="btn btn-lg btn-primary" style="width:100%;" type="button" >
+                               Pending Work
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-2">
+                            <div class="input-group date">
+                                <input type="text" class="form-control txtBox" id="pendingFromDt" name="pendingFromDt" placeholder="From Date">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2">
+                            <div class="input-group date">
+                                <input type="text" class="form-control txtBox" id="pendingToDt" name="pendingToDt" placeholder="To Date">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                      
+                        <div class="col-md-1">
+                            <button id="btnShowPending" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Refresh</button>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+
+                    <div class="row" id="pendingGrid">
+                        <div class="col-sm-12">
+                            <div id="PendingDetailGrid" class=""></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div id="ProductWindow" class="PopupWindowLayout" style="display: none;">
+            <div id="ProductWindowGrid" class="PopUpGrid"></div>
+        </div>
+
+        <div id="FileWindow" class="PopupWindowLayout" style="display: none;">
+            <div id="FileGrid" class="PopUpGrid"></div>
+        </div>
+
+        <div id="MeetingWindow" class="PopupWindowLayout" style="display: none;">
+            <div id="LicenseInfoGrid" class="PopUpGrid"></div>
+        </div>
+
+        <div id="ProductListWindow" class="PopupWindowLayout" style="display: none;">
+            <div id="ProductListGrid" class="PopUpGrid"></div>
+        </div>
+    <div id="PendingProductListWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="PendingProductListGrid" class="PopUpGrid"></div>
+    </div>
+
+        <div id="ProductSummaryWindow" class="PopupWindowLayout" style="display: none;">
+            <h1 style="text-align:center;"><u><b>Product Summary</b></u></h1>
+            <br />
+            <div class="row">
                 <div class="form-group">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-1"><b>Brand Name</b></div>
+                    <div class="col-md-2"><input type="text" id="BrandNameModal" name="BrandNameModal" maxlength="50" style="width:100%" readonly /></div>
+                    <div class="col-md-1"><b>Generic Name</b></div>
+                    <div class="col-md-2"><input type="text" id="GenericNameModal" name="GenericNameModal" maxlength="50" style="width:100%" readonly /></div>
+                    <div class="col-md-1"><b>Company</b></div>
+                    <div class="col-md-2"><input type="text" id="CompanyNameModal" name="CompanyNameModal" maxlength="50" style="width:100%" readonly /></div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-3 BoxStyle">
+                    <h3 style="text-align:center">Recipe</h3>
+                    <div class="form-group">
+                        <div class="col-xs-5">Submission</div>
+                        <div class="col-xs-3">
+                            <input type="text" id="RCPSubmissionDate" name="RCPSubmissionDate" maxlength="50" readonly />
+                            <input type="hidden" id="RCPID" name="RCPID" maxlength="50" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-5">Approval</div>
+                        <div class="col-xs-3"><input type="text" id="RCPApprovalDate" name="RCPApprovalDate" maxlength="50" readonly /></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-5">Valid To</div>
+                        <div class="col-xs-3"><input type="text" id="RCPValidUpto" name="RCPValidUpto" maxlength="50" readonly /></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-5">Remarks</div>
+                        <div class="col-xs-3"><input type="text" id="RCPRemarks" name="RCPRemarks" maxlength="50" readonly /></div>
+                    </div>
+                    <div class="col-lg-5"><button class="btn btn-md btn-flat" id="btnRecipeDownload"> Download </button></div>
+                </div>
+
+                <div class="col-md-3 BoxStyle">
+                    <h3 style="text-align:center">DTL</h3>
+                    <div class="form-group">
+                        <div class="col-md-5">Submission</div>
+                        <div class="col-md-3">
+                            <input type="text" id="DTLSubmissionDate" name="DTLSubmissionDate" maxlength="50" readonly />
+                            <input type="hidden" id="REGID" name="REGID" maxlength="50" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-5">Approval</div>
+                        <div class="col-md-3"><input type="text" id="DTLApprovalDate" name="DTLApprovalDate" maxlength="50" readonly /></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-5">Specification</div>
+                        <div class="col-md-3"><input type="text" id="ProductSpecification" name="ProductSpecification" maxlength="50" readonly /></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-5">Remarks</div>
+                        <div class="col-md-3"><input type="text" id="DTLRemarks" name="DTLRemarks" maxlength="50" readonly /></div>
+                    </div>
+                    <div class="col-lg-5"><button class="btn btn-md btn-flat" id="btnDTLDownload"> Download </button></div>
+                </div>
+
+                <div class="col-md-3 BoxStyle">
+                    <h3 style="text-align:center">Product Registration</h3>
+                    <div class="form-group">
+                        <div class="col-md-5">Submission</div>
+                        <div class="col-md-3"><input type="text" id="REGSubmissionDate" name="REGSubmissionDate" maxlength="50" readonly /></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-5">Approval</div>
+                        <div class="col-md-3"><input type="text" id="REGApprovalDate" name="REGApprovalDate" maxlength="50" readonly /></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-5">Valid To</div>
+                        <div class="col-md-3"><input type="text" id="REGValidUptoDate" name="REGValidUptoDate" maxlength="50" readonly /></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-5">DAR No</div>
+                        <div class="col-md-3"><input type="text" id="REGDarNo" name="REGDarNo" maxlength="50" readonly /></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-5">Remarks</div>
+                        <div class="col-md-3"><input type="text" id="REGRemarks" name="REGRemarks" maxlength="50" readonly /></div>
+                    </div>
+                    <div class="col-lg-5"><button class="btn btn-md btn-flat" id="btnREGDownload"> Download </button></div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+
+                <div class="col-md-3 BoxStyle">
+                    <h3 style="text-align:center">Price</h3>
+                    <div class="form-group">
+                        <div class="col-md-5">Submission</div>
+                        <div class="col-md-3"><input type="text" id="PRCSubmissionDate" name="PRCSubmissionDate" maxlength="50" readonly /></div>
+                        <input type="hidden" id="PRCID" name="PRCID" maxlength="50" readonly />
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-5">Approval</div>
+                        <div class="col-md-3"><input type="text" id="PRCApprovalDate" name="PRCApprovalDate" maxlength="50" readonly /></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-5">Approved Price</div>
+                        <div class="col-md-3"><input type="text" id="PRCApprovedPrice" name="PRCApprovedPrice" maxlength="50" readonly /></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-5">Remarks</div>
+                        <div class="col-md-3"><input type="text" id="PRCRemarks" name="PRCRemarks" maxlength="50" readonly /></div>
+                    </div>
+                    <div class="col-lg-5"><button class="btn btn-md btn-flat" id="btnPRCDownload"> Download </button></div>
+                </div>
+
+
+                <div class="col-md-3 BoxStyle">
+                    <h3 style="text-align:center">MA Certificate</h3>
                     <div class="col-md-5">Submission</div>
-                    <div class="col-md-3"><input type="text" id="REGSubmissionDate" name="REGSubmissionDate" maxlength="50" readonly /></div>
-                </div>
-                <div class="form-group">
+                    <div class="col-md-3"><input type="text" id="MRKSubmissionDate" name="MRKSubmissionDate" maxlength="50" readonly /></div>
+                    <input type="hidden" id="MRKID" name="MRKID" maxlength="50" readonly />
+                    <br />
                     <div class="col-md-5">Approval</div>
-                    <div class="col-md-3"><input type="text" id="REGApprovalDate" name="REGApprovalDate" maxlength="50" readonly /></div>
-                </div>
-                <div class="form-group">
+                    <div class="col-md-3"><input type="text" id="MRKApprovalDate" name="MRKApprovalDate" maxlength="50" readonly /></div>
+                    <br />
                     <div class="col-md-5">Valid To</div>
-                    <div class="col-md-3"><input type="text" id="REGValidUptoDate" name="REGValidUptoDate" maxlength="50" readonly /></div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-5">DAR No</div>
-                    <div class="col-md-3"><input type="text" id="REGDarNo" name="REGDarNo" maxlength="50" readonly /></div>
-                </div>
-                <div class="form-group">
+                    <div class="col-md-3"><input type="text" id="MRKValidUpto" name="MRKValidUpto" maxlength="50" readonly /></div>
+                    <br />
+                    <div class="col-md-5">MA Number</div>
+                    <div class="col-md-3"><input type="text" id="MRKNumber" name="MRKNumber" maxlength="50" readonly /></div>
+                    <br />
                     <div class="col-md-5">Remarks</div>
-                    <div class="col-md-3"><input type="text" id="REGRemarks" name="REGRemarks" maxlength="50" readonly /></div>
+                    <div class="col-md-3"><input type="text" id="MRKRemarks" name="MRKRemarks" maxlength="50" readonly /></div>
+                    <div class="col-lg-5"><button class="btn btn-md btn-flat" id="btnMADownload"> Download </button></div>
                 </div>
-                <div class="col-lg-5"><button class="btn btn-md btn-flat" id="btnREGDownload"> Download </button></div>
-            </div>
-        </div>
-        <br />
-        <div class="row">
 
-            <div class="col-md-3 BoxStyle">
-                <h3 style="text-align:center">Price</h3>
-                <div class="form-group">
+
+
+                <div class="col-md-3 BoxStyle">
+                    <h3 style="text-align:center">Amendment</h3>
                     <div class="col-md-5">Submission</div>
-                    <div class="col-md-3"><input type="text" id="PRCSubmissionDate" name="PRCSubmissionDate" maxlength="50" readonly /></div>
-                    <input type="hidden" id="PRCID" name="PRCID" maxlength="50" readonly />
-                </div>
-                <div class="form-group">
+                    <div class="col-md-3"><input type="text" id="AMDSubmissionDate" name="AMDSubmissionDate" maxlength="50" readonly /></div>
+                    <input type="hidden" id="AMDID" name="AMDID" maxlength="50" readonly />
+                    <br />
                     <div class="col-md-5">Approval</div>
-                    <div class="col-md-3"><input type="text" id="PRCApprovalDate" name="PRCApprovalDate" maxlength="50" readonly /></div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-5">Approved Price</div>
-                    <div class="col-md-3"><input type="text" id="PRCApprovedPrice" name="PRCApprovedPrice" maxlength="50" readonly /></div>
-                </div>
-                <div class="form-group">
+                    <div class="col-md-3"><input type="text" id="AMDApprovalDate" name="AMDApprovalDate" maxlength="50" readonly /></div>
+                    <br />
                     <div class="col-md-5">Remarks</div>
-                    <div class="col-md-3"><input type="text" id="PRCRemarks" name="PRCRemarks" maxlength="50" readonly /></div>
+                    <div class="col-md-3"><input type="text" id="AMDRemarks" name="AMDRemarks" maxlength="50" readonly /></div>
+                    <div class="col-lg-5"><button class="btn btn-md btn-flat" id="btnAMDDownload"> Download </button></div>
                 </div>
-                <div class="col-lg-5"><button class="btn btn-md btn-flat" id="btnPRCDownload"> Download </button></div>
-            </div>
-
-
-            <div class="col-md-3 BoxStyle">
-                <h3 style="text-align:center">MA Certificate</h3>
-                <div class="col-md-5">Submission</div>
-                <div class="col-md-3"><input type="text" id="MRKSubmissionDate" name="MRKSubmissionDate" maxlength="50" readonly /></div>
-                <input type="hidden" id="MRKID" name="MRKID" maxlength="50" readonly />
-                <br />
-                <div class="col-md-5">Approval</div>
-                <div class="col-md-3"><input type="text" id="MRKApprovalDate" name="MRKApprovalDate" maxlength="50" readonly /></div>
-                <br />
-                <div class="col-md-5">Valid To</div>
-                <div class="col-md-3"><input type="text" id="MRKValidUpto" name="MRKValidUpto" maxlength="50" readonly /></div>
-                <br />
-                <div class="col-md-5">MA Number</div>
-                <div class="col-md-3"><input type="text" id="MRKNumber" name="MRKNumber" maxlength="50" readonly /></div>
-                <br />
-                <div class="col-md-5">Remarks</div>
-                <div class="col-md-3"><input type="text" id="MRKRemarks" name="MRKRemarks" maxlength="50" readonly /></div>
-                <div class="col-lg-5"><button class="btn btn-md btn-flat" id="btnMADownload"> Download </button></div>
-            </div>
-
-
-
-            <div class="col-md-3 BoxStyle">
-                <h3 style="text-align:center">Amendment</h3>
-                <div class="col-md-5">Submission</div>
-                <div class="col-md-3"><input type="text" id="AMDSubmissionDate" name="AMDSubmissionDate" maxlength="50" readonly /></div>
-                <input type="hidden" id="AMDID" name="AMDID" maxlength="50" readonly />
-                <br />
-                <div class="col-md-5">Approval</div>
-                <div class="col-md-3"><input type="text" id="AMDApprovalDate" name="AMDApprovalDate" maxlength="50" readonly /></div>
-                <br />
-                <div class="col-md-5">Remarks</div>
-                <div class="col-md-3"><input type="text" id="AMDRemarks" name="AMDRemarks" maxlength="50" readonly /></div>
-                <div class="col-lg-5"><button class="btn btn-md btn-flat" id="btnAMDDownload"> Download </button></div>
             </div>
         </div>
     </div>
-</div>
 
 
 <div class="box-footer">
@@ -583,6 +542,10 @@
         document.getElementById("pendingButton").onclick = function () {
             $("#divPending").show();
             document.getElementById("divPending").scrollIntoView({ behavior: "smooth" });
+
+
+            $('#btnShowPending').click();
+
         };
         function LoadGrid() {
             $.ajax({
@@ -602,7 +565,93 @@
                 }
             });
         }
+       
+        $('#ProductCode').select2({
+            placeholder: "Search by Brand or Generic",
+            allowClear: true,
+            width: '100%',
+            templateResult: formatProduct,
+            templateSelection: formatProductSelection,
+            escapeMarkup: function (markup) { return markup; }
+        });
+        $('#CompanyCode').on('change', function () {
+            var CompanyCode = $(this).val();
+            GetProduct(CompanyCode);
+        });
 
+        // Initial call if needed
+        GetProduct($('#CompanyCode').val());
+
+        function GetProduct(CompanyCode) {
+            $.ajax({
+                url: '/Regulatory/ProductInfo/GetProductFromRecipe2',
+                data: JSON.stringify({ CompanyCode: CompanyCode }),
+                type: 'POST',
+                contentType: 'application/json;',
+                dataType: 'json',
+                success: function (data) {
+                    $('#ProductCode').empty();
+
+                    if (data.length > 1) {
+                        $('#ProductCode').append('<option value="All">All Products</option>');
+                    }
+
+                    $.each(data, function (i, item) {
+                        $('#ProductCode').append(
+                            $('<option>', {
+                                value: item.ProductCode,
+                                text: item.BrandName + ", " + item.GenericStrength + ", " + item.CompanyName,
+                                'data-brand': item.BrandName,
+                                'data-generic': item.GenericStrength,
+                                'data-company': item.CompanyName
+                            })
+                        );
+                    });
+                },
+                error: function () {
+                    alert("Failed to load...");
+                }
+            });
+        }
+
+        function formatProduct(option) {
+            if (!option.id) return option.text;
+
+            const brand = $(option.element).data('brand') || '';
+            const generic = $(option.element).data('generic') || '';
+            const company = $(option.element).data('company') || '';
+
+            return `
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; font-size: 12px;">
+                <div><strong>${brand}</strong></div>
+                <div>${generic}</div>
+                <div style="color: gray;">${company}</div>
+            </div>
+            `;
+        }
+
+    //    function formatProductSelection(option) {
+    //        if (!option.id) return option.text;
+
+    //        const brand = $(option.element).data('brand') || '';
+    //        const generic = $(option.element).data('generic') || '';
+    //        return `${brand} (${generic})`;
+    //}
+    function formatProductSelection(option) {
+        if (!option.id) {
+            return ''; // or return 'Select a product';
+        }
+
+        const brand = $(option.element).data('brand') || '';
+        const generic = $(option.element).data('generic') || '';
+
+        // Prevent rendering () when data is missing
+        if (!brand && !generic) {
+            return '';
+        }
+
+        return `${brand} (${generic})`;
+    }
         //--------------------------------------Start of defining Datagrid--------------------------------------------------------
  
 
@@ -812,7 +861,6 @@
         /*****************************  Pending Grid Start  *************************************/
 
         $('#btnShowPending').on("click", function () {
-
             debugger;
             $("#PendingDetailGrid").data("kendoGrid").dataSource.data([]);
             LoadPending();
@@ -823,7 +871,7 @@
                 url: '/Home/GetAllPending',
                 method: 'post',
                 contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify({ CompanyCode: $('#CompanyCode').val(), rptType: $('#rptType').val(), fromDt: $('#pendingFromDt').val(), toDt: $('#pendingToDt').val() }),
+                data: JSON.stringify({ CompanyCode: "", rptType: "", fromDt: $('#pendingFromDt').val(), toDt: $('#pendingToDt').val() }),
                 dataType: 'json',
                 success: function (data) {
                     if (data != "") {
@@ -840,16 +888,19 @@
        
 
         var pendingDetailGrid = $("#PendingDetailGrid").kendoGrid({
-            dataSource: new kendo.data.DataSource({
+            dataSource:  new kendo.data.DataSource({
                 schema: {
                     model: {
                         id: "ID",
                         fields: {
-                            ID: { editable: true },
-                            BrandName: { editable: false },
-                            GenericName: { editable: false },
-                            SubmissionDate: { editable: false },
-                            Remarks: { editable: false }
+                            ID: { editable: true },                       
+                            CompanyName: { editable: false },
+                            Recipe: { editable: false },
+                            DTL: { editable: false },
+                            Prod_Reg: { editable: false },
+                            Price: { editable: false },
+                            MA: { editable: false },
+                            Amendment: { editable: false }
                         }
                     }
                 },
@@ -874,26 +925,31 @@
             },
             edit: function (e) {
                 $("[name='GenericCode']", e.container).on("keyup keypress keydown dblclick", function () {
-                    SelectedItemOfListOfValue('GenericPopupWindowGrid');
+                    SelectedItemOfListOfValue('PendingDetailGrid');
                     GenericPopupWindow.open(); //Open Popup
                 });
             },
             //height: 350,
-            toolbar: ["excel", "pdf"],
+            toolbar: ["pdf", "excel"],
             excel: {
-                fileName: "Pending.xlsx",
+                fileName: "Export.xlsx",
                 allPages: true,
                 filterable: true
             },
             pdf: {
-                fileName: "Pending.pdf",
+                fileName: "Export.pdf",
                 allPages: true,
             },
             columns: [
-                  { field: "BrandName", locked: false, title: "Brand Name", width: "150px", filterable: false, sortable: false, attributes: { "class": "txtBox GenericName" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
-                  { field: "GenericName", title: "Generic Name", width: "300px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
-                  { field: "SubmissionDate", title: "Submission Date", width: "100px", editor: dateTimeEditor, format: "{0:dd/MM/yyyy}", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
-                  { field: "Remarks", title: "Remarks", width: "180px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } }
+                  { field: "CompanyCode", hidden: true },
+                  { field: "CompanyName", locked: false, title: "Unit", width: "280px", filterable: false, sortable: false, attributes: { "class": "txtBox GenericName" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" } },
+                  { field: "Recipe", title: "Recipe", width: "100px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" } },
+                  { field: "DTL", title: "DTL", width: "100px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px text-align: center;;" } },
+                  { field: "Prod_Reg", title: "Product Registration", width: "170px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" } },
+                  { field: "Price", title: "Price", width: "100px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" } },
+                  { field: "MA", title: "MA Certificate", width: "110px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" } },
+                  { field: "Amendment", title: "Amendment", width: "110px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" } },
+                  //$(".k-content").dblclick(function() { alert('dblclick'); }),
             ]
         }).data('kendoGrid');
 
@@ -918,10 +974,6 @@
                     });
         }
 
-        /*****************************  Pending Grid End  *************************************/
-
-
-        /*****************************  Product Info Start  *************************************/
 
         var ProductWindow = $("#ProductWindow").kendoWindow({
             actions: ["Minimize", "Maximize", "Close"],
@@ -1036,7 +1088,7 @@
         });
 
         function ShowSummary() {
-            if ($('#ProductCodeSummary').val() == "") {
+            if ($('#ProductCode').val() == "") {
                 alert("Please Select Product First!");
                 return false;
             }
@@ -1045,14 +1097,14 @@
                 url: '/Home/ShowProductSummary',
                 method: 'post',
                 contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify({ ProductCode: $('#ProductCodeSummary').val(), CompanyCode: $('#CompanyCodeSummary').val() }),
+                data: JSON.stringify({ ProductCode: $('#ProductCode').val(), CompanyCode: $('#CompanyCode').val() }),
                 dataType: 'json',
                 success: function (data) {
                     if (data != "") {
 
                         $('#BrandName').val(data.BrandName);
                         $('#GenericCode').val(data.GenericCode);
-                        $('#CompanyCode').val(data.CompanyCode);
+                        //$('#CompanyCode').val(data.CompanyCode);
                         $('#ProductSpecification').val(data.ProductSpecification);
                         $('#RCPID').val(data.RCPID);
                         $('#RCPSubmissionDate').val(data.RCPSubmissionDate);
@@ -1483,7 +1535,55 @@
             return ("Field: "+ colName + ", Unit: " + id);
         }
     });
+    $(pendingDetailGrid.tbody).on("dblclick", "td", function (e) {
 
+        debugger;
+        var row = $(this).closest("tr");
+        var rowIdx = $("tr", pendingDetailGrid.tbody).index(row);
+        var colIdx = $("td", row).index(this);
+        var colName = $('#PendingDetailGrid').find('th').eq(colIdx).text()
+
+        var item = pendingDetailGrid.dataItem(row);
+        var id = item.CompanyName;
+
+        //alert("row:" + rowIdx + " col:" + colIdx + "," + colName + " id:" + id + "\nitem:" + JSON.stringify(item, null, 4));
+        //alert("row:" + rowIdx + " col:" + colIdx + "," + colName + " Name: " + id + " , Company Code: " + item.CompanyCode);
+
+        $.ajax({
+            url: '/Home/ShowPendingProductList',
+            method: 'post',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({ CompanyCode: item.CompanyCode, DType: colName, fromDt: $('#fromDt').val(), toDt: $('#toDt').val() }),
+            dataType: 'json',
+            success: function (data) {
+                if (data != "") {
+                    PendingProductListWindow.center();
+                    PendingProductListWindow.open();
+                    $('#PendingProductListGrid').data('kendoGrid').dataSource.data(data);
+                }
+                else {
+                    PendingProductListWindow.close();
+                    AcknowledgeMsg();
+                }
+            }
+        });
+    });
+
+    $("#PendingDetailGrid").kendoTooltip({
+        filter: "td",
+        content: function (e) {
+            var grid = $("#PendingDetailGrid").data("kendoGrid");
+            var tr = e.target.closest('tr');
+            var dataItem = grid.dataItem(tr);
+            var rowIdx = tr.index();
+            var colIdx = e.target.index();
+            var colName = $('#PendingDetailGrid').find('th').eq(colIdx).text();
+            var id = dataItem.CompanyName;
+
+            //console.log("row:" + rowIdx + " col:" + colIdx + " msg: " + colName +"," + id );
+            return ("Field: "+ colName + ", Unit: " + id);
+        }
+    });
     var ProductListWindow = $("#ProductListWindow").kendoWindow({
         actions: ["Minimize", "Maximize", "Close"],
         width: "100%",
@@ -1503,30 +1603,71 @@
         sortable: true,
         filterable: true,
         editable: true,
-        height: 350,
+        height: 300,
         selectable: "row",
-        toolbar: ["excel", { template: "<input type='text' id='txtInputLicense'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+        toolbar: ["excel",  ],
         excel: {
             fileName: "Export.xlsx",
             allPages: true,
             filterable: true
         },
         navigatable: true,
-        groupable: true,
+        //groupable: true,
         columnMenu: true,
         reorderable: true,
         resizable: true,
-        columns: [
-             //{ field: "ID", title: "ID", width: 70 },
-             { field: "BrandName", title: "Brand Name", width: 120 },
+        columns: [             
+            
              { field: "GenericCode", title: "Generic Name", width: 180 },
+             { field: "BrandName", title: "Brand Name", width: 100 },
              { field: "PRCApprovalDate", title: "Approval Date", width: 80 },
-             //{ field: "MeetingDate", title: "MeetingDate", width: 100 },
-             //{ field: "SetOn", title: "EntryDate", width: 100 }
+           
         ]
     }).data('kendoGrid');
 
 
+
+
+    var PendingProductListWindow = $("#PendingProductListWindow").kendoWindow({
+        actions: ["Minimize", "Maximize", "Close"],
+        width: "100%",
+        height: "80%",
+        draggable: true,
+        modal: true,
+        title: "Product List"
+    }).data("kendoWindow");
+
+
+    //Initializing Main page details Kendo Grid Colums
+    var PendingProductListGrid = $('#PendingProductListGrid').kendoGrid({
+        pageable: {
+            pageSizes: true, buttonCount: 5
+        },
+        scrollable: true,
+        sortable: true,
+        filterable: true,
+        editable: true,
+        height: 300,
+        selectable: "row",
+        toolbar: ["excel",  ],
+        excel: {
+            fileName: "Export.xlsx",
+            allPages: true,
+            filterable: true
+        },
+        navigatable: true,
+        //groupable: true,
+        columnMenu: true,
+        reorderable: true,
+        resizable: true,
+        columns: [             
+            
+             { field: "GenericCode", title: "Generic Name", width: 180 },
+             { field: "BrandName", title: "Brand Name", width: 100 },
+             { field: "PRCApprovalDate", title: "Submission Date", width: 80 },
+           
+        ]
+    }).data('kendoGrid');
 
     });
 

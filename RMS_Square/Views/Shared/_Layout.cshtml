@@ -33,16 +33,7 @@
     <link rel="stylesheet" href="~/AdminLTE/plugins/daterangepicker/daterangepicker.css">
     <!-- bootstrap wysihtml5 - text editor -->
     <link rel="stylesheet" href="~/AdminLTE/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
-    @*<script type="x/kendo-template" id="page-template">
-            <div class="page-template">
-                <div class="header">
-                   Square Pharmaceuticals Limited
-                </div>
-                <div class="footer">
-                    <div style="float: right">Page #: pageNum # of #: totalPages #</div>
-                </div>
-            </div>
-        </script>*@
+  
 
 </head>
 <!--<<body class="hold-transition skin-blue sidebar-mini">-->
@@ -63,10 +54,10 @@
                     <span class="sr-only">Toggle navigation</span>
                 </a>
                 <div class="navbar-custom-menu">
-                    <div class="row" style="margin-top: -5px">                    
+                    <div class="row" style="margin-top: 8px;margin-right:8px">                    
                             <div class="dropdown" style="margin: 0px; display: inline-block;">
                                 <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                    @*<i class="glyphicon glyphicon-arrow-down"></i>*@ Company
+                                     Company
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                     <li><a href="#" onclick="openCompanyTab('0001')">SPPLC (Pabna Unit)</a></li>
@@ -79,7 +70,7 @@
                             </div>
                             <div class="dropdown" style="margin: 0px; display: inline-block;">
                                 <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                    @*<i class="glyphicon glyphicon-shopping-cart"></i>*@ Products
+                                    Products
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                     <li><a href="#" onclick="openProductTab('0001')">SPPLC (Pabna Unit)</a></li>
@@ -92,7 +83,7 @@
                             </div>
                             <div class="dropdown" style="margin: 0px; display: inline-block;">
                                 <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                    @*<i class="glyphicon glyphicon-plus"></i>*@ Narcotics
+                                    Narcotics
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                     <li><a href="#" onclick="openNarcoticsTab('0001')">SPPLC (Pabna Unit)</a></li>
@@ -105,7 +96,7 @@
                             </div>
                             <div class="dropdown" style="margin: 0px; display: inline-block;">
                                 <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                    @*<i class="glyphicon glyphicon-file"></i>*@ View Reports
+                                    View Reports
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                     <li><a href="/Regulatory/CompanyLicense/frmCompanyLicenseView">Manufacturing License</a></li>
@@ -117,20 +108,24 @@
                             </div>
                             <div class="dropdown" style="margin: 0px; display: inline-block;">
                                 <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="pendingButton" data-toggle="collapse" data-target="#collapsePending" aria-expanded="false" aria-haspopup="true">
-                                    @*<i class="glyphicon glyphicon-time"></i>*@ Pending Work
+                                  Pending Work
                                 </button>
                             </div>
                             <div class="dropdown" style="margin: 0px; display: inline-block;">
                                 <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="btnNotification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                    @*<i class="glyphicon glyphicon-bell"></i>*@ Notification
+                                    Notification
                                 </button>
                             </div>
-                            <div class="dropdown" style="margin: 0px; display: inline-block;">
-                                <div class="dropdown user user-menu">
-                                    <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background: none; border: none;">
-                                        <img src="~/Content/Images/Square_Logo.png" class="user-image" alt="User Image">
-                                        <span class="hidden-xs">@Session["EmpName"]</span>
-                                    </button>
+                        <div class="dropdown" style="margin: 0px; display: inline-block;">
+                            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="btnAbout" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                               About
+                            </button>
+                        </div>
+                        <div class="dropdown" style="margin: 0px; display: inline-block;">                        
+                            <button class="btn btn-primary btn-sm dropdown-toggle dropdown user user-menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:black">
+
+                                <i class="glyphicon glyphicon-user"></i> @Session["EmpName"]
+                            </button>
                                     <div class="dropdown-menu dropdown-menu-right" style="min-width: 200px;">
                                         <div class="user-header text-center p-3">
                                             <img src="~/Content/Images/Square_Logo.png" class="img-square" alt="User Image" style="width: 60px; height: 60px;">
@@ -143,23 +138,12 @@
                                             <a href="/Home/LogOut" class="btn btn-default btn-flat btn-sm">Sign out</a>
                                         </div>
                                     </div>
-                                </div>
+                           
                             </div>
                         </div>
                   
                
-                  
-                        <div class="row" style="margin-top: -5px; ">
-                            
-                                <div class="input-group">
-                                    <input type="text" id="CompanyCode" name="CompanyCode" placeholder="Company Code" class="RequiredField form-control input-sm" style="height: 20px;" />
-                                    <span class="input-group-btn" style="width:0px;"></span>
-                                    <input type="text" id="CompanyName" name="CompanyName" placeholder="Company Name" class="RequiredField form-control input-sm" style="height: 20px;" />
-                                    <span class="input-group-btn" style="width:0px;"></span>
-                                    <input type="text" id="Address" name="Address" placeholder="Company Addess" class="RequiredField form-control input-sm" style="height: 20px;" />
-                                </div>
-                           
-                            </div>
+                 
 
                     </div>
         </nav>
@@ -177,19 +161,15 @@
                         <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                     </div>
                 </div><!-- /.user-panel -->
-                <!-- Search Form (Optional) -->
+               
                 <form action="#" method="get" class="sidebar-form">
                     <div class="input-group">
                         <input type="text" name="q" class="form-control" readonly placeholder="" />
                         <span class="input-group-btn">
                             <!-- <source src="~/Media/VideoFile.mp4" type="video/mp4">  <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>-->
                         </span>
-                    </div>
-                    @*<video  width="204" height="130" controls>
-                                   <source src="~/Home/Getvideo" type="video/mp4">
-                        </video>*@
-                </form><!-- /.sidebar-form -->
-                <!-- Sidebar Menu -->
+                    </div>             
+                </form>
 
                 <ul class="sidebar-menu" style="background-color:#FFFFFF">
                     <li class="active treeview">
@@ -218,6 +198,7 @@
                 </div>
             </section>
             <!-- /.content -->
+          
         </div>
         <!-- /.content-wrapper -->
         <footer class="main-footer">
@@ -246,10 +227,6 @@
                 </div>
             </div>
         </aside>
-
-        <!-- /.control-sidebar -->
-        <!-- Add the sidebar's background. This div must be placed
-             immediately after the control sidebar -->
         <div class="control-sidebar-bg"></div>
     </div>
 
@@ -278,6 +255,24 @@
         .dropdown:hover > .dropdown-toggle .caret {
             transform: rotate(180deg);
         }
+        .custom-btn {
+            height: 20px; /* Adjust the height as needed */
+            font-size: 12px; /* Adjust the font size as needed */
+            line-height: 1; /* Reset line height */
+            padding: 0 5px; /* Adjust padding as needed */          
+            display: inline; /* Change display property to inline */
+        }
+
+        .custom-btn2 {
+            height: 25px; /* Adjust the height as needed */
+            font-size: 16px; /* Adjust the font size as needed */
+            line-height: 1; /* Reset line height */
+            padding: 0 5px; /* Adjust padding as needed */            
+            display: inline; /* Change display property to inline */
+        }
+      
+
+       
 
     </style>
     <script>
@@ -292,6 +287,8 @@
                     $(this).removeClass('open');
                 }
             );
+          
+            
         });
     </script>
     <script>

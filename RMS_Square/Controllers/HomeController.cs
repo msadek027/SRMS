@@ -176,6 +176,12 @@ namespace RMS_Square.Controllers
             var data = _dalObj.ShowProductList(fromDt, toDt, DType, CompanyCode);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult ShowPendingProductList(string fromDt, string toDt, string DType, string CompanyCode)
+        {
+            var data = _dalObj.ShowPendingProductList(fromDt, toDt, DType, CompanyCode);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
 
 
         private string CountCompanyLicExpiry()
