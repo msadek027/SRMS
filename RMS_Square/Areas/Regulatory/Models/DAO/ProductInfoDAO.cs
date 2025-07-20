@@ -271,7 +271,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             query.Append(" SELECT D.ID,D.REVISION_NO,P.PRODUCT_CODE,P.BRAND_NAME,P.PRODUCT_CATEGORY,C.COMPANY_CODE,C.COMPANY_NAME, C.LICENSE_NO,P.SAP_PRODUCT_CODE,P.GENERIC_CODE,P.PACK_SIZE_NAME,DF.DOSAGE_FORM_NAME ");
             query.Append(" FROM RECIPE_INFO D LEFT JOIN  COMPANY_INFO C ON C.COMPANY_CODE=D.COMPANY_CODE LEFT JOIN  PRODUCT_INFO P ON P.PRODUCT_CODE=D.PRODUCT_CODE ");
             query.Append(" LEFT JOIN  DOSAGE_FORM_INFO DF ON DF.DOSAGE_FORM_CODE=P.DOSAGE_FORM_CODE  WHERE D.IS_DELETE <>'Y' ");
-            if (!string.IsNullOrEmpty(companyCode))
+            if (!string.IsNullOrEmpty(companyCode) && !companyCode.Equals("All"))
             {
                 query.Append(" AND D.COMPANY_CODE ='" + companyCode + "'");
             }

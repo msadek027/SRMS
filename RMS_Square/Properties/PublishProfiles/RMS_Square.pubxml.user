@@ -3415,7 +3415,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/07/2025 15:40:46</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/MeetingInfo/frmMeetingInfo.cshtml">
-      <publishTime>01/17/2024 12:38:06</publishTime>
+      <publishTime>07/14/2025 16:27:29</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/MeetingInfo/frmMeetingInfoView.cshtml">
       <publishTime>07/08/2025 09:32:56</publishTime>
@@ -3526,7 +3526,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/24/2018 11:29:28</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/TabCompany/frmTabCompany.cshtml">
-      <publishTime>07/14/2025 11:20:30</publishTime>
+      <publishTime>07/15/2025 15:49:06</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/TabNarcotics/frmNarcotics.cshtml">
       <publishTime>06/26/2025 16:48:01</publishTime>
@@ -3535,7 +3535,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/14/2025 15:01:52</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/TabProduct/frmTabProduct.cshtml">
-      <publishTime>07/14/2025 11:27:50</publishTime>
+      <publishTime>07/14/2025 16:48:48</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/TabProduct/Popup.cshtml">
       <publishTime>06/30/2025 13:32:04</publishTime>
@@ -3709,7 +3709,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/18/2021 11:56:40</publishTime>
     </File>
     <File Include="bin/RMS_Square.dll">
-      <publishTime>07/14/2025 15:52:38</publishTime>
+      <publishTime>07/20/2025 12:26:18</publishTime>
     </File>
     <File Include="bin/System.Net.Http.Formatting.dll">
       <publishTime>07/16/2017 16:14:18</publishTime>
@@ -3739,7 +3739,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/20/2017 10:40:48</publishTime>
     </File>
     <File Include="bin/Systems.dll">
-      <publishTime>06/29/2025 12:35:43</publishTime>
+      <publishTime>07/15/2025 09:36:21</publishTime>
     </File>
     <File Include="bin/UserAuthenticator.dll">
       <publishTime>09/03/2018 10:42:33</publishTime>
@@ -4025,6 +4025,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="Content/Images/ajax-loader1.gif">
       <publishTime>09/12/2017 17:22:46</publishTime>
+    </File>
+    <File Include="Content/Images/avatar60x60.png">
+      <publishTime>11/23/2023 11:50:01</publishTime>
     </File>
     <File Include="Content/Images/bg_img.jpg">
       <publishTime>08/20/2017 11:01:30</publishTime>
@@ -5518,7 +5521,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/23/2018 10:10:02</publishTime>
     </File>
     <File Include="Views/Home/frmHome.cshtml">
-      <publishTime>07/14/2025 12:09:32</publishTime>
+      <publishTime>07/20/2025 13:27:30</publishTime>
     </File>
     <File Include="Views/Home/frmNewIndex.cshtml">
       <publishTime>07/13/2025 16:35:36</publishTime>
@@ -5554,7 +5557,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/09/2025 10:47:44</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>07/10/2025 14:54:44</publishTime>
+      <publishTime>07/20/2025 13:14:21</publishTime>
     </File>
     <File Include="Views/Test/TestRpt.cshtml">
       <publishTime>01/08/2018 14:31:16</publishTime>

@@ -24,7 +24,7 @@
         <div class="col-md-4">
             <div class="form-group">
                 <label class="control-label required">Company:</label>
-                <select id="CompanyCode" class="txtBox">
+                <select id="CompanyCode" name="CompanyCode" class="form-control input-sm">
                     <option selected value="All">All</option>
                     <option value="0001">SPPLC (Pabna Unit)</option>
                     <option value="0002">SPPLC (Dhaka Unit)</option>
@@ -44,7 +44,7 @@
             <div class="form-group">
                 <label class="control-label required">Submission Type:</label>
 
-                <select id="SubmissionType" class="txtBox">
+                <select id="SubmissionType" name="SubmissionType" class="form-control input-sm">
                     <option selected value="All">All</option>
                     <option value="License">New</option>
                     <option value="Renewal">Renewal</option>
@@ -58,7 +58,7 @@
             <div class="form-group">
                 <label class="control-label required">Search Type:</label>
 
-                <select id="SearchType" class="txtBox">
+                <select id="SearchType" name="SearchType" class="form-control input-sm">
                     <option selected value="All">All</option>
                     <option value="Submission">Submission</option>
                     <option value="Approval">Approval</option>
@@ -271,7 +271,7 @@
                 // Download Button in Grid
                 function handleView(event) {
                     event.preventDefault();
-                    var selectedRow = licenseInfoGrid.dataItem($(event.currentTarget).closest("tr"));
+                    var selectRow = licenseInfoGrid.dataItem($(event.currentTarget).closest("tr"));
 
                     $.ajax({
                         url: '@Url.Action("GetFileByRefId", "GmpCertificate")',
@@ -295,6 +295,7 @@
                         dataType: "JSON",
                         data: { "refLevel1": selectRow.ID, "refLevel2": "" },
                         success: function (data) {
+                            debugger;
                             $("#FileGrid").data("kendoGrid").dataSource.data(data);
                         }
                     });

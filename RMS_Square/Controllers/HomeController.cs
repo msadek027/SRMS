@@ -95,8 +95,18 @@ namespace RMS_Square.Controllers
             var data = _dalObj.GetAllInfo(fromDt, toDt);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-
+        [HttpPost]
+        public ActionResult ShowFooterApprovalProductList(string DType, string fromDt, string toDt)
+        {
+            var data = _dalObj.ShowFooterApprovalProductList(DType,fromDt, toDt);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult ShowFooterPendingProductList(string DType, string fromDt, string toDt)
+        {
+            var data = _dalObj.ShowFooterPendingProductList(DType, fromDt, toDt);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult GetAllPending(string CompanyCode, string rptType, string fromDt, string toDt)
         {
@@ -174,6 +184,12 @@ namespace RMS_Square.Controllers
         public ActionResult ShowProductList(string fromDt, string toDt, string DType, string CompanyCode)
         {
             var data = _dalObj.ShowProductList(fromDt, toDt, DType, CompanyCode);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult ShowPendingProductList(string fromDt, string toDt, string DType, string CompanyCode)
+        {
+            var data = _dalObj.ShowPendingProductList(fromDt, toDt, DType, CompanyCode);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

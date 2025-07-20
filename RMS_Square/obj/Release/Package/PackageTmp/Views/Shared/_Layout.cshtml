@@ -33,16 +33,7 @@
     <link rel="stylesheet" href="~/AdminLTE/plugins/daterangepicker/daterangepicker.css">
     <!-- bootstrap wysihtml5 - text editor -->
     <link rel="stylesheet" href="~/AdminLTE/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
-    @*<script type="x/kendo-template" id="page-template">
-            <div class="page-template">
-                <div class="header">
-                   Square Pharmaceuticals Limited
-                </div>
-                <div class="footer">
-                    <div style="float: right">Page #: pageNum # of #: totalPages #</div>
-                </div>
-            </div>
-        </script>*@
+  
 
 </head>
 <!--<<body class="hold-transition skin-blue sidebar-mini">-->
@@ -63,46 +54,99 @@
                     <span class="sr-only">Toggle navigation</span>
                 </a>
                 <div class="navbar-custom-menu">
-                    <ul class="nav navbar-nav">
-                        <li class="dropdown messages-menu">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                @*<i class="fa fa-align-left"><b> @Session["OwnerName"] </b></i>*@
-                                <i class="fa"><b> @Session["OwnerName"] </b></i>
-                            </a>
-                        </li>
-                        <!-- User Account: style can be found in dropdown.less~/Content/Images/jiaur_new.jpg --~/AdminLTE/dist/img/user2-160x160.jpg -->
-                        <li class="dropdown user user-menu">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="~/Content/Images/Square_Logo.png" class="user-image" alt="User Image">
-                                <span class="hidden-xs">@Session["EmpName"]</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <!-- User image -->
-                                <li class="user-header">
-                                    <img src="~/Content/Images/Square_Logo.png" class="img-square" alt="User Image">
-                                    <p>
-                                        @Session["Designation"]
-                                        <small>Member since @Session["EmploymentDate"]</small>
-                                    </p>
-                                </li>
-                                <!-- Menu Footer-->
-                                <li class="user-footer">
-                                    <div class="pull-left">
-                                        <a href="/Home/ChangedPassword" class="btn btn-default btn-flat">Changed Password</a>
+                    <div class="row" style="margin-top: 8px;margin-right:8px">                    
+                            <div class="dropdown" style="margin: 0px; display: inline-block;">
+                                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                     Company
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                    <li><a href="#" onclick="openCompanyTab('0001')">SPPLC (Pabna Unit)</a></li>
+                                    <li><a href="#" onclick="openCompanyTab('0002')">SPPLC (Dhaka Unit)</a></li>
+                                    <li><a href="#" onclick="openCompanyTab('0004')">SPPLC (CD)</a></li>
+                                    <li><a href="#" onclick="openCompanyTab('0005')">SPPLC (Herbal)</a></li>
+                                    <li><a href="#" onclick="openCompanyTab('0006')">SPPLC (Ayurvedic)</a></li>
+                                    <li><a href="#" onclick="openCompanyTab('0007')">SLL</a></li>
+                                </ul>
+                            </div>
+                            <div class="dropdown" style="margin: 0px; display: inline-block;">
+                                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    Products
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                    <li><a href="#" onclick="openProductTab('0001')">SPPLC (Pabna Unit)</a></li>
+                                    <li><a href="#" onclick="openProductTab('0002')">SPPLC (Dhaka Unit)</a></li>
+                                    <li><a href="#" onclick="openProductTab('0004')">SPPLC (CD)</a></li>
+                                    <li><a href="#" onclick="openProductTab('0005')">SPPLC (Herbal)</a></li>
+                                    <li><a href="#" onclick="openProductTab('0006')">SPPLC (Ayurvedic)</a></li>
+                                    <li><a href="#" onclick="openProductTab('0007')">SLL</a></li>
+                                </ul>
+                            </div>
+                            <div class="dropdown" style="margin: 0px; display: inline-block;">
+                                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    Narcotics
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                    <li><a href="#" onclick="openNarcoticsTab('0001')">SPPLC (Pabna Unit)</a></li>
+                                    <li><a href="#" onclick="openNarcoticsTab('0002')">SPPLC (Dhaka Unit)</a></li>
+                                    <li><a href="#" onclick="openNarcoticsTab('0004')">SPPLC (CD)</a></li>
+                                    <li><a href="#" onclick="openNarcoticsTab('0005')">SPPLC (Herbal)</a></li>
+                                    <li><a href="#" onclick="openNarcoticsTab('0006')">SPPLC (Ayurvedic)</a></li>
+                                    <li><a href="#" onclick="openNarcoticsTab('0007')">SLL</a></li>
+                                </ul>
+                            </div>
+                            <div class="dropdown" style="margin: 0px; display: inline-block;">
+                                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    View Reports
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                    <li><a href="/Regulatory/CompanyLicense/frmCompanyLicenseView">Manufacturing License</a></li>
+                                    <li><a href="/Regulatory/GmpCertificate/frmGmpCertificateView">GMP Certificate</a></li>
+                                    <li><a href="/Regulatory/ProductInfo/frmProductInfoView">Products</a></li>
+                                    <li><a href="/Regulatory/MeetingInfo/frmMeetingInfoView">Meeting Info</a></li>
+                                    <li><a href="/Regulatory/NarcoticLicense/frmNarcoticLicenseReport">Narcotics Item info & License</a></li>
+                                </ul>
+                            </div>
+                            <div class="dropdown" style="margin: 0px; display: inline-block;">
+                                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="pendingButton" data-toggle="collapse" data-target="#collapsePending" aria-expanded="false" aria-haspopup="true">
+                                  Pending Work
+                                </button>
+                            </div>
+                            <div class="dropdown" style="margin: 0px; display: inline-block;">
+                                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="btnNotification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    Notification
+                                </button>
+                            </div>
+                        <div class="dropdown" style="margin: 0px; display: inline-block;">
+                            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="btnAbout" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                               About
+                            </button>
+                        </div>
+                        <div class="dropdown" style="margin: 0px; display: inline-block;">                        
+                            <button class="btn btn-primary btn-sm dropdown-toggle dropdown user user-menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:black">
+
+                                <i class="glyphicon glyphicon-user"></i> @Session["EmpName"]
+                            </button>
+                                    <div class="dropdown-menu dropdown-menu-right" style="min-width: 200px;">
+                                        <div class="user-header text-center p-3">
+                                            <img src="~/Content/Images/Square_Logo.png" class="img-square" alt="User Image" style="width: 60px; height: 60px;">
+                                            <p class="mt-2 mb-1">@Session["Designation"]</p>
+                                            <small>Member since @Session["EmploymentDate"]</small>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <div class="user-footer d-flex justify-content-between px-3 pb-2">
+                                            <a href="/Home/ChangedPassword" class="btn btn-default btn-flat btn-sm">Change Password</a>
+                                            <a href="/Home/LogOut" class="btn btn-default btn-flat btn-sm">Sign out</a>
+                                        </div>
                                     </div>
-                                    <div class="pull-right">
-                                        <a href="/Home/LogOut" class="btn btn-default btn-flat">Sign out</a>
-                                    </div>
-                                </li>
-                            </ul>
-                        </li>
-                        <!-- Control Sidebar Toggle Button -->
-                        <li>
-                            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+                           
+                            </div>
+                        </div>
+                  
+               
+                 
+
+                    </div>
+        </nav>
         </header>
         <div class="main-sidebar">
             <!-- Inner sidebar -->
@@ -117,19 +161,15 @@
                         <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                     </div>
                 </div><!-- /.user-panel -->
-                <!-- Search Form (Optional) -->
+               
                 <form action="#" method="get" class="sidebar-form">
                     <div class="input-group">
                         <input type="text" name="q" class="form-control" readonly placeholder="" />
                         <span class="input-group-btn">
                             <!-- <source src="~/Media/VideoFile.mp4" type="video/mp4">  <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>-->
                         </span>
-                    </div>
-                    @*<video  width="204" height="130" controls>
-                                   <source src="~/Home/Getvideo" type="video/mp4">
-                        </video>*@
-                </form><!-- /.sidebar-form -->
-                <!-- Sidebar Menu -->
+                    </div>             
+                </form>
 
                 <ul class="sidebar-menu" style="background-color:#FFFFFF">
                     <li class="active treeview">
@@ -144,19 +184,7 @@
         </div><!-- /.main-sidebar -->
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            <!-- Content Header (Page header)animated rotateInDownLeft -->
-            @*<section class="content-header ">
-                <h1>
-                    <span class="glyphicon glyphicon-list-alt"></span>
-                    <span class="glyphicon-class">@Session["FormNameTitle"]</span>
-                    <small>@Session["Preview"]</small>
-                </h1>
-                <ol class="breadcrumb">
-                    <li><a href="../../Home/frmHome"><span class="glyphicon glyphicon-home" style="font-size:24px;"></span> <span class="glyphicon-class" style="font-size:24px;">Home</span></a></li>
-                    <li class="active">@Session["FormNameTitle"]</li>
-                </ol>
-            </section>*@
-            <!-- Main content animated slideInLeft-->
+          
             <section class="content ">
                 <!-- Small boxes (Stat box) -->
                 <div class="row">
@@ -170,6 +198,7 @@
                 </div>
             </section>
             <!-- /.content -->
+          
         </div>
         <!-- /.content-wrapper -->
         <footer class="main-footer">
@@ -198,10 +227,6 @@
                 </div>
             </div>
         </aside>
-
-        <!-- /.control-sidebar -->
-        <!-- Add the sidebar's background. This div must be placed
-             immediately after the control sidebar -->
         <div class="control-sidebar-bg"></div>
     </div>
 
@@ -219,6 +244,55 @@
 
 
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+
+
+    <style>
+        .dropdown:hover > .dropdown-menu {
+            display: block;
+        }
+
+        /* Optional – keep the caret pointing up while open on hover */
+        .dropdown:hover > .dropdown-toggle .caret {
+            transform: rotate(180deg);
+        }
+        .custom-btn {
+            height: 20px; /* Adjust the height as needed */
+            font-size: 12px; /* Adjust the font size as needed */
+            line-height: 1; /* Reset line height */
+            padding: 0 5px; /* Adjust padding as needed */          
+            display: inline; /* Change display property to inline */
+        }
+
+        .custom-btn2 {
+            height: 25px; /* Adjust the height as needed */
+            font-size: 16px; /* Adjust the font size as needed */
+            line-height: 1; /* Reset line height */
+            padding: 0 5px; /* Adjust padding as needed */            
+            display: inline; /* Change display property to inline */
+        }
+      
+
+       
+
+    </style>
+    <script>
+        $(function () {
+            var $dd = $('.dropdown');
+
+            $dd.hover(
+                function () {              // mouseenter
+                    $(this).addClass('open');
+                },
+                function () {              // mouseleave
+                    $(this).removeClass('open');
+                }
+            );
+          
+            $('#btnNotification').click(function () {
+                var win = window.open("/Home/frmNewIndex", "_blank");
+            });
+        });
+    </script>
     <script>
         $.widget.bridge('uibutton', $.ui.button);
 
