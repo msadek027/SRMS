@@ -9,13 +9,13 @@ namespace RMS_Square.Universal
     {
         public string CompanyCode { get; set; }
         public string CompanyName { get; set; }
-        public string Recipe { get; set; }
+        public Int64 Recipe { get; set; }
 
-        public string DTL { get; set; }
-        public string Prod_Reg { get; set; }
-        public string Price { get; set; }
-        public string MA { get; set; }
-        public string Amendment { get; set; }
+        public Int64 DTL { get; set; }
+        public Int64 Prod_Reg { get; set; }
+        public Int64 Price { get; set; }
+        public Int64 MA { get; set; }
+        public Int64 Amendment { get; set; }
 
         public string BrandName { get; set; }
         public string GenericName { get; set; }

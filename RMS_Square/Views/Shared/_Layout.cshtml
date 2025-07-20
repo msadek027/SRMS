@@ -275,6 +275,39 @@
        
 
     </style>
+    <script type="text/javascript">
+        function openCompanyTab(unitCode) {
+            sessionStorage.setItem('keyCompanyCode', unitCode);
+            sessionStorage.setItem('keyOption', "Entry License Info");
+            sessionStorage.setItem('keyOptionId', 'tabs-1');
+
+            var win = window.open("/Regulatory/TabCompany/frmTabCompany", "_blank");
+            if (!win) {
+                alert("Popup was blocked. Please allow popups for this site.");
+            }
+        }
+        function openProductTab(unitCode) {
+            sessionStorage.setItem('keyCompanyCode', unitCode);
+            sessionStorage.setItem('keyOption', "Product Info");
+            sessionStorage.setItem('keyOptionId', 'tabs-1');
+
+            var win = window.open("/Regulatory/TabProduct/frmTabProduct", "_blank");
+            if (!win) {
+                alert("Popup was blocked. Please allow popups for this site.");
+            }
+        }
+        function openNarcoticsTab(unitCode) {
+            sessionStorage.setItem('keyCompanyCode', unitCode);
+            sessionStorage.setItem('keyOption', "Product Info");
+            sessionStorage.setItem('keyOptionId', 'tabs-1');
+            var win = window.open("/Regulatory/TabNarcotics/frmTabNarcotics", "_blank");
+            if (!win) {
+                alert("Popup was blocked. Please allow popups for this site.");
+            }
+        }
+
+
+    </script>
     <script>
         $(function () {
             var $dd = $('.dropdown');
@@ -288,7 +321,9 @@
                 }
             );
           
-            
+            $('#btnNotification').click(function () {
+                var win = window.open("/Home/frmNewIndex", "_blank");
+            });
         });
     </script>
     <script>

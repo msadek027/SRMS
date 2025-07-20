@@ -151,14 +151,11 @@
     <div class="row">  <input type="hidden" id="UserRole" data-value="@Session["RoleName"]" />   </div>
     <div class="row">
         <div class="col-md-7">
-            @*<i class="glyphicon glyphicon-filter"></i>*@
-            <div class="btn-group" style="display: flex; align-items: center; gap: 0px;">               
-                <select id="CompanyCode" name="CompanyCode" class="form-control input-sm" style="height: 40px; font-size: 14px; width:15%">
-                    <option value="All">&#x1F50D;</option>   
-                 
-                  
-                
 
+            <div class="btn-group" style="display: flex; align-items: center; gap: 4px; width: 100%;">
+                <!-- Company Selector (Fixed Width) -->
+                <select id="CompanyCode" name="CompanyCode" class="form-control input-sm"  style="height: 40px; font-size: 14px; width: 90px;">
+                    <option value="All">&#x1F50D;</option>
                     <option value="0001">SPPLC (Pabna Unit)</option>
                     <option value="0002">SPPLC (Dhaka Unit)</option>
                     <option value="0004">SPPLC (CD)</option>
@@ -166,12 +163,15 @@
                     <option value="0006">SPPLC (Ayurvedic)</option>
                     <option value="0007">SLL</option>
                 </select>
-                <select id="ProductCode" name="ProductCode" class="form-control input-sm" style="height: 40px; font-size: 14px; width: 80%">
+                <!-- Product Dropdown (Flexible) -->
+                <select id="ProductCode" name="ProductCode" class="form-control input-sm"
+                        style="height: 40px; font-size: 14px; flex-grow: 1;">
                     <option></option>
                 </select>
-                <button id="btnShowSummary" class="btn btn-default" type="button" style="height: 40px; font-size: 14px; width: 5%">
-                    <i class="glyphicon glyphicon-search"></i>&nbsp; 
-                   
+                <!-- Search Button (Fixed Width) -->
+                <button id="btnShowSummary" class="btn btn-default" type="button"
+                        style="height: 40px; font-size: 14px; width: 50px;">
+                    <i class="glyphicon glyphicon-search"></i>
                 </button>
             </div>
 
@@ -235,7 +235,7 @@
       
         <div class="row">
             <div class="col-sm-12">
-                <div id="GenericDetailGrid" class="" style="cursor: pointer;"></div>
+                <div id="ApprovalSummaryGrid" class="" style="cursor: pointer;"></div>
             </div>
         </div>
         <br />
@@ -250,7 +250,7 @@
                         <div class="col-md-3"></div>
                         <div class="col-md-6">
                             <button class="btn btn-lg btn-primary" style="width:100%;" type="button" >
-                               Pending Work
+                               Pending Summary
                             </button>
                         </div>
                         <div class="col-md-3">
@@ -282,7 +282,8 @@
 
                     <div class="row" id="pendingGrid">
                         <div class="col-sm-12">
-                            <div id="PendingDetailGrid" class=""></div>
+                      
+                            <div id="PendingSummaryGrid" class="" style="cursor: pointer;"></div>
                         </div>
                     </div>
 
@@ -293,24 +294,36 @@
 
 
 
-        <div id="ProductWindow" class="PopupWindowLayout" style="display: none;">
+        @*<div id="ProductWindow" class="PopupWindowLayout" style="display: none;">
             <div id="ProductWindowGrid" class="PopUpGrid"></div>
-        </div>
+        </div>*@
 
         <div id="FileWindow" class="PopupWindowLayout" style="display: none;">
             <div id="FileGrid" class="PopUpGrid"></div>
-        </div>
+        </div>Approval
 
         <div id="MeetingWindow" class="PopupWindowLayout" style="display: none;">
             <div id="LicenseInfoGrid" class="PopUpGrid"></div>
         </div>
 
-        <div id="ProductListWindow" class="PopupWindowLayout" style="display: none;">
-            <div id="ProductListGrid" class="PopUpGrid"></div>
+
+
+        <div id="ApprovalProductListPopupWindow" class="PopupWindowLayout" style="display: none;">
+            <div id="ApprovalProductListPopupWindowGrid" class="PopUpGrid"></div>
         </div>
-    <div id="PendingProductListWindow" class="PopupWindowLayout" style="display: none;">
-        <div id="PendingProductListGrid" class="PopUpGrid"></div>
-    </div>
+        <div id="ApprovalFooterProductListPopupWindow" class="PopupWindowLayout" style="display: none;">
+            <div id="ApprovalFooterProductListPopupWindowGrid" class="PopUpGrid"></div>
+        </div>
+
+
+
+        <div id="PendingProductListPopupWindow" class="PopupWindowLayout" style="display: none;">
+            <div id="PendingProductListPopupWindowGrid" class="PopUpGrid"></div>
+        </div>
+        <div id="PendingFooterProductListPopupWindow" class="PopupWindowLayout" style="display: none;">
+            <div id="PendingFooterProductListPopupWindowGrid" class="PopUpGrid"></div>
+        </div>
+
 
         <div id="ProductSummaryWindow" class="PopupWindowLayout" style="display: none;">
             <h1 style="text-align:center;"><u><b>Product Summary</b></u></h1>
@@ -472,41 +485,7 @@
         <div id="CompanyWindowGrid" class="PopUpGrid"></div>
     </div>
 </div>
-<script type="text/javascript">
-    function openCompanyTab(unitCode) {
-        sessionStorage.setItem('keyCompanyCode', unitCode);
-        sessionStorage.setItem('keyOption', "Entry License Info");
-        sessionStorage.setItem('keyOptionId','tabs-1');
 
-        var win = window.open("/Regulatory/TabCompany/frmTabCompany", "_blank");
-        if (!win) {
-            alert("Popup was blocked. Please allow popups for this site.");
-        }
-    }
-    function openProductTab(unitCode) {
-        sessionStorage.setItem('keyCompanyCode', unitCode);
-        sessionStorage.setItem('keyOption', "Product Info");
-        sessionStorage.setItem('keyOptionId','tabs-1');
-
-        var win = window.open("/Regulatory/TabProduct/frmTabProduct", "_blank");
-        if (!win) {
-            alert("Popup was blocked. Please allow popups for this site.");
-        }
-    }
-    function openNarcoticsTab(unitCode) {
-        sessionStorage.setItem('keyCompanyCode', unitCode);
-        sessionStorage.setItem('keyOption', "Product Info");
-        sessionStorage.setItem('keyOptionId','tabs-1');
-        var win = window.open("/Regulatory/TabNarcotics/frmTabNarcotics", "_blank");
-        if (!win) {
-            alert("Popup was blocked. Please allow popups for this site.");
-        }
-    }
-    
-    $('#btnNotification').click(function () {    
-        var win = window.open("/Home/frmNewIndex", "_blank");
-    });
-</script>
 <script type="text/javascript">
 
     $(document).ready(function () {
@@ -556,7 +535,7 @@
                 dataType: 'json',
                 success: function (data) {
                     if (data != "") {
-                        $('#GenericDetailGrid').data('kendoGrid').dataSource.data(data);
+                        $('#ApprovalSummaryGrid').data('kendoGrid').dataSource.data(data);
                     }
                     else {
                         DisplayPopupWindow.close();
@@ -655,7 +634,7 @@
         //--------------------------------------Start of defining Datagrid--------------------------------------------------------
  
 
-        var genericItemGrid = $("#GenericDetailGrid").kendoGrid({
+        var approvalSummaryGrid = $("#ApprovalSummaryGrid").kendoGrid({
             dataSource:  new kendo.data.DataSource({
                 schema: {
                     model: {
@@ -663,15 +642,23 @@
                         fields: {
                             ID: { editable: true },                       
                             CompanyName: { editable: false },
-                            Recipe: { editable: false },
-                            DTL: { editable: false },
-                            Prod_Reg: { editable: false },
-                            Price: { editable: false },
-                            MA: { editable: false },
-                            Amendment: { editable: false }
+                            Recipe: { editable: false , type: "number"},
+                            DTL: { editable: false, type: "number" },
+                            Prod_Reg: { editable: false,  type: "number"},
+                            Price: { editable: false,  type: "number"},
+                            MA: { editable: false, type: "number" },
+                            Amendment: { editable: false , type: "number"}
                         }
                     }
                 },
+                aggregate: [
+        { field: "Recipe", aggregate: "sum" },                     
+        { field: "DTL", aggregate: "sum" },
+        { field: "Prod_Reg", aggregate: "sum" },
+        { field: "Price", aggregate: "sum" },
+        { field: "MA", aggregate: "sum" },
+        { field: "Amendment", aggregate: "sum" }
+                ],
                 pageSize: 50
             }),
             pageable: true,
@@ -693,7 +680,8 @@
             },
             edit: function (e) {
                 $("[name='GenericCode']", e.container).on("keyup keypress keydown dblclick", function () {
-                    SelectedItemOfListOfValue('GenericPopupWindowGrid');
+                    SelectedItemOfListOfValue('ApprovalSummaryGrid');
+                    GenericPopupWindow.center();
                     GenericPopupWindow.open(); //Open Popup
                 });
             },
@@ -710,24 +698,24 @@
             },
             columns: [
                   { field: "CompanyCode", hidden: true },
-                  { field: "CompanyName", locked: false, title: "Unit", width: "280px", filterable: false, sortable: false, attributes: { "class": "txtBox GenericName" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" } },
-                  { field: "Recipe", title: "Recipe", width: "100px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" } },
-                  { field: "DTL", title: "DTL", width: "100px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px text-align: center;;" } },
-                  { field: "Prod_Reg", title: "Product Registration", width: "170px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" } },
-                  { field: "Price", title: "Price", width: "100px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" } },
-                  { field: "MA", title: "MA Certificate", width: "110px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" } },
-                  { field: "Amendment", title: "Amendment", width: "110px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" } },
-                  //$(".k-content").dblclick(function() { alert('dblclick'); }),
+                  { field: "CompanyName", locked: false, title: "Unit", width: "280px", filterable: false, sortable: false, attributes: { "class": "txtBox GenericName" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" },footerTemplate: "Grand Total:" },
+                  { field: "Recipe", title: "Recipe", width: "100px", filterable: false, sortable: false, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>"},
+                  { field: "DTL", title: "DTL", width: "100px", filterable: false, sortable: false,  headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px text-align: center;;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>" },
+                  { field: "Prod_Reg", title: "Product Registration", width: "170px", filterable: false, sortable: false,  headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>" },
+                  { field: "Price", title: "Price", width: "100px", filterable: false, sortable: false,  headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>"},
+                  { field: "MA", title: "MA Certificate", width: "110px", filterable: false, sortable: false, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>"},
+                  { field: "Amendment", title: "Amendment", width: "110px", filterable: false, sortable: false, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>"},
+                
             ]
         }).data('kendoGrid');
 
 
 
 
-        $("#GenericDetailGrid").keyup(function (e) {
+        $("#ApprovalSummaryGrid").keyup(function (e) {
             if (e.keyCode == 13) {
-                var grid = $("#GenericDetailGrid").data("kendoGrid");
-                $("#GenericDetailGrid").data().kendoGrid.bind('dataBound', function () {
+                var grid = $("#ApprovalSummaryGrid").data("kendoGrid");
+                $("#ApprovalSummaryGrid").data().kendoGrid.bind('dataBound', function () {
                     this.element.find('tbody tr:first').addClass('k-state-selected');
                 });
                 grid.addRow();
@@ -862,7 +850,7 @@
 
         $('#btnShowPending').on("click", function () {
             debugger;
-            $("#PendingDetailGrid").data("kendoGrid").dataSource.data([]);
+            $("#PendingSummaryGrid").data("kendoGrid").dataSource.data([]);
             LoadPending();
         });
 
@@ -875,7 +863,7 @@
                 dataType: 'json',
                 success: function (data) {
                     if (data != "") {
-                        $('#PendingDetailGrid').data('kendoGrid').dataSource.data(data);
+                        $('#PendingSummaryGrid').data('kendoGrid').dataSource.data(data);
                     }
                     else {
                        // DisplayPopupWindow.close();
@@ -887,7 +875,7 @@
 
        
 
-        var pendingDetailGrid = $("#PendingDetailGrid").kendoGrid({
+        var PendingSummaryGrid = $("#PendingSummaryGrid").kendoGrid({
             dataSource:  new kendo.data.DataSource({
                 schema: {
                     model: {
@@ -895,15 +883,23 @@
                         fields: {
                             ID: { editable: true },                       
                             CompanyName: { editable: false },
-                            Recipe: { editable: false },
-                            DTL: { editable: false },
-                            Prod_Reg: { editable: false },
-                            Price: { editable: false },
-                            MA: { editable: false },
-                            Amendment: { editable: false }
+                            Recipe: { editable: false , type: "number"},
+                            DTL: { editable: false, type: "number" },
+                            Prod_Reg: { editable: false,  type: "number"},
+                            Price: { editable: false,  type: "number"},
+                            MA: { editable: false, type: "number" },
+                            Amendment: { editable: false , type: "number"}
                         }
                     }
                 },
+                aggregate: [
+                { field: "Recipe", aggregate: "sum" },                     
+                { field: "DTL", aggregate: "sum" },
+                { field: "Prod_Reg", aggregate: "sum" },
+                { field: "Price", aggregate: "sum" },
+                { field: "MA", aggregate: "sum" },
+                { field: "Amendment", aggregate: "sum" }
+                ],
                 pageSize: 50
             }),
             pageable: true,
@@ -925,8 +921,9 @@
             },
             edit: function (e) {
                 $("[name='GenericCode']", e.container).on("keyup keypress keydown dblclick", function () {
-                    SelectedItemOfListOfValue('PendingDetailGrid');
-                    GenericPopupWindow.open(); //Open Popup
+                    SelectedItemOfListOfValue('PendingSummaryGrid');
+                    GenericPopupWindow.center(); 
+                    GenericPopupWindow.open(); 
                 });
             },
             //height: 350,
@@ -941,22 +938,22 @@
                 allPages: true,
             },
             columns: [
-                  { field: "CompanyCode", hidden: true },
-                  { field: "CompanyName", locked: false, title: "Unit", width: "280px", filterable: false, sortable: false, attributes: { "class": "txtBox GenericName" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" } },
-                  { field: "Recipe", title: "Recipe", width: "100px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" } },
-                  { field: "DTL", title: "DTL", width: "100px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px text-align: center;;" } },
-                  { field: "Prod_Reg", title: "Product Registration", width: "170px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" } },
-                  { field: "Price", title: "Price", width: "100px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" } },
-                  { field: "MA", title: "MA Certificate", width: "110px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" } },
-                  { field: "Amendment", title: "Amendment", width: "110px", filterable: false, sortable: false, attributes: { "class": "txtBox" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" } },
-                  //$(".k-content").dblclick(function() { alert('dblclick'); }),
+                 { field: "CompanyCode", hidden: true },
+                 { field: "CompanyName", locked: false, title: "Unit", width: "280px", filterable: false, sortable: false, attributes: { "class": "txtBox GenericName" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" },footerTemplate: "Grand Total:" },
+                 { field: "Recipe", title: "Recipe", width: "100px", filterable: false, sortable: false, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>"},
+                 { field: "DTL", title: "DTL", width: "100px", filterable: false, sortable: false,  headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px text-align: center;;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>" },
+                 { field: "Prod_Reg", title: "Product Registration", width: "170px", filterable: false, sortable: false,  headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>" },
+                 { field: "Price", title: "Price", width: "100px", filterable: false, sortable: false,  headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>"},
+                 { field: "MA", title: "MA Certificate", width: "110px", filterable: false, sortable: false, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>"},
+                 { field: "Amendment", title: "Amendment", width: "110px", filterable: false, sortable: false, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>"},
+                
             ]
         }).data('kendoGrid');
 
-        $("#PendingDetailGrid").keyup(function (e) {
+        $("#PendingSummaryGrid").keyup(function (e) {
             if (e.keyCode == 13) {
-                var grid = $("#PendingDetailGrid").data("kendoGrid");
-                $("#PendingDetailGrid").data().kendoGrid.bind('dataBound', function () {
+                var grid = $("#PendingSummaryGrid").data("kendoGrid");
+                $("#PendingSummaryGrid").data().kendoGrid.bind('dataBound', function () {
                     this.element.find('tbody tr:first').addClass('k-state-selected');
                 });
                 grid.addRow();
@@ -978,7 +975,7 @@
         var ProductWindow = $("#ProductWindow").kendoWindow({
             actions: ["Minimize", "Maximize", "Close"],
             width: "100%",
-            height: "80%",
+            height: "70%",
             draggable: true,
             modal: true,
             title: "List of Product."
@@ -1144,7 +1141,7 @@
         var ProductSummaryWindow = $("#ProductSummaryWindow").kendoWindow({
             actions: ["Minimize", "Maximize", "Close"],
             width: "100%",
-            height: "80%",
+            height: "70%",
             draggable: true,
             modal: true,
             title: "Product Summary"
@@ -1245,6 +1242,7 @@
                 data: { refLevel1: $("#AMDID").val() },
                 success: function (data) {
                     $("#FileGrid").data("kendoGrid").dataSource.data(data);
+                    FileWindow.center();
                     FileWindow.open();
                 }
             });
@@ -1487,14 +1485,48 @@
     });
 
     /************************************ Product List Window  ************************************************/
+    approvalSummaryGrid.bind("dataBound", function () {
+        $("#ApprovalSummaryGrid .footer-clickable").off("dblclick").on("dblclick", function () {
+            const $clickedFooter = $(this).closest("td");              // clicked footer cell
+            const columnIndex = $clickedFooter.index();                // get its index in the row
+            const gridColumns = approvalSummaryGrid.columns;               // grid column definitions
+            const column = gridColumns[columnIndex];                   // get the column config
+            const columnField = column.field;                          // get field name
+            const columnTitle = column.title;           // use title if available
 
-    $(genericItemGrid.tbody).on("dblclick", "td", function (e) {
+           // alert("Column: " + columnTitle + "\nValue: " + $(this).text());
+
+            $.ajax({
+                url: '/Home/ShowFooterApprovalProductList',
+                method: 'post',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({ DType: columnTitle, fromDt: $('#fromDt').val(), toDt: $('#toDt').val() }),
+                dataType: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        ApprovalFooterProductListPopupWindow.center();
+                        ApprovalFooterProductListPopupWindow.open();
+                        $('#ApprovalFooterProductListPopupWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        ApprovalFooterProductListPopupWindow.close();
+                        AcknowledgeMsg();
+                    }
+                }
+            });
+
+
+        });
+    });
+
+    $(approvalSummaryGrid.tbody).on("dblclick", "td", function (e) {
+        debugger;
         var row = $(this).closest("tr");
-        var rowIdx = $("tr", genericItemGrid.tbody).index(row);
+        var rowIdx = $("tr", approvalSummaryGrid.tbody).index(row);
         var colIdx = $("td", row).index(this);
-        var colName = $('#GenericDetailGrid').find('th').eq(colIdx).text()
+        var colName = $('#ApprovalSummaryGrid').find('th').eq(colIdx).text()
 
-        var item = genericItemGrid.dataItem(row);
+        var item = approvalSummaryGrid.dataItem(row);
         var id = item.CompanyName;
 
         //alert("row:" + rowIdx + " col:" + colIdx + "," + colName + " id:" + id + "\nitem:" + JSON.stringify(item, null, 4));
@@ -1508,42 +1540,79 @@
             dataType: 'json',
             success: function (data) {
                 if (data != "") {
-                    ProductListWindow.center();
-                    ProductListWindow.open();
-                    $('#ProductListGrid').data('kendoGrid').dataSource.data(data);
+                    ApprovalProductListPopupWindow.center();
+                    ApprovalProductListPopupWindow.open();
+                    $('#ApprovalProductListPopupWindowGrid').data('kendoGrid').dataSource.data(data);
                 }
                 else {
-                    ProductListWindow.close();
+                    ApprovalProductListPopupWindow.close();
                     AcknowledgeMsg();
                 }
             }
         });
     });
 
-    $("#GenericDetailGrid").kendoTooltip({
+    $("#ApprovalSummaryGrid").kendoTooltip({
         filter: "td",
         content: function (e) {
-            var grid = $("#GenericDetailGrid").data("kendoGrid");
+            var grid = $("#ApprovalSummaryGrid").data("kendoGrid");
             var tr = e.target.closest('tr');
             var dataItem = grid.dataItem(tr);
             var rowIdx = tr.index();
             var colIdx = e.target.index();
-            var colName = $('#GenericDetailGrid').find('th').eq(colIdx).text();
+            var colName = $('#ApprovalSummaryGrid').find('th').eq(colIdx).text();
             var id = dataItem.CompanyName;
 
             //console.log("row:" + rowIdx + " col:" + colIdx + " msg: " + colName +"," + id );
             return ("Field: "+ colName + ", Unit: " + id);
         }
     });
-    $(pendingDetailGrid.tbody).on("dblclick", "td", function (e) {
+
+
+    PendingSummaryGrid.bind("dataBound", function () {
+        $("#PendingSummaryGrid .footer-clickable").off("dblclick").on("dblclick", function () {
+            const $clickedFooter = $(this).closest("td");              // clicked footer cell
+            const columnIndex = $clickedFooter.index();                // get its index in the row
+            const gridColumns = PendingSummaryGrid.columns;               // grid column definitions
+            const column = gridColumns[columnIndex];                   // get the column config
+            const columnField = column.field;                          // get field name
+            const columnTitle = column.title ;          // use title if available
+
+            // alert("Column: " + columnTitle + "\nValue: " + $(this).text());
+
+            $.ajax({
+                url: '/Home/ShowFooterPendingProductList',
+                method: 'post',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({ DType: columnTitle, fromDt: $('#fromDt').val(), toDt: $('#toDt').val() }),
+                dataType: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        PendingFooterProductListPopupWindow.center();
+                        PendingFooterProductListPopupWindow.open();
+                        $('#PendingFooterProductListPopupWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        PendingFooterProductListPopupWindow.close();
+                        AcknowledgeMsg();
+                    }
+                }
+            });
+
+
+        });
+    });
+
+
+    $(PendingSummaryGrid.tbody).on("dblclick", "td", function (e) {
 
         debugger;
         var row = $(this).closest("tr");
-        var rowIdx = $("tr", pendingDetailGrid.tbody).index(row);
+        var rowIdx = $("tr", PendingSummaryGrid.tbody).index(row);
         var colIdx = $("td", row).index(this);
-        var colName = $('#PendingDetailGrid').find('th').eq(colIdx).text()
+        var colName = $('#PendingSummaryGrid').find('th').eq(colIdx).text()
 
-        var item = pendingDetailGrid.dataItem(row);
+        var item = PendingSummaryGrid.dataItem(row);
         var id = item.CompanyName;
 
         //alert("row:" + rowIdx + " col:" + colIdx + "," + colName + " id:" + id + "\nitem:" + JSON.stringify(item, null, 4));
@@ -1557,34 +1626,34 @@
             dataType: 'json',
             success: function (data) {
                 if (data != "") {
-                    PendingProductListWindow.center();
-                    PendingProductListWindow.open();
-                    $('#PendingProductListGrid').data('kendoGrid').dataSource.data(data);
+                    PendingProductListPopupWindow.center();
+                    PendingProductListPopupWindow.open();
+                    $('#PendingProductListPopupWindowGrid').data('kendoGrid').dataSource.data(data);
                 }
                 else {
-                    PendingProductListWindow.close();
+                    PendingProductListPopupWindow.close();
                     AcknowledgeMsg();
                 }
             }
         });
     });
 
-    $("#PendingDetailGrid").kendoTooltip({
+    $("#PendingSummaryGrid").kendoTooltip({
         filter: "td",
         content: function (e) {
-            var grid = $("#PendingDetailGrid").data("kendoGrid");
+            var grid = $("#PendingSummaryGrid").data("kendoGrid");
             var tr = e.target.closest('tr');
             var dataItem = grid.dataItem(tr);
             var rowIdx = tr.index();
             var colIdx = e.target.index();
-            var colName = $('#PendingDetailGrid').find('th').eq(colIdx).text();
+            var colName = $('#PendingSummaryGrid').find('th').eq(colIdx).text();
             var id = dataItem.CompanyName;
 
             //console.log("row:" + rowIdx + " col:" + colIdx + " msg: " + colName +"," + id );
             return ("Field: "+ colName + ", Unit: " + id);
         }
     });
-    var ProductListWindow = $("#ProductListWindow").kendoWindow({
+    var ApprovalProductListPopupWindow = $("#ApprovalProductListPopupWindow").kendoWindow({
         actions: ["Minimize", "Maximize", "Close"],
         width: "100%",
         height: "80%",
@@ -1595,7 +1664,7 @@
 
 
     //Initializing Main page details Kendo Grid Colums
-    var ProductListGrid = $('#ProductListGrid').kendoGrid({
+    var ApprovalProductListPopupWindowGrid = $('#ApprovalProductListPopupWindowGrid').kendoGrid({
         pageable: {
             pageSizes: true, buttonCount: 5
         },
@@ -1628,10 +1697,10 @@
 
 
 
-    var PendingProductListWindow = $("#PendingProductListWindow").kendoWindow({
+    var PendingProductListPopupWindow = $("#PendingProductListPopupWindow").kendoWindow({
         actions: ["Minimize", "Maximize", "Close"],
         width: "100%",
-        height: "80%",
+        height: "70%",
         draggable: true,
         modal: true,
         title: "Product List"
@@ -1639,7 +1708,7 @@
 
 
     //Initializing Main page details Kendo Grid Colums
-    var PendingProductListGrid = $('#PendingProductListGrid').kendoGrid({
+    var PendingProductListPopupWindowGrid = $('#PendingProductListPopupWindowGrid').kendoGrid({
         pageable: {
             pageSizes: true, buttonCount: 5
         },
@@ -1668,6 +1737,88 @@
            
         ]
     }).data('kendoGrid');
+
+
+
+    var ApprovalFooterProductListPopupWindow = $("#ApprovalFooterProductListPopupWindow").kendoWindow({
+        actions: ["Minimize", "Maximize", "Close"],
+        width: "100%",
+        height: "70%",
+        draggable: true,
+        modal: true,
+        title: "Product List"
+    }).data("kendoWindow");
+
+    var ApprovalFooterProductListPopupWindowGrid = $('#ApprovalFooterProductListPopupWindowGrid').kendoGrid({
+        pageable: {
+            pageSizes: true, buttonCount: 5
+        },
+        scrollable: true,
+        sortable: true,
+        filterable: true,
+        editable: true,
+        height: 300,
+        selectable: "row",
+        toolbar: ["excel",  ],
+        excel: {
+            fileName: "Export.xlsx",
+            allPages: true,
+            filterable: true
+        },
+        navigatable: true,
+        columnMenu: true,
+        reorderable: true,
+        resizable: true,
+        columns: [             
+            
+             { field: "GenericCode", title: "Generic Name", width: 180 },
+             { field: "BrandName", title: "Brand Name", width: 100 },
+             { field: "PRCApprovalDate", title: "Approval Date", width: 80 },
+             { field: "CompanyName", title: "Company Name", width: 80 },
+           
+        ]
+    }).data('kendoGrid');
+
+    var PendingFooterProductListPopupWindow = $("#PendingFooterProductListPopupWindow").kendoWindow({
+        actions: ["Minimize", "Maximize", "Close"],
+        width: "100%",
+        height: "80%",
+        draggable: true,
+        modal: true,
+        title: "Product List"
+    }).data("kendoWindow");
+
+    var PendingFooterProductListPopupWindowGrid = $('#PendingFooterProductListPopupWindowGrid').kendoGrid({
+        pageable: {
+            pageSizes: true, buttonCount: 5
+        },
+        scrollable: true,
+        sortable: true,
+        filterable: true,
+        editable: true,
+        height: 300,
+        selectable: "row",
+        toolbar: ["excel",  ],
+        excel: {
+            fileName: "Export.xlsx",
+            allPages: true,
+            filterable: true
+        },
+        navigatable: true,
+        //groupable: true,
+        columnMenu: true,
+        reorderable: true,
+        resizable: true,
+        columns: [             
+            
+             { field: "GenericCode", title: "Generic Name", width: 180 },
+             { field: "BrandName", title: "Brand Name", width: 100 },
+             { field: "PRCApprovalDate", title: "Submission Date", width: 80 },
+             { field: "CompanyName", title: "Company Name", width: 80 },
+           
+        ]
+    }).data('kendoGrid');
+
 
     });
 

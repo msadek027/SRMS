@@ -51,10 +51,7 @@ namespace RMS_Square.Universal
             query.Append(" UNION ALL SELECT COMPANY_CODE, 0 RECIPE,  0 DTL, 0 PROD_REG, 0 PRICE, COUNT(DISTINCT PRODUCT_CODE)MA, 0 AMENDMENT FROM MARKET_AUTH_CERTIFICATE ");
             query.Append(" WHERE TO_DATE(APPROVAL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') GROUP BY COMPANY_CODE ");
 
-            //query.Append(" UNION ALL SELECT B.COMPANY_CODE, 0 RECIPE,  0 DTL, 0 PROD_REG, 0 PRICE, 0 MA, COUNT(A.RECIPE_ID) AMENDMENT FROM PRODUCT_REGISTRATION_INFO A, RECIPE_INFO B ");
-            //query.Append(" WHERE  A.RECIPE_ID=B.ID  AND A.STATE_STATUS = 'Annexure Amendment' AND A.INCLUSION_DATE IS NULL AND TO_DATE(A.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
-            //query.Append(" AND (A.STATE_STATUS='Annexure Amendment' OR A.STATE_STATUS='Packaging Amendment') GROUP BY B.COMPANY_CODE) A GROUP BY COMPANY_CODE ");
-
+         
             query.Append(" UNION ALL SELECT B.COMPANY_CODE, 0 RECIPE,  0 DTL, 0 PROD_REG, 0 PRICE, 0 MA, COUNT(A.RECIPE_ID) AMENDMENT FROM PRODUCT_REGISTRATION_INFO A INNER JOIN RECIPE_INFO B ON A.RECIPE_ID = B.ID ");
             query.Append(" WHERE TO_DATE(A.RENEWAL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
             query.Append(" AND (A.STATE_STATUS='Annexure Amendment' OR A.STATE_STATUS='Packaging Amendment') GROUP BY B.COMPANY_CODE) A GROUP BY COMPANY_CODE ORDER BY SEQ ");
@@ -67,16 +64,167 @@ namespace RMS_Square.Universal
                         {
                             CompanyCode = row["COMPANY_CODE"].ToString(),
                             CompanyName = row["COMPANY_NAME"].ToString(),
-                            Recipe = row["RECIPE"].ToString(),
-                            DTL = row["DTL"].ToString(),
-                            Prod_Reg = row["PROD_REG"].ToString(),
-                            Price = row["PRICE"].ToString(),
-                            MA = row["MA"].ToString(),
-                            Amendment = row["AMENDMENT"].ToString(),
+                            Recipe =Convert.ToInt64(row["RECIPE"].ToString()),
+                            DTL = Convert.ToInt64(row["DTL"].ToString()),
+                            Prod_Reg = Convert.ToInt64(row["PROD_REG"].ToString()),
+                            Price = Convert.ToInt64(row["PRICE"].ToString()),
+                            MA = Convert.ToInt64(row["MA"].ToString()),
+                            Amendment = Convert.ToInt64(row["AMENDMENT"].ToString()),
                         }).ToList();
             return item;
         }
+        public IList<ProductSummaryBEL> ShowFooterApprovalProductList(string DType, string fromDate, string toDate)
+        {
+            if (string.IsNullOrEmpty(fromDate))
+            {
+                int yr = DateTime.Today.Year;
+                fromDate = "01/01/" + yr.ToString();
+            }
 
+            if (string.IsNullOrEmpty(toDate))
+            {
+                DateTime crt = DateTime.Today;
+                toDate = crt.ToString("dd/MM/yyyy");
+            }
+
+            var query = new StringBuilder();
+
+
+            if (DType == "Recipe")
+            {
+                query.Append(" SELECT B.BRAND_NAME, B.GENERIC_CODE, TO_CHAR(A.APPROVAL_DATE, 'dd/mm/yyyy') APPROVAL_DATE,A.COMPANY_CODE,P.COMPANY_NAME FROM RECIPE_INFO A INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE INNER JOIN COMPANY_INFO P ON A.COMPANY_CODE=P.COMPANY_CODE");
+                query.Append(" WHERE TO_DATE(A.APPROVAL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
+            }
+
+            else if (DType == "DTL")
+            {
+                query.Append(" SELECT B.BRAND_NAME, B.GENERIC_CODE, TO_CHAR(C.DTL_APPROVAL_DATE, 'dd/mm/yyyy') APPROVAL_DATE,A.COMPANY_CODE,P.COMPANY_NAME FROM PRODUCT_REGISTRATION_INFO C ");
+                query.Append(" INNER JOIN RECIPE_INFO A ON C.RECIPE_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE INNER JOIN COMPANY_INFO P ON A.COMPANY_CODE=P.COMPANY_CODE");
+                query.Append(" WHERE TO_DATE(C.DTL_APPROVAL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
+                query.Append(" AND B.PRODUCT_SPECIFICATION = 'INN' AND C.STATE_STATUS = 'New' ");
+            }
+
+            else if (DType == "Product Registration")
+            {
+                query.Append(" SELECT B.BRAND_NAME, B.GENERIC_CODE, TO_CHAR(C.RENEWAL_DATE, 'dd/mm/yyyy') APPROVAL_DATE,A.COMPANY_CODE,P.COMPANY_NAME FROM PRODUCT_REGISTRATION_INFO C ");
+                query.Append(" INNER JOIN RECIPE_INFO A ON C.RECIPE_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE INNER JOIN COMPANY_INFO P ON A.COMPANY_CODE=P.COMPANY_CODE");
+                query.Append(" WHERE TO_DATE(C.RENEWAL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
+                query.Append(" AND C.STATE_STATUS = 'New' ");
+            }
+            else if (DType == "Price")
+            {
+                query.Append(" SELECT B.BRAND_NAME, B.GENERIC_CODE, TO_CHAR(D.APPROVAL_DATE, 'dd/mm/yyyy') APPROVAL_DATE,A.COMPANY_CODE,P.COMPANY_NAME FROM PRODUCT_PRICE D ");
+                query.Append(" INNER JOIN PRODUCT_REGISTRATION_INFO C ON D.ANNEX_ID = C.ANNEX_ID ");
+                query.Append(" INNER JOIN RECIPE_INFO A ON C.RECIPE_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE INNER JOIN COMPANY_INFO P ON A.COMPANY_CODE=P.COMPANY_CODE");
+                query.Append(" WHERE TO_DATE(D.APPROVAL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
+            }
+            else if (DType == "MA Certificate")
+            {
+                query.Append(" SELECT B.BRAND_NAME, B.GENERIC_CODE, TO_CHAR(A.APPROVAL_DATE, 'dd/mm/yyyy') APPROVAL_DATE,A.COMPANY_CODE,P.COMPANY_NAME FROM MARKET_AUTH_CERTIFICATE A ");
+                query.Append(" INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE INNER JOIN COMPANY_INFO P ON A.COMPANY_CODE=P.COMPANY_CODE");
+                query.Append(" WHERE TO_DATE(A.APPROVAL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
+            }
+            else if (DType == "Amendment")
+            {
+                query.Append(" SELECT B.BRAND_NAME, B.GENERIC_CODE, TO_CHAR(C.RENEWAL_DATE, 'dd/mm/yyyy') APPROVAL_DATE,A.COMPANY_CODE,P.COMPANY_NAME FROM PRODUCT_REGISTRATION_INFO C ");
+                query.Append(" INNER JOIN RECIPE_INFO A ON C.RECIPE_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE INNER JOIN COMPANY_INFO P ON A.COMPANY_CODE=P.COMPANY_CODE");
+                query.Append(" WHERE TO_DATE(C.RENEWAL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
+                query.Append(" AND (C.STATE_STATUS = 'Annexure Amendment' OR C.STATE_STATUS = 'Packaging Amendment') ");
+            }
+
+        
+
+            DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), string.Format(query.ToString()));
+
+            var item = (from DataRow row in dt.Rows
+                        select new ProductSummaryBEL
+                        {
+                            BrandName = row["BRAND_NAME"].ToString(),
+                            GenericCode = row["GENERIC_CODE"].ToString(),
+                            PRCApprovalDate = row["APPROVAL_DATE"].ToString(),
+                            CompanyCode = row["COMPANY_CODE"].ToString(),
+                            CompanyName = row["COMPANY_NAME"].ToString(),
+                        }).ToList();
+            return item;
+         
+        }
+        public IList<ProductSummaryBEL> ShowFooterPendingProductList(string DType, string fromDate, string toDate)
+        {
+
+            if (string.IsNullOrEmpty(fromDate))
+            {
+                DateTime yr = DateTime.Today.AddYears(-1);
+                fromDate = yr.ToString("dd/MM/yyyy");
+            }
+
+            if (string.IsNullOrEmpty(toDate))
+            {
+                DateTime crt = DateTime.Today;
+                toDate = crt.ToString("dd/MM/yyyy");
+            }
+            var query = new StringBuilder();
+            if (DType == "Recipe")
+            {
+                query.Append(" SELECT DISTINCT B.BRAND_NAME, B.GENERIC_CODE, TO_CHAR(A.SUBMISSION_DATE, 'dd/mm/yyyy') SUBMISSION_DATE, A.REMARKS,A.COMPANY_CODE,P.COMPANY_NAME FROM RECIPE_INFO A INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE INNER JOIN COMPANY_INFO P ON A.COMPANY_CODE=P.COMPANY_CODE");
+                query.Append(" WHERE TO_DATE(A.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
+                query.Append(" AND A.APPROVAL_DATE IS NULL ");
+            }
+
+            else if (DType == "DTL")
+            {
+                query.Append(" SELECT B.BRAND_NAME, B.GENERIC_CODE, TO_CHAR(C.DTL_SUBMISSION_DATE, 'dd/mm/yyyy') SUBMISSION_DATE, C.DTL_REMARKS REMARKS,A.COMPANY_CODE,P.COMPANY_NAME FROM PRODUCT_REGISTRATION_INFO C ");
+                query.Append(" INNER JOIN RECIPE_INFO A ON C.RECIPE_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE INNER JOIN COMPANY_INFO P ON A.COMPANY_CODE=P.COMPANY_CODE");
+                query.Append(" WHERE TO_DATE(C.DTL_SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
+                query.Append(" AND C.DTL_APPROVAL_DATE IS NULL AND C.STATE_STATUS = 'New' ");
+            }
+
+            else if (DType == "Product Registration")
+            {
+                query.Append(" SELECT B.BRAND_NAME, B.GENERIC_CODE, TO_CHAR(C.SUBMISSION_DATE, 'dd/mm/yyyy') SUBMISSION_DATE, C.REMARKS,A.COMPANY_CODE,P.COMPANY_NAME FROM PRODUCT_REGISTRATION_INFO C ");
+                query.Append(" INNER JOIN RECIPE_INFO A ON C.RECIPE_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE INNER JOIN COMPANY_INFO P ON A.COMPANY_CODE=P.COMPANY_CODE");
+                query.Append(" WHERE TO_DATE(C.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
+                query.Append(" AND C.RENEWAL_DATE IS NULL AND C.STATE_STATUS = 'New' ");
+            }
+            else if (DType == "Price")
+            {
+                query.Append(" SELECT B.BRAND_NAME, B.GENERIC_CODE, TO_CHAR(D.SUBMISSION_DATE, 'dd/mm/yyyy') SUBMISSION_DATE, D.REMARKS,A.COMPANY_CODE,P.COMPANY_NAME FROM PRODUCT_PRICE D ");
+                query.Append(" INNER JOIN PRODUCT_REGISTRATION_INFO C ON D.ANNEX_ID = C.ANNEX_ID ");
+                query.Append(" INNER JOIN RECIPE_INFO A ON C.RECIPE_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE INNER JOIN COMPANY_INFO P ON A.COMPANY_CODE=P.COMPANY_CODE");
+                query.Append(" WHERE TO_DATE(D.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
+                query.Append(" AND D.APPROVAL_DATE IS NULL ");
+            }
+            else if (DType == "MA Certificate")
+            {
+                query.Append(" SELECT B.BRAND_NAME, B.GENERIC_CODE, TO_CHAR(A.SUBMISSION_DATE, 'dd/mm/yyyy') SUBMISSION_DATE, A.REMARKS,A.COMPANY_CODE,P.COMPANY_NAME FROM MARKET_AUTH_CERTIFICATE A ");
+                query.Append(" INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE INNER JOIN COMPANY_INFO P ON A.COMPANY_CODE=P.COMPANY_CODE");
+                query.Append(" WHERE TO_DATE(A.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
+                query.Append(" AND A.APPROVAL_DATE IS NULL ");
+            }
+            else if (DType == "Amendment")
+            {
+                query.Append(" SELECT B.BRAND_NAME, B.GENERIC_CODE, TO_CHAR(C.SUBMISSION_DATE, 'dd/mm/yyyy') SUBMISSION_DATE, C.REMARKS,A.COMPANY_CODE,P.COMPANY_NAME FROM PRODUCT_REGISTRATION_INFO C ");
+                query.Append(" INNER JOIN RECIPE_INFO A ON C.RECIPE_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE INNER JOIN COMPANY_INFO P ON A.COMPANY_CODE=P.COMPANY_CODE");
+                query.Append(" WHERE TO_DATE(C.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
+                query.Append(" AND (C.STATE_STATUS = 'Annexure Amendment' OR C.STATE_STATUS = 'Packaging Amendment') AND C.RENEWAL_DATE IS NULL  ");
+            }
+
+          
+
+
+
+            DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), string.Format(query.ToString()));
+
+            var item = (from DataRow row in dt.Rows
+                        select new ProductSummaryBEL
+                        {
+                            BrandName = row["BRAND_NAME"].ToString(),
+                            GenericCode = row["GENERIC_CODE"].ToString(),
+                            PRCApprovalDate = row["SUBMISSION_DATE"].ToString(),
+                            CompanyCode = row["COMPANY_CODE"].ToString(),
+                            CompanyName = row["COMPANY_NAME"].ToString(),
+                        }).ToList();
+            return item;
+        }
         public IList<HomePageBEL> GetAllPending(string CompanyCode, string dataType, string fromDate, string toDate)
         {
             if (string.IsNullOrEmpty(fromDate))
@@ -183,63 +331,17 @@ namespace RMS_Square.Universal
                             //SubmissionDate = row["SUBMISSION_DATE"].ToString(),
                             //Remarks = row["REMARKS"].ToString(),
                             CompanyCode = row["COMPANY_CODE"].ToString(),
-                            CompanyName = row["COMPANY_NAME"].ToString(),
-                            Recipe = row["RECIPE"].ToString(),
-                            DTL = row["DTL"].ToString(),
-                            Prod_Reg = row["PROD_REG"].ToString(),
-                            Price = row["PRICE"].ToString(),
-                            MA = row["MA"].ToString(),
-                            Amendment = row["AMENDMENT"].ToString(),
+                            CompanyName = row["COMPANY_NAME"].ToString(),                         
+                            Recipe = Convert.ToInt64(row["RECIPE"].ToString()),
+                            DTL = Convert.ToInt64(row["DTL"].ToString()),
+                            Prod_Reg = Convert.ToInt64(row["PROD_REG"].ToString()),
+                            Price = Convert.ToInt64(row["PRICE"].ToString()),
+                            MA = Convert.ToInt64(row["MA"].ToString()),
+                            Amendment = Convert.ToInt64(row["AMENDMENT"].ToString()),
                         }).ToList();
             return item;
         }
 
-        //public IList<ProductSummaryBEL> ShowProductSummary(string CompanyCode, string BrandName)
-        //{
-        //    var query = new StringBuilder();
-
-        //    query.Append(" SELECT * FROM VW_RPT_PRODUCT_SUMMARY P WHERE 1=1 ");
-        //    query.Append(" AND P.PRODUCT_CODE = '" + CompanyCode + "'");
-
-        //    DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), string.Format(query.ToString()));
-
-        //    var item = (from DataRow row in dt.Rows
-        //                select new ProductSummaryBEL
-        //                {
-        //                    BrandName = row["BRAND_NAME"].ToString(),
-        //                    GenericCode = row["GENERIC_CODE"].ToString(),
-        //                    CompanyCode = row["COMPANY_CODE"].ToString(),
-        //                    ProductCode = row["PRODUCT_CODE"].ToString(),
-        //                    RCPID = row["RCP_ID"].ToString(),
-        //                    RCPSubmissionDate = GetDateTime(row["RCP_SUBMISSION_DATE"].ToString()),
-        //                    RCPApprovalDate = GetDateTime(row["RCP_APPROVAL_DATE"].ToString()),
-        //                    RCPValidUpto = GetDateTime(row["RCP_VALID_UPTO"].ToString()),
-        //                    RCPRemarks = row["RCP_REMARKS"].ToString(),
-        //                    REGID = row["REG_ID"].ToString(),
-        //                    DTLSubmissionDate = GetDateTime(row["DTL_SUBMISSION_DATE"].ToString()),
-        //                    DTLApprovalDate = GetDateTime(row["DTL_APPROVAL_DATE"].ToString()),
-        //                    DTLRemarks = row["DTL_REMARKS"].ToString(),
-        //                    REGSubmissionDate = GetDateTime(row["REG_SUBMISSION_DATE"].ToString()),
-        //                    REGApprovalDate = GetDateTime(row["REG_APPROVAL_DATE"].ToString()),
-        //                    REGValidUptoDate = GetDateTime(row["REG_VALID_UPTO"].ToString()),
-        //                    REGDarNo = row["REG_DAR_NO"].ToString(),
-        //                    REGRemarks = row["REG_REMARKS"].ToString(),
-        //                    PRCID = row["PRC_ID"].ToString(),
-        //                    PRCSubmissionDate = GetDateTime(row["PRC_SUBMISSION_DATE"].ToString()),
-        //                    PRCApprovalDate = GetDateTime(row["PRC_APPROVAL_DATE"].ToString()),
-        //                    PRCRemarks = row["PRC_REMARKS"].ToString(),
-        //                    MRKID = row["MRK_ID"].ToString(),
-        //                    MRKSubmissionDate = GetDateTime(row["MRK_SUBMISSION_DATE"].ToString()),
-        //                    MRKApprovalDate = GetDateTime(row["MRK_APPROVAL_DATE"].ToString()),
-        //                    MRKValidUpto = GetDateTime(row["MRK_VALID_UPTO"].ToString()),
-        //                    MRKRemarks = row["MRK_REMARKS"].ToString(),
-        //                    AMDID = row["AMD_ID"].ToString(),
-        //                    AMDSubmissionDate = GetDateTime(row["AMD_SUBMISSION_DATE"].ToString()),
-        //                    AMDApprovalDate = GetDateTime(row["AMD_APPROVAL_DATE"].ToString()),
-        //                    AMDRemarks = row["AMD_REMARKS"].ToString(), 
-        //                }).ToList();
-        //    return item;
-        //}
         public ProductSummaryBEL ShowProductSummary(string ProductCode, string CompanyCode)
         {
             try

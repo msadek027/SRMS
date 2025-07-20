@@ -95,8 +95,18 @@ namespace RMS_Square.Controllers
             var data = _dalObj.GetAllInfo(fromDt, toDt);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-
+        [HttpPost]
+        public ActionResult ShowFooterApprovalProductList(string DType, string fromDt, string toDt)
+        {
+            var data = _dalObj.ShowFooterApprovalProductList(DType,fromDt, toDt);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult ShowFooterPendingProductList(string DType, string fromDt, string toDt)
+        {
+            var data = _dalObj.ShowFooterPendingProductList(DType, fromDt, toDt);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult GetAllPending(string CompanyCode, string rptType, string fromDt, string toDt)
         {

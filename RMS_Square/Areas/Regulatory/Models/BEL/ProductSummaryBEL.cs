@@ -47,5 +47,7 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string AMDApprovalDate { get; set; }
         public string AMDRemarks { get; set; }
         public string AMDDownload { get; set; }
+
+        public string CompanyName { get; set; }
     }
 }
