@@ -244,20 +244,19 @@
 
         <br />
         <div id="divPending">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                    <button class="btn btn-lg btn-primary" id="btnPendingSummary" style="width:100%;" type="button" data-toggle="collapse" data-target="#collapsePending">
+                        Pending Summary
+                    </button>
+                </div>
+                <div class="col-md-3">
+                </div>
+            </div>
             <div class="collapse" id="collapsePending">
                 <div class="card card-body" style="border: solid; color: aliceblue; background-color: aliceblue;">
-                    <div class="row">
-                        <div class="col-md-3"></div>
-                        <div class="col-md-6">
-                            <button class="btn btn-lg btn-primary" style="width:100%;" type="button" >
-                               Pending Summary
-                            </button>
-                        </div>
-                        <div class="col-md-3">
-
-                        </div>
-                    </div>
-
+                
                     <div class="row">
                         <div class="col-md-3"></div>
                         <div class="col-md-2">
@@ -272,23 +271,20 @@
                                 <input type="text" class="form-control txtBox" id="pendingToDt" name="pendingToDt" placeholder="To Date">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
-                        </div>
-                      
+                        </div>                      
                         <div class="col-md-1">
                             <button id="btnShowPending" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Refresh</button>
                         </div>
                         <div class="col-md-2"></div>
                     </div>
-
                     <div class="row" id="pendingGrid">
                         <div class="col-sm-12">
-                      
                             <div id="PendingSummaryGrid" class="" style="cursor: pointer;"></div>
                         </div>
                     </div>
-
                 </div>
             </div>
+          
         </div>
 
 
@@ -300,7 +296,7 @@
 
         <div id="FileWindow" class="PopupWindowLayout" style="display: none;">
             <div id="FileGrid" class="PopUpGrid"></div>
-        </div>Approval
+        </div>
 
         <div id="MeetingWindow" class="PopupWindowLayout" style="display: none;">
             <div id="LicenseInfoGrid" class="PopUpGrid"></div>
@@ -485,39 +481,7 @@
         <div id="CompanyWindowGrid" class="PopUpGrid"></div>
     </div>
 </div>
-<script type="text/javascript">
-    function openCompanyTab(unitCode) {
-        sessionStorage.setItem('keyCompanyCode', unitCode);
-        sessionStorage.setItem('keyOption', "Entry License Info");
-        sessionStorage.setItem('keyOptionId','tabs-1');
 
-        var win = window.open("/Regulatory/TabCompany/frmTabCompany", "_blank");
-        if (!win) {
-            alert("Popup was blocked. Please allow popups for this site.");
-        }
-    }
-    function openProductTab(unitCode) {
-        sessionStorage.setItem('keyCompanyCode', unitCode);
-        sessionStorage.setItem('keyOption', "Product Info");
-        sessionStorage.setItem('keyOptionId','tabs-1');
-
-        var win = window.open("/Regulatory/TabProduct/frmTabProduct", "_blank");
-        if (!win) {
-            alert("Popup was blocked. Please allow popups for this site.");
-        }
-    }
-    function openNarcoticsTab(unitCode) {
-        sessionStorage.setItem('keyCompanyCode', unitCode);
-        sessionStorage.setItem('keyOption', "Product Info");
-        sessionStorage.setItem('keyOptionId','tabs-1');
-        var win = window.open("/Regulatory/TabNarcotics/frmTabNarcotics", "_blank");
-        if (!win) {
-            alert("Popup was blocked. Please allow popups for this site.");
-        }
-    }
-    
-   
-</script>
 <script type="text/javascript">
 
     $(document).ready(function () {
@@ -553,8 +517,12 @@
         document.getElementById("pendingButton").onclick = function () {
             $("#divPending").show();
             document.getElementById("divPending").scrollIntoView({ behavior: "smooth" });
+            $('#btnShowPending').click();
 
-
+        };
+        document.getElementById("btnPendingSummary").onclick = function () {
+            $("#divPending").show();
+            document.getElementById("divPending").scrollIntoView({ behavior: "smooth" });
             $('#btnShowPending').click();
 
         };

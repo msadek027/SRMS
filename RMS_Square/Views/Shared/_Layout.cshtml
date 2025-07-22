@@ -106,11 +106,19 @@
                                     <li><a href="/Regulatory/NarcoticLicense/frmNarcoticLicenseReport">Narcotics Item info & License</a></li>
                                 </ul>
                             </div>
-                            <div class="dropdown" style="margin: 0px; display: inline-block;">
-                                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="pendingButton" data-toggle="collapse" data-target="#collapsePending" aria-expanded="false" aria-haspopup="true">
-                                  Pending Work
-                                </button>
-                            </div>
+                      
+                        <div class="dropdown" style="margin: 0px; display: inline-block;">
+                            <button class="btn btn-primary btn-sm dropdown-toggle"
+                                    type="button"
+                                    id="pendingButton"
+                                    data-toggle="collapse"
+                                    data-target="#collapsePending"
+                                    aria-expanded="false"
+                                    aria-haspopup="true">
+                                Pending Work
+                            </button>
+                        
+                        </div>
                             <div class="dropdown" style="margin: 0px; display: inline-block;">
                                 <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="btnNotification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                     Notification
@@ -156,20 +164,20 @@
                     <div class="pull-left image">
                         <img src="~/Content/Images/Square_Logo.png" class="img-square" alt="User Image">
                     </div>
-                    <div class="pull-left info">
-                        @*<p>@Session["DeUserID"]</p>*@
-                        <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                    <div class="pull-left info">                      
+                        <a href="#" style="pointer-events: none; color: gray; text-decoration: none;">
+                            <i class="fa fa-circle text-success"></i> Online
+                        </a>
                     </div>
-                </div><!-- /.user-panel -->
+                </div>
                
-                <form action="#" method="get" class="sidebar-form">
+                @*<form action="#" method="get" class="sidebar-form">
                     <div class="input-group">
                         <input type="text" name="q" class="form-control" readonly placeholder="" />
                         <span class="input-group-btn">
-                            <!-- <source src="~/Media/VideoFile.mp4" type="video/mp4">  <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>-->
                         </span>
                     </div>             
-                </form>
+                </form>*@
 
                 <ul class="sidebar-menu" style="background-color:#FFFFFF">
                     <li class="active treeview">
@@ -180,9 +188,9 @@
                         <ul class="treeview-menu" id="MenuItem"></ul>
                     </li>
                 </ul>
-            </div><!-- /.sidebar -->
-        </div><!-- /.main-sidebar -->
-        <!-- Content Wrapper. Contains page content -->
+            </div>
+        </div>
+      
         <div class="content-wrapper">
           
             <section class="content ">
@@ -323,6 +331,9 @@
           
             $('#btnNotification').click(function () {
                 var win = window.open("/Home/frmNewIndex", "_blank");
+            });
+            $('#pendingButton').click(function () {
+                var win = window.open("/Home/frmHome", "_blank");
             });
         });
     </script>
