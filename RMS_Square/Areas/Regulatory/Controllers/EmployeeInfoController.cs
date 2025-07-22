@@ -25,7 +25,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             _serverFilePath = Utility.GetServerPath();
             _dalObj = new EmployeeInfoDAO();
         }
-        
+
 
         //
         // GET: /Regulatory/EmployeeInfo/
@@ -115,5 +115,13 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             var data = _dalObj.GetEmployeeList();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-	}
+
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult GetEmployeeById(int id)
+        {
+            var data = _dalObj.GetEmployeeById(id); // তোমার DAL method অনুযায়ী
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+    }
 }
