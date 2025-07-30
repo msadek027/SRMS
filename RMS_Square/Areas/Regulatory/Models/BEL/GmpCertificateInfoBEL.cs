@@ -15,6 +15,8 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string LicenseNo { get; set; }
         public string RevisionNo { get; set; }
         public string SubmissionType { get; set; }
+
+ 
         public string SubmissionDate { get; set; }
         public string InspectionDate { get; set; }
         public string ApprovalDate { get; set; }

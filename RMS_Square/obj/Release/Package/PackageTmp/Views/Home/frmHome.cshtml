@@ -1132,6 +1132,7 @@
                         $('#AMDSubmissionDate').val(data.AMDSubmissionDate);
                         $('#AMDApprovalDate').val(data.AMDApprovalDate);
                         $('#AMDRemarks').val(data.AMDRemarks);
+                        ProductSummaryWindow.center();
                         ProductSummaryWindow.open();
                     }
                 }
@@ -1140,7 +1141,7 @@
 
         var ProductSummaryWindow = $("#ProductSummaryWindow").kendoWindow({
             actions: ["Minimize", "Maximize", "Close"],
-            width: "100%",
+            width: "95%",
             height: "70%",
             draggable: true,
             modal: true,
@@ -1153,7 +1154,7 @@
 
         var FileWindow = $("#FileWindow").kendoWindow({
             actions: ["Minimize", "Maximize", "Close"],
-            width: "100%",
+            width: "95%",
             height: "30%",
             draggable: true,
             modal: true,
@@ -1655,8 +1656,8 @@
     });
     var ApprovalProductListPopupWindow = $("#ApprovalProductListPopupWindow").kendoWindow({
         actions: ["Minimize", "Maximize", "Close"],
-        width: "100%",
-        height: "80%",
+        width: "90%",
+        height: "60%",
         draggable: true,
         modal: true,
         title: "Product List"
@@ -1672,7 +1673,7 @@
         sortable: true,
         filterable: true,
         editable: true,
-        height: 300,
+        height: 350,
         selectable: "row",
         toolbar: ["excel",  ],
         excel: {
@@ -1699,8 +1700,8 @@
 
     var PendingProductListPopupWindow = $("#PendingProductListPopupWindow").kendoWindow({
         actions: ["Minimize", "Maximize", "Close"],
-        width: "100%",
-        height: "70%",
+        width: "90%",
+        height: "60%",
         draggable: true,
         modal: true,
         title: "Product List"
@@ -1716,7 +1717,7 @@
         sortable: true,
         filterable: true,
         editable: true,
-        height: 300,
+        height: 350,
         selectable: "row",
         toolbar: ["excel",  ],
         excel: {
@@ -1742,8 +1743,8 @@
 
     var ApprovalFooterProductListPopupWindow = $("#ApprovalFooterProductListPopupWindow").kendoWindow({
         actions: ["Minimize", "Maximize", "Close"],
-        width: "100%",
-        height: "70%",
+        width: "90%",
+        height: "60%",
         draggable: true,
         modal: true,
         title: "Product List"
@@ -1757,7 +1758,7 @@
         sortable: true,
         filterable: true,
         editable: true,
-        height: 300,
+        height: 350,
         selectable: "row",
         toolbar: ["excel",  ],
         excel: {
@@ -1781,8 +1782,8 @@
 
     var PendingFooterProductListPopupWindow = $("#PendingFooterProductListPopupWindow").kendoWindow({
         actions: ["Minimize", "Maximize", "Close"],
-        width: "100%",
-        height: "80%",
+        width: "90%",
+        height: "60%",
         draggable: true,
         modal: true,
         title: "Product List"
@@ -1796,7 +1797,7 @@
         sortable: true,
         filterable: true,
         editable: true,
-        height: 300,
+        height: 350,
         selectable: "row",
         toolbar: ["excel",  ],
         excel: {

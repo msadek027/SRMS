@@ -81,7 +81,7 @@
                         options.push('<option  value="Import Document">Import Document</option>');
                         options.push('<option  value="Approval Document">Approval Document</option>');
                         options.push('<option  value="Inspection Document">Inspection Document</option>');
-                        $("#Tab2RefNoTab").html(options.join(''));
+                        $("#Tab2RefNo").html(options.join(''));
                         break;
                     case "P":
                         var options = new Array();
@@ -91,7 +91,7 @@
                         options.push('<option  value="BCC Reference Document"">BCC Reference Document</option>');
                         options.push('<option  value="Technical Document">Technical Document</option>');
                         options.push('<option  value="Import Document">Import Document</option>');
-                        $("#Tab2RefNoTab").html(options.join(''));
+                        $("#Tab2RefNo").html(options.join(''));
                         break;
                 }
 
@@ -444,7 +444,7 @@
                     break;
                 case "MA Certificate":
                     $('#btnReset').prop('disabled', false);
-                    $('#btnSave').prop('disabled', true);
+                    $('#btnSave').prop('disabled', false);
                     $('#btnSearch').prop('disabled', false);
                     GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
 
@@ -641,7 +641,7 @@
             switch (ButtonEvent) {
                 case "Product Info":
                     ResetData();
-                    $("#Status").val("Active");
+                    $("#Tab1Status").val("Active");
                     GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent)
                     break;
 
@@ -754,7 +754,7 @@
                             model.CompanyCode = $('#CompanyCode').val();
                             model.ProductCode = $('#Tab2ProductCode').val();
                             model.MeetingType = $('#Tab2MeetingType').val();
-                            model.ManufacturerType = $('#ManufacturerType').val();
+                            model.ManufacturerType = $('#Tab2ManufacturerType').val();
                             model.DccNo = $('#Tab2DccNo').val();
                             model.ReceivedDate = $('#Tab2ReceivedDate').val();
                             model.ProposalDate = $('#Tab2ProposalDate').val();
@@ -1022,7 +1022,7 @@
             var grid = $(this).data('kendoGrid');
             var selectRow = grid.dataItem(grid.select());
             Tab1SearchBtn_PopupWindow.close();
-            SetMasterData(selectRow);
+            SetMasterDataTab(selectRow,'Tab1');
         });
 
         var PopupWindowDosageForm = $("#PopupWindowDosageForm").kendoWindow({
@@ -1703,7 +1703,7 @@
             CheckPagePartAccessPrivilegeTab( $('#CompanyCode').val(),ButtonEvent, selectRow.StateStatus);
             var options = new Array();
             options.push('<option selected value="' + selectRow.StateStatus + '">' + selectRow.StateStatus + '</option>');
-            $("#StateStatus").html(options.join(''));           
+            $("#Tab3StateStatus").html(options.join(''));           
             $.ajax({
                 url: '@Url.Action("GetFileByRefId", "ProductReg")',
                 type: 'GET',
@@ -2481,9 +2481,10 @@
         }).data('kendoGrid');
 
         $('#Tab5FindProduct_PopupWindowGrid').dblclick(function () {
+            
             var gridP = $(this).data('kendoGrid');
             var selectRow = gridP.dataItem(gridP.select());
-            SetMasterData(selectRow);
+            SetMasterDataTab(selectRow,'Tab5');
             Tab5FindProduct_PopupWindow.close();
 
         });
@@ -2606,13 +2607,13 @@
 </script>
 
 <script>
-
+    $(document).ready(function () {
     $('#Tab2UploadFile').on('change', function (e) {
-        var checkInput = InputValidation('Tab2RefNoTab');
+        var checkInput = InputValidation('Tab2RefNo');
 
         if (checkInput == 0) {
             var files = e.target.files;
-            var refId = $("#ID").val();
+            var refId = $("#Tab2ID").val();
             if (refId != "") {
                 var fileSize = 0;
                 var fSizeStrg = "";
@@ -2646,7 +2647,7 @@
                         $("#divLoading").show();
                         $.ajax({
                             type: "POST",
-                            url: '@Url.Action("UploadFile", "RecipeInfo")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#RefNo").val(),
+                            url: '@Url.Action("UploadFile", "RecipeInfo")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#Tab2RefNo").val(),
                             contentType: false,
                             processData: false,
                             data: data,
@@ -2655,9 +2656,9 @@
                                 if (result.msgType == "FUS") {
                                     toastr.success(OperationMsg(result.msgType));
                                     $("#Tab2FileGrid1").data("kendoGrid").dataSource.data(result.FileList);
-                                    $("#Tab2RefNoTab").val('--Select Any--');
-                                    $("#ReceivedDate").val(result.ReceiveDate);
-                                    $('#ReceivedDate').attr('disabled', 'disabled');
+                                    $("#Tab2RefNo").val('--Select Any--');
+                                    $("#Tab2ReceivedDate").val(result.ReceiveDate);
+                                    $('#Tab2ReceivedDate').attr('disabled', 'disabled');
                                 }
                                 else if (result.msgType == "FLI") {
                                     toastr.warning(OperationMsg(result.msgType));
@@ -2688,7 +2689,7 @@
         var checkInput = InputValidation('Tab3RefNo');
         if (checkInput == 0) {
             var files = e.target.files;
-            var refId = $("#AnnexId").val();
+            var refId = $("#Tab3AnnexId").val();
             if (refId != "") {
                 var fileSize = 0;
                 var fSizeStrg = "";
@@ -2722,7 +2723,7 @@
                         $("#divLoading").show();
                         $.ajax({
                             type: "POST",
-                            url: '@Url.Action("UploadFile", "ProductReg")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#RefNo").val() + '&sStatus=' + $("#StateStatus").val(),
+                            url: '@Url.Action("UploadFile", "ProductReg")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#Tab3RefNo").val() + '&sStatus=' + $("#Tab3StateStatus").val(),
                             contentType: false,
                             processData: false,
                             data: data,
@@ -2731,8 +2732,8 @@
                                 if (result.msgType == "FUS") {
                                     toastr.success(OperationMsg(result.msgType));
                                     $("#Tab3FileGrid1").data("kendoGrid").dataSource.data(result.FileList);
-                                    $("#RefNo").val('--Select Any--');
-                                    $("#ReceivedDate").val(result.ReceiveDate);
+                                    $("#Tab3RefNo").val('--Select Any--');
+                                    $("#Tab3ReceivedDate").val(result.ReceiveDate);
                                 }
                                 else if (result.msgType == "FLI") {
                                     toastr.warning(OperationMsg(result.msgType));
@@ -2764,7 +2765,7 @@
 
         if (checkInput == 0) {
             var files = e.target.files;
-            var refId = $("#ID").val();
+            var refId = $("#Tab4ID").val();
             if (refId != "") {
                 var fileSize = 0;
                 var fSizeStrg = "";
@@ -2798,7 +2799,7 @@
                         $("#divLoading").show();
                         $.ajax({
                             type: "POST",
-                            url: '@Url.Action("UploadFile", "ProductPrice")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#RefNo").val(),
+                            url: '@Url.Action("UploadFile", "ProductPrice")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#Tab4RefNo").val(),
                             contentType: false,
                             processData: false,
                             data: data,
@@ -2808,7 +2809,7 @@
                                     toastr.success(OperationMsg(result.msgType));
                                     $("#Tab4FileGrid1").data("kendoGrid").dataSource.data(result.FileList);
                                     $("#Tab4RefNo").val('--Select Any--');
-                                    $("#ReceivedDate").val(result.ReceiveDate);
+                                    $("#Rab4ReceivedDate").val(result.ReceiveDate);
                                 }
                                 else if (result.msgType == "FLI") {
                                     toastr.warning(OperationMsg(result.msgType));
@@ -2839,7 +2840,7 @@
 
         if (checkInput == 0) {
             var files = e.target.files;
-            var refId = $("#ID").val();
+            var refId = $("#Tab5ID").val();
             if (refId != "") {
                 var fileSize = 0;
                 var fSizeStrg = "";
@@ -2873,7 +2874,7 @@
                         $("#divLoading").show();
                         $.ajax({
                             type: "POST",
-                            url: '@Url.Action("UploadFile", "MarketAuthCertificate")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#RefNo").val(),
+                            url: '@Url.Action("UploadFile", "MarketAuthCertificate")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#Tab5RefNo").val(),
                             contentType: false,
                             processData: false,
                             data: data,
@@ -2907,6 +2908,7 @@
             toastr.error(OperationMsg("SDN"));
         }
 
+    });
     });
 </script>
 
@@ -3174,7 +3176,6 @@
         </div>
         <div class="form-group">
             <div class="row">
-
                 <div class="col-md-3">Submission Type :</div>
                 <div class="col-md-3">
                     <select class="form-control txtBox" id="Tab2MeetingType">
@@ -3394,7 +3395,7 @@
                                 Document Name:<span style="color: red">*</span>:
                             </div>
                             <div class="col-md-3">
-                                <select id="Tab2RefNoTab" class="form-control txtBox" tabindex="" name="Tab2RefNoTab"></select>
+                                <select id="Tab2RefNo" class="form-control txtBox" tabindex="" name="Tab2RefNo"></select>
                             </div>
                             <div class="col-md-4">
                                 <input type="file" class="txtBox" id="Tab2UploadFile" name="Tab2UploadFile" />
@@ -3548,7 +3549,7 @@
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Remarks : </div>
                         <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                            <input type="text" id="DtlRemarks" name="Tab3DtlRemarks" placeholder="Remarks" class="txtBox form-control " />
+                            <input type="text" id="Tab3DtlRemarks" name="Tab3DtlRemarks" placeholder="Remarks" class="txtBox form-control " />
                         </div>
                         <div class="col-sm-1"> </div>
                     </div>
@@ -3670,7 +3671,6 @@
                                 <input type="file" class="txtBox" id="Tab3UploadFile" name="Tab3UploadFile" />
                                 <i class="glyphicon glyphicon-upload form-control-feedback"></i>
                             </div>
-
                         </div>
                         <div class="row">
                             <br />

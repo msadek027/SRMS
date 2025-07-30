@@ -65,7 +65,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             query.Append(" FROM MEETING_INFO D");
             query.Append(" WHERE 1=1 ");
 
-            if (!string.IsNullOrEmpty(model.MeetingType))
+            if (!string.IsNullOrEmpty(model.MeetingType) && !model.MeetingType.Equals("All"))
             {
                 query.Append(" AND D.MEETING_TYPE='{0}'");
             }

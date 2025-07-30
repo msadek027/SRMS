@@ -25,7 +25,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                 if (master.NarcoticSetupSl == null || master.NarcoticSetupSl == 0)
                 {//I for Insert  
                     MaxID = idGenerated.getMAXID("NARCOTIC_SETUP_INFO", "NARCOTIC_SETUP_SL", "fm0000");
-                     IUMode = "I";
+                    IUMode = "I";
                     Qry = "Insert into NARCOTIC_SETUP_INFO(NARCOTIC_SETUP_SL,GENERIC_NAME, " +
                           " SET_BY,SET_ON)" +
                           "values(" + MaxID + ", '" + master.GenericName + "','" + userId + "',TO_DATE('" + setOndate + "','dd/MM/yyyy HH24:mi:ss'))";
@@ -137,7 +137,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
         public List<NarcoticSetupInfo> GetNarcoticLists()
         {
             string Qry = "SELECT NARCOTIC_SETUP_SL, GENERIC_NAME, SET_ON, SET_BY " +
-                         "FROM NARCOTIC_SETUP_INFO " + 
+                         "FROM NARCOTIC_SETUP_INFO " +
                          "ORDER BY NARCOTIC_SETUP_SL ASC";
 
             DataTable dt = dbHelper.GetDataTable(dbConn.SAConnStrReader(), Qry);
@@ -186,7 +186,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             try
             {
                 DataTable dt = dbHelper.GetDataTable(dbConn.SAConnStrReader(), query);
-        
+
                 return dt.AsEnumerable().Select(row => new NarcoticSetupInfo
                 {
                     NarcoticSetupSl = row.Field<decimal?>("NARCOTIC_SETUP_SL") ?? 0,
@@ -200,7 +200,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                 throw; // Re-throw to be handled by the controller
             }
         }
-        
+
         public List<NarcoticEntryItemInfo> GetEntryInfoLists()
         {
             const string query = @" SELECT NARCOTIC_ENTRY_SL,

@@ -25,12 +25,13 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string IntroducedInBD { get; set; }
         public string MeetingType { get; set; }
         public string ManufacturerType { get; set; }
+        public string ManufacturerName { get; set; }
         public string DccNo { get; set; }
         public string ReceivedDate { get; set; }
         public string ProposalDate { get; set; }
         public string MeetingRemarks { get; set; }
         public string CountryOfOrigin { get; set; }
-        public string ManufacturerName { get; set; }
+
         public string ImportProposalDate { get; set; }
         public string ImportSubmissionDate { get; set; }
         public string ImportRemarks { get; set; }

@@ -174,5 +174,25 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             _fileModel.RefLevel2 = refLevel2;
             return Json(GetFileByParameters(_fileModel).OrderBy(o => o.FileID), JsonRequestBehavior.AllowGet);
         }
+
+        [HttpGet]
+        public ActionResult GetUploadedFiles(decimal genericBrandId, string documentName)
+        {
+            try
+            {
+                var fileList = GetFileByParameters(new FileDetailModel
+                {
+                    RefLevel1 = genericBrandId.ToString(),
+                    RefNo = documentName
+                }).OrderByDescending(o => o.FileID).ToList();
+
+                return Json(fileList, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Status = "Error", Message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
     }
 }
