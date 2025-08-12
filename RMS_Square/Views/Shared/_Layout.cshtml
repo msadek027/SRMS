@@ -116,10 +116,20 @@
                                     Notification
                                 </button>
                             </div>
-                        <div class="dropdown" style="margin: 0px; display: inline-block;">
+                        @*<div class="dropdown" style="margin: 0px; display: inline-block;">
                             <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="btnAbout" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                About
                             </button>
+                        </div>*@
+                        <div class="dropdown employee-hover-container" style="margin: 0px; display: inline-block; position: relative;">
+                            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="btnAbout" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                About
+                            </button>
+                            <div class="employee-tooltip" id="employeeTooltip" style="display: none; position: absolute; background: white; border: 1px solid #ccc; padding: 10px; z-index: 1000; min-width: 200px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                                <div id="employeeList">
+                                    <p>Loading employees...</p>
+                                </div>
+                            </div>
                         </div>
                         <div class="dropdown" style="margin: 0px; display: inline-block;">                        
                             <button class="btn btn-primary btn-sm dropdown-toggle dropdown user user-menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:black">
@@ -140,6 +150,35 @@
                                     </div>
                            
                             </div>
+                        <div id="EmployeeDetailPopup" style="display:none;">
+                            <div class="employee-form-container">
+                                <div class="form-group">
+                                    <label>Employee Code:</label>
+                                    <input type="text" id="popupEmployeeCode" class="form-control" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label>Employee Name:</label>
+                                    <input type="text" id="popupEmployeeName" class="form-control" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label>Designation:</label>
+                                    <input type="text" id="popupDesignationName" class="form-control" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label>Department:</label>
+                                    <input type="text" id="popupDepartmentName" class="form-control" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label>Contact No:</label>
+                                    <input type="text" id="popupContactNo" class="form-control" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label>Job Description:</label>
+                                    <input type="text" id="popupJobDescription" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+
                         </div>
                   
                
@@ -250,7 +289,23 @@
         .dropdown:hover > .dropdown-menu {
             display: block;
         }
+        .employee-form-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+        }
 
+        .form-group.full-width {
+            grid-column: 1 / -1; /* Job Description full width হবে */
+        }
+
+        /* Responsive জন্য */
+        media (max-width: 600px) {
+            .employee-form-container {
+                grid-template-columns: 1fr;
+            }
+        }
         /* Optional – keep the caret pointing up while open on hover */
         .dropdown:hover > .dropdown-toggle .caret {
             transform: rotate(180deg);
@@ -270,8 +325,35 @@
             padding: 0 5px; /* Adjust padding as needed */            
             display: inline; /* Change display property to inline */
         }
-      
 
+        .employee-hover-container:hover .employee-tooltip {
+            display: block !important;
+        }
+
+        .employee-tooltip {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0; /* Change from left: 0 to right: 0 */
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 15px;
+            z-index: 1000;
+            min-width: 250px; 
+            max-width: 350px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            margin-top: 2px;
+        }
+
+        .employee-item {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+            .employee-item:last-child {
+                border-bottom: none;
+            }
        
 
     </style>
@@ -429,6 +511,169 @@
             document.getElementById("menuButton").style.visibility = "hidden";
         }
 
+    </script>
+    <script>
+    $(document).ready(function () {
+        var employeePopup = $("#EmployeeDetailPopup").kendoWindow({
+            width: "800px",
+            title: "Employee Details",
+            visible: false,
+            actions: ["Close"],
+            modal: true
+        }).data("kendoWindow");
+
+        function showEmployeePopup(emp) {
+            $('#popupEmployeeCode').val(emp.EmployeeCode || '');
+            $('#popupEmployeeName').val(emp.EmployeeName || '');
+            $('#popupDesignationName').val(emp.DesignationName || '');
+            $('#popupDepartmentName').val(emp.DepartmentName || '');
+            $('#popupContactNo').val(emp.ContactNo || '');
+            $('#popupJobDescription').val(emp.JobDescription || '');
+
+            employeePopup.center().open();
+        }
+
+        // Show/hide employee tooltip on hover
+        $('#btnAbout').hover(
+            function () {
+                $('#employeeTooltip').show();
+                loadEmployeeData(); // Load data when hovered
+            },
+            function () {
+                setTimeout(function () {
+                    if (!$('#employeeTooltip').is(':hover')) {
+                        $('#employeeTooltip').hide();
+                    }
+                }, 500); // Increased delay for smoothness
+            }
+        );
+
+        // Keep tooltip open if hovering over it
+        $('#employeeTooltip').hover(
+            function () {
+                $(this).show();
+            },
+            function () {
+                $(this).hide();
+            }
+        );
+
+        // Load employee data from GetAllInfo API
+        function loadEmployeeData() {
+            $.ajax({
+                url: '@Url.Action("GetAllInfo", "EmployeeInfo")',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    displayEmployees(data);
+                },
+                error: function () {
+                    $('#employeeList').html('<p>Error loading employee data</p>');
+                }
+            });
+        }
+
+        // Display employee data in tooltip
+        function displayEmployees(employees) {
+            var html = '<div class="employee-list-container" style="max-height: 400px; overflow-y: auto;">';
+
+            html += '<div class="form-group" style="margin-bottom: 10px;">';
+           // html += '<input type="text" id="txtEmployeeSearch" class="form-control input-sm" placeholder="Search employees..." />';
+            html += '</div>';
+
+            html += '<div id="employeeItemsContainer">';
+
+            if (employees && employees.length > 0) {
+                for (var i = 0; i < employees.length; i++) {
+                    var emp = employees[i];
+                    html += '<div class="employee-item" data-employee-id="' + emp.ID + '" style="cursor: pointer; padding: 8px; border-bottom: 1px solid #eee;" ' +
+                            
+                            'data-employee-name="' + emp.EmployeeName + '" ' +
+                            'data-designation-name="' + emp.DesignationName + '" ' +
+                            'data-department-name="' + emp.DepartmentName + '" ' +
+                            'data-company-name="' + emp.CompanyName + '" ' +
+                            'data-status="' + emp.Status + '">';
+                    html += '<div class="employee-name"><strong>' + (emp.EmployeeName || 'N/A') + '</strong></div>';
+                    html += '<div class="employee-details">';
+                    html += '</div>';
+                    html += '</div>';
+                }
+
+                html += '<div class="employee-more" style="border-top: 2px solid #337ab7; margin-top: 10px; padding-top: 8px;">';
+                html += '<small class="text-info"><strong>Total: ' + employees.length + ' employees</strong></small>';
+                html += '</div>';
+
+            } else {
+                html += '<p class="error-text"><i class="glyphicon glyphicon-info-sign"></i> No employees found</p>';
+            }
+
+            html += '</div></div>';
+            $('#employeeList').html(html);
+
+            // Search functionality
+            //$("#txtEmployeeSearch").keyup(function () {
+            //    var val = $(this).val().toLowerCase();
+            //    $(".employee-item").each(function () {
+            //        var employeeCode = $(this).data('employee-code').toLowerCase();
+            //        var employeeName = $(this).data('employee-name').toLowerCase();
+            //        var designationName = $(this).data('designation-name').toLowerCase();
+            //        var departmentName = $(this).data('department-name').toLowerCase();
+            //        var companyName = $(this).data('company-name').toLowerCase();
+            //        var status = $(this).data('status').toLowerCase();
+
+            //        if (employeeCode.includes(val) ||
+            //            employeeName.includes(val) ||
+            //            designationName.includes(val) ||
+            //            departmentName.includes(val) ||
+            //            companyName.includes(val) ||
+            //            status.includes(val)) {
+            //            $(this).show();
+            //        } else {
+            //            $(this).hide();
+            //        }
+            //    });
+            //});
+
+            // Double click to navigate to employee form
+            $('.employee-item').off('dblclick').on('dblclick', function () {
+                var employeeId = $(this).data('employee-id');
+                navigateToEmployeeForm(employeeId);
+            });
+        }
+
+        // Navigate to employee form with employee details loaded
+        @*function navigateToEmployeeForm(employeeId) {
+            $.ajax({
+                url: '@Url.Action("GetEmployeeById", "EmployeeInfo")', // Use your GetEmployeeById endpoint
+                type: 'GET',
+                data: { id: employeeId },
+                success: function (data) {
+                    // Store the employee data temporarily
+                    sessionStorage.setItem('currentEmployee', JSON.stringify(data));
+
+                    // Navigate to the form page
+                    window.location.href = '/Regulatory/EmployeeInfo/frmEmployeeInfo';
+                },
+                error: function () {
+                    alert('Error loading employee details');
+                }
+            });
+        }*@
+        function navigateToEmployeeForm(employeeId) {
+            $.ajax({
+                url: '@Url.Action("GetEmployeeById", "EmployeeInfo")',
+                type: 'GET',
+                data: { id: employeeId },
+                success: function (data) {
+                    showEmployeePopup(data);
+                },
+                error: function () {
+                    alert('Error loading employee details');
+                }
+            });
+        }
+
+    });
     </script>
 
 

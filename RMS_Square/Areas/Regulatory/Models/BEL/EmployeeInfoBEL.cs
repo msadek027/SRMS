@@ -27,6 +27,7 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string SetOn { get; set; }
         public string UpdateBy { get; set; }
         public string UpdatedDate { get; set; }
+        public string JobDescription { get; set; }
 
     }
 

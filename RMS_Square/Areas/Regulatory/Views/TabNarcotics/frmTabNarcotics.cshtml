@@ -316,6 +316,7 @@
                             });
                             PopupGrid.dataSource.data(data);
                             $('#txtPopupInput').val('');
+                            
                         } else {
                             ViewPopupWindow.close();
                             AcknowledgeMsg();
@@ -330,6 +331,30 @@
                 toastr.warning("View operation is not configured for this tab.");
             }
         });
+
+
+        function loadUploadedFiles(genericBrandId, documentName) {
+            $.ajax({
+                url: '/Regulatory/TabNarcotics/GetUploadedFiles',
+                method: 'GET',
+                data: {
+                    genericBrandId: genericBrandId,
+                    documentName: documentName
+                },
+                success: function (result) {
+                    if (result && Array.isArray(result)) {
+                        $("#Tab3FileGrid1").data("kendoGrid").dataSource.data(result);
+                    } else {
+                        toastr.warning("No uploaded files found.");
+                    }
+                },
+                error: function () {
+                    toastr.error("Error loading uploaded files.");
+                }
+            });
+        }
+
+
 
         var PopupGrid = $('#PopupWindowGrid').kendoGrid({
             dataSource: new kendo.data.DataSource({
@@ -403,7 +428,7 @@
             }
         });
 
-        function SetEntryItemData(data) {
+        function SetEntryItemData(data) {debugger
             $('#NarcoticEntrySl').val(data.NarcoticEntrySl);
             $('#GenericBrandId').val(data.GenericBrandId);
             $('#GENERIC_BRAND_ID').val(data.ItemName);
@@ -423,6 +448,10 @@
             $('#DivNarcRecvDate').val(formatDate(data.DivNarcRecvDate));
             $('#DncSendDate').val(formatDate(data.DncSendDate));
             $('#NarcApvlDate').val(formatDate(data.NarcApvlDate));
+
+            if (data.GenericBrandId && data.ItemName) {
+                loadUploadedFiles(data.GenericBrandId, data.ItemName);
+            }
         }
 
         function formatDate(date) {

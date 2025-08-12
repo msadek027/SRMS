@@ -61,6 +61,21 @@
 
     <div class="form-group">
         <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Contact No</div>
+            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" maxlength="50" id="ContactNo" name="ContactNo" placeholder="" class="RequiredField form-control" /></div>
+
+            <div class="col-xs-12 col-sm-6 col-md-1 col-lg-1"></div>
+            <div class="col-xs-12 col-sm-6 col-md-1 col-lg-1"></div>
+            <div class="col-xs-12 col-sm-6 col-md-1 col-lg-">Job Description</div>
+            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" maxlength="50" id="JobDescription" name="JobDescription" placeholder="" class="RequiredField form-control" /></div>
+
+
+        </div>
+    </div>
+
+
+    @*<div class="form-group">
+        <div class="row">
             <div class="col-xs-0 col-sm-0 col-md-0 col-lg-0"><input type="hidden" maxlength="50" id="CompanyCode" name="CompanyCode" placeholder="" class="RequiredField form-control" /></div>
             <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Company</div>
             <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" maxlength="50" id="CompanyName" name="CompanyName" placeholder="" readonly="readonly" class="RequiredField form-control" /></div>
@@ -70,9 +85,9 @@
             <div class="col-xs-12 col-sm-6 col-md-1 col-lg-1">Last Qualification</div>
             <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" maxlength="50" id="LastQualification" name="LastQualification" placeholder="" class="RequiredField form-control" /></div>
         </div>
-    </div>
+    </div>*@
 
-    <div class="form-group">
+    @*<div class="form-group">
         <div class="row">
             <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Date Of Joining</div>
             <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
@@ -103,7 +118,7 @@
 
 
         </div>
-    </div>
+    </div>*@
 
     <div class="form-group">
         <div class="row">
@@ -168,7 +183,21 @@
         </div>
     </div>
     <script type="text/javascript">
-    $(document).ready(function () {
+        $(document).ready(function () {
+
+            var currentEmployee = sessionStorage.getItem('currentEmployee');
+            if (currentEmployee) {debugger
+                var emp = JSON.parse(currentEmployee);
+                $('#EmployeeCode').val(emp.EmployeeCode);
+                $('#EmployeeName').val(emp.EmployeeName);
+                $('#DesignationName').val(emp.DesignationName);
+                $('#DepartmentName').val(emp.DepartmentName);
+                $('#ContactNo').val(emp.ContactNo);
+                $('#JobDescription').val(emp.JobDescription);
+                // অন্যান্য field fill করো
+                sessionStorage.removeItem('currentEmployee');
+            }
+
         $('#btnReset').click(function () {
             ResetData();
             $('#Status').val('Active');
@@ -766,7 +795,7 @@
 
         });
 
-        $('#btnSave').click(function () {
+        $('#btnSave').click(function () {debugger
 
             var Input = InputValidation('EmployeeName');
 
@@ -778,6 +807,7 @@
                 master.EmployeeName = $('#EmployeeName').val();
                 master.DesignationCode = $('#DesignationCode').val();
                 master.DepartmentCode = $('#DepartmentCode').val();
+                master.JobDescription = $('#JobDescription').val();
                 master.CompanyCode = $('#CompanyCode').val();
                 master.LastQualification = $('#LastQualification').val();
                 master.DateOfJoining = $('#DateOfJoining').val();
@@ -791,7 +821,7 @@
                     type: 'POST',
                     contentType: 'application/json;',
                     dataType: 'json',
-                    success: function (data) {
+                    success: function (data) {debugger
                         if (data.Status == "Yes") {
                             $("#ID").val(data.ID);
                             OperationMsg(data.Mode);
@@ -813,7 +843,7 @@
             }
 
         });
-        var master = { "ID": "", "SlNo": "", "EmployeeCode": "", "EmployeeName": "", "DesignationCode": "", "DepartmentCode": "", "CompanyCode": "", "LastQualification": "", "DateOfJoining": "", "TotalExperienceYr": "", "ContactNo": "", "EmailId": "", "Status": "" };
+        var master = { "ID": "", "SlNo": "", "EmployeeCode": "", "EmployeeName": "", "DesignationCode": "", "DepartmentCode": "", "JobDescription": "", "CompanyCode": "", "LastQualification": "", "DateOfJoining": "", "TotalExperienceYr": "", "ContactNo": "", "EmailId": "", "Status": "" };
     });
 
 
