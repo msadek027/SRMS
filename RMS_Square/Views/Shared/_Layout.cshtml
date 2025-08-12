@@ -103,8 +103,8 @@
                                     <li><a href="/Regulatory/GmpCertificate/frmGmpCertificateView">GMP Certificate</a></li>
                                     <li><a href="/Regulatory/ProductInfo/frmProductInfoView">Products</a></li>
                                     <li><a href="/Regulatory/MeetingInfo/frmMeetingInfoView">Meeting Info</a></li>
-                                    <li><a href="/Regulatory/NarcoticLicense/frmNarcoticLicenseReport">Narcotics Item info</a></li>
-                                    <li><a href="/Regulatory/NarcoticLicense/frmNarcoticLicenseReport">Narcotics License</a></li>
+                                    <li><a href="/Regulatory/NarcoticLicense/frmNarcoticItemInfoReport">Narcotics Item Info</a></li>
+                                    <li><a href="/Regulatory/NarcoticLicense/frmNarcoticLicenseInfoReport">Narcotics License Info</a></li>
                                 </ul>
                             </div>
                       
@@ -136,25 +136,56 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="dropdown" style="margin: 0px; display: inline-block;">                        
+                        <div class="dropdown" style="margin: 0px; display: inline-block;">
                             <button class="btn btn-primary btn-sm dropdown-toggle dropdown user user-menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:black">
 
                                 <i class="glyphicon glyphicon-user"></i> @Session["EmpName"]
                             </button>
-                                    <div class="dropdown-menu dropdown-menu-right" style="min-width: 200px;">
-                                        <div class="user-header text-center p-3">
-                                            <img src="~/Content/Images/Square_Logo.png" class="img-square" alt="User Image" style="width: 60px; height: 60px;">
-                                            <p class="mt-2 mb-1">@Session["Designation"]</p>
-                                            <small>Member since @Session["EmploymentDate"]</small>
-                                        </div>
-                                        <div class="dropdown-divider"></div>
-                                        <div class="user-footer d-flex justify-content-between px-3 pb-2">
-                                            <a href="/Home/ChangedPassword" class="btn btn-default btn-flat btn-sm">Change Password</a>
-                                            <a href="/Home/LogOut" class="btn btn-default btn-flat btn-sm">Sign out</a>
-                                        </div>
-                                    </div>
-                           
+                            <div class="dropdown-menu dropdown-menu-right" style="min-width: 200px;">
+                                <div class="user-header text-center p-3">
+                                    <img src="~/Content/Images/Square_Logo.png" class="img-square" alt="User Image" style="width: 60px; height: 60px;">
+                                    <p class="mt-2 mb-1">@Session["Designation"]</p>
+                                    <small>Member since @Session["EmploymentDate"]</small>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <div class="user-footer d-flex justify-content-between px-3 pb-2">
+                                    <a href="/Home/ChangedPassword" class="btn btn-default btn-flat btn-sm">Change Password</a>
+                                    <a href="/Home/LogOut" class="btn btn-default btn-flat btn-sm">Sign out</a>
+                                </div>
                             </div>
+
+                        </div>
+                        <div id="EmployeeDetailPopup" style="display:none;">
+                            <div class="employee-form-container">
+                                <div class="form-group">
+                                    <label>Employee Code:</label>
+                                    <input type="text" id="popupEmployeeCode" class="form-control" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label>Employee Name:</label>
+                                    <input type="text" id="popupEmployeeName" class="form-control" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label>Designation:</label>
+                                    <input type="text" id="popupDesignationName" class="form-control" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label>Department:</label>
+                                    <input type="text" id="popupDepartmentName" class="form-control" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label>Contact No:</label>
+                                    <input type="text" id="popupContactNo" class="form-control" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label>Job Description:</label>
+                                    <input type="text" id="popupJobDescription" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+
+
+
                         </div>
                   
                
@@ -261,7 +292,7 @@
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 
 
-    <style>
+    @*<style>
         .dropdown:hover > .dropdown-menu {
             display: block;
         }
@@ -318,7 +349,84 @@
             }
        
 
+    </style>*@
+
+    <style>
+        .dropdown:hover > .dropdown-menu {
+            display: block;
+        }
+
+        .employee-form-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1; /* Job Description full width হবে */
+        }
+
+        /* Responsive জন্য */
+        media (max-width: 600px) {
+            .employee-form-container;
+
+        {
+            grid-template-columns: 1fr;
+        }
+
+        }
+        /* Optional – keep the caret pointing up while open on hover */
+        .dropdown:hover > .dropdown-toggle .caret {
+            transform: rotate(180deg);
+        }
+
+        .custom-btn {
+            height: 20px; /* Adjust the height as needed */
+            font-size: 12px; /* Adjust the font size as needed */
+            line-height: 1; /* Reset line height */
+            padding: 0 5px; /* Adjust padding as needed */
+            display: inline; /* Change display property to inline */
+        }
+
+        .custom-btn2 {
+            height: 25px; /* Adjust the height as needed */
+            font-size: 16px; /* Adjust the font size as needed */
+            line-height: 1; /* Reset line height */
+            padding: 0 5px; /* Adjust padding as needed */
+            display: inline; /* Change display property to inline */
+        }
+
+        .employee-hover-container:hover .employee-tooltip {
+            display: block !important;
+        }
+
+        .employee-tooltip {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0; /* Change from left: 0 to right: 0 */
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 15px;
+            z-index: 1000;
+            min-width: 250px;
+            max-width: 350px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            margin-top: 2px;
+        }
+
+        .employee-item {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+            .employee-item:last-child {
+                border-bottom: none;
+            }
     </style>
+
     <script type="text/javascript">
         function openCompanyTab(unitCode) {
             sessionStorage.setItem('keyCompanyCode', unitCode);
@@ -479,6 +587,24 @@
     </script>
     <script>
     $(document).ready(function () {
+        var employeePopup = $("#EmployeeDetailPopup").kendoWindow({
+            width: "800px",
+            title: "Employee Details",
+            visible: false,
+            actions: ["Close"],
+            modal: true
+        }).data("kendoWindow");
+
+        function showEmployeePopup(emp) {
+            $('#popupEmployeeCode').val(emp.EmployeeCode || '');
+            $('#popupEmployeeName').val(emp.EmployeeName || '');
+            $('#popupDesignationName').val(emp.DesignationName || '');
+            $('#popupDepartmentName').val(emp.DepartmentName || '');
+            $('#popupContactNo').val(emp.ContactNo || '');
+            $('#popupJobDescription').val(emp.JobDescription || '');
+
+            employeePopup.center().open();
+        }
 
         // Show/hide employee tooltip on hover
         $('#btnAbout').hover(
@@ -589,7 +715,7 @@
         }
 
         // Navigate to employee form with employee details loaded
-        function navigateToEmployeeForm(employeeId) {
+        @*function navigateToEmployeeForm(employeeId) {
             $.ajax({
                 url: '@Url.Action("GetEmployeeById", "EmployeeInfo")', // Use your GetEmployeeById endpoint
                 type: 'GET',
@@ -600,6 +726,19 @@
 
                     // Navigate to the form page
                     window.location.href = '/Regulatory/EmployeeInfo/frmEmployeeInfo';
+                },
+                error: function () {
+                    alert('Error loading employee details');
+                }
+            });
+        }*@
+        function navigateToEmployeeForm(employeeId) {
+            $.ajax({
+                url: '@Url.Action("GetEmployeeById", "EmployeeInfo")',
+                type: 'GET',
+                data: { id: employeeId },
+                success: function (data) {
+                    showEmployeePopup(data);
                 },
                 error: function () {
                     alert('Error loading employee details');

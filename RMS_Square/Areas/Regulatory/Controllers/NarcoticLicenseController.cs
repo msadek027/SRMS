@@ -175,7 +175,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             }
             return Redirect(string.Format("~/Home/frmHome"));
         }
-        public ActionResult frmNarcoticLicenseReport()
+        public ActionResult frmNarcoticItemInfoReport()
         {
             if (Session["UserID"] != null)
             {
@@ -184,7 +184,15 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             }
             return Redirect(string.Format("~/Home/frmHome"));
         }
-
+        public ActionResult frmNarcoticLicenseInfoReport()
+        {
+            if (Session["UserID"] != null)
+            {
+                Session["FormNameTitle"] = "Narcotic License Report";
+                return View();
+            }
+            return Redirect(string.Format("~/Home/frmHome"));
+        }
         [HttpPost]
         public ActionResult frmNarcoticLicenseRpt(ReportModel model)
         {
