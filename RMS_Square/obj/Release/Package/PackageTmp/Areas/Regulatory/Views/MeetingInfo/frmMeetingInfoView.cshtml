@@ -21,8 +21,8 @@
         <div class="col-md-4">
             <div class="form-group">
                 <label class="control-label required">Meeting Type:</label>
-                <select id="MeetingType" class="form-control txtBox" tabindex="" name="MeetingType">
-                    <option value="ALL">ALL</option>
+                <select id="MeetingType" name="MeetingType" class="form-control input-sm">
+                    <option value="All">ALL</option>
                     <option value="Recipe Meeting">Recipe Meeting</option>
                     <option value="TSC Meeting">TSC Meeting</option>
                     <option value="DCC Meeting">DCC Meeting</option>
@@ -162,7 +162,8 @@
         var paramModel = { "refLevel1": "", "refLevel2": "" }
         // Download Button in Grid
         function handleView(event) {
-            var selectedRow = licenseInfoGrid.dataItem($(event.currentTarget).closest("tr"));
+            event.preventDefault();
+            var selectRow = licenseInfoGrid.dataItem($(event.currentTarget).closest("tr"));
             $.ajax({
                 url: '@Url.Action("GetFileByRefId", "MeetingInfo")',
                 type: 'GET',

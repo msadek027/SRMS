@@ -4,40 +4,36 @@
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <link href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" rel="stylesheet" />
-
 <link href="~/Content/CSS/InputText.css" rel="stylesheet" />
 
 <script type="text/javascript">
     $(document).ready(function () {
         $('#btnReset').click(function () {
-            debugger
             var companyCode = $("#CompanyCode").val();
             var companyName = $("#CompanyName").val();
             var companyAddress = $("#Address").val();
             ResetData();
-            // Restore the preserved values
             $("#CompanyCode").val(companyCode);
             $("#CompanyName").val(companyName);
             $("#Address").val(companyAddress);
             $("#ItemWindowGrid").data("kendoGrid").dataSource.data([]);
-            //$("#SubmissionType ").val('License');
             $("#frameID").attr("height", 0);
             $("#frameID").attr("src", "");
+            $("#Tab3FileGrid1").data("kendoGrid").dataSource.data([]);
         });
 
-
         $("#btnRevisionTab3").click(function () {
-            debugger;
             $('#Tab3AnnexId').val('');
             $('#Tab3AnnexRevisionNo').val('');
             var options = new Array();
-            options.push('<option  value="">--Select Any--</option>');
-            options.push('<option  value="Renew">Renew</option>');
-            options.push('<option  value="Annexure Amendment">Annexure Amendment</option>');
-            options.push('<option  value="Packaging Amendment">Packaging Amendment</option>');
+            options.push('<option value="">--Select Any--</option>');
+            options.push('<option value="Renew">Renew</option>');
+            options.push('<option value="Annexure Amendment">Annexure Amendment</option>');
+            options.push('<option value="Packaging Amendment">Packaging Amendment</option>');
             $("#RecordStatus").html(options.join(''));
             $("#Tab3FileGrid1").data("kendoGrid").dataSource.data([]);
         });
+
         $('#RecordStatus').change(function () {
             var status = $('#RecordStatus').val();
             if (status == "Renew") {
@@ -45,74 +41,56 @@
             }
             CheckPagePartAccessPrivilegeTab($('#CompanyCode').val(), ButtonEvent, status);
         });
-        //==============Shows Calender============================
+
         $('.input-group.date').datepicker({
             format: "d/mm/yyyy",
             autoclose: true,
             todayHighlight: true
         });
-        //==========================================================
 
-        var activeTabIndex = 0; // Default to the first tab
-        var ButtonEvent = ''; // Declare ButtonEvent as a global variable
+        var activeTabIndex = 0;
+        var ButtonEvent = '';
 
-        // Retrieve the active tab index from sessionStorage
         if (sessionStorage.getItem('activeTabIndex') !== null) {
             activeTabIndex = parseInt(sessionStorage.getItem('activeTabIndex'), 10);
         }
 
-        // Handle specific tab options stored in sessionStorage
         var keyOption = sessionStorage.getItem('keyOption');
         if (keyOption === "Employment") {
-            activeTabIndex = 2; // Employment tab
+            activeTabIndex = 2;
         } else if (keyOption === "Entry License Info") {
-            activeTabIndex = 0; // EmpContactAddress tab
+            activeTabIndex = 0;
         }
 
-        // Initialize the jQuery UI tabs widget
         $('#tabs').tabs({
             active: activeTabIndex,
             activate: function (event, ui) {
-                // Save the active tab index in sessionStorage when the tab changes
                 var newActiveTabIndex = $('#tabs').tabs("option", "active");
                 sessionStorage.setItem('activeTabIndex', newActiveTabIndex);
-
-                // Update ButtonEvent and call GetView for the active tab
                 var activeTabText = $("#btnList li:nth-child(" + (newActiveTabIndex + 1) + ") a").text();
-                sessionStorage.setItem('keyOption', activeTabText); // Store the active tab's text
-                ButtonEvent = activeTabText; // Update the global variable
+                sessionStorage.setItem('keyOption', activeTabText);
+                ButtonEvent = activeTabText;
                 GetView($('#CompanyCode').val(), ButtonEvent);
-
-                // Highlight the active tab by adding the class and removing it from others
                 $("#btnList li").removeClass('active-tab');
                 $("#btnList li:nth-child(" + (newActiveTabIndex + 1) + ")").addClass('active-tab');
             }
         });
 
-        // Populate fields with stored session data
         $('#CompanyCode').val(sessionStorage.getItem('keyCompanyCode'));
 
-
-        // Initial content loading for the current tab
         var initialButtonEvent = sessionStorage.getItem('keyOption') || "Entry License Info";
-        ButtonEvent = initialButtonEvent; // Initialize ButtonEvent
+        ButtonEvent = initialButtonEvent;
         GetView($('#CompanyCode').val(), ButtonEvent);
 
-        // Mark the initially active tab
         $("#btnList li").removeClass('active-tab');
         $("#btnList li:nth-child(" + (activeTabIndex + 1) + ")").addClass('active-tab');
 
-        // Tab click handler to update ButtonEvent and fetch content
         $("#btnList li").click(function () {
-            ButtonEvent = $(this).text(); // Update the global variable
+            ButtonEvent = $(this).text();
             GetView($('#CompanyCode').val(), ButtonEvent);
-
-            // Highlight the clicked tab
             $("#btnList li").removeClass('active-tab');
             $(this).addClass('active-tab');
         });
-
-
 
         function GetView(CompanyCode, ButtonEvent) {debugger
             switch (ButtonEvent) {
@@ -121,15 +99,14 @@
                     $('#btnSave').prop('disabled', true);
                     $('#btnView').prop('disabled', true);
                     GetNarcoticsDetails('/Regulatory/TabNarcotics/GetNarcoticItems');
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
                     break;
-
                 case "Setup Info":
                     $('#btnReset').prop('disabled', false);
                     $('#btnSave').prop('disabled', false);
                     $('#btnView').prop('disabled', false);
-                    GetCompanyDetails('/Regulatory/TabNarcotics/GetNarcoticItems', CompanyCode, ButtonEvent);
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
                     break;
-
                 case "Entry Item Info":
                     $('#btnReset').prop('disabled', false);
                     $('#btnSave').prop('disabled', false);
@@ -162,65 +139,18 @@
                 contentType: 'application/json;',
                 dataType: 'json',
                 success: function (data) {
-                    debugger;
                     if (data.length > 0) {
                         SetDetailData(data);
-                    }
-                    else {
+                    } else {
                         toastr.success("Data not found!");
                     }
-
                 },
                 error: function () {
-                    alert('Error occured!');
-                },
+                    alert('Error occurred!');
+                }
             });
         }
 
-        function SaveBrand(URL, CompanyCode, ButtonEvent) {
-            $.ajax({
-                url: URL,
-                data: JSON.stringify({ CompanyCode: CompanyCode, ButtonEvent: ButtonEvent }),
-                type: 'POST',
-                contentType: 'application/json;',
-                dataType: 'json',
-                success: function (data) {
-                    debugger;
-                    if (data.length > 0) {
-                        SetDetailData(data);
-                    }
-                    else {
-                        toastr.success("Data not found!");
-                    }
-
-                },
-                error: function () {
-                    alert('Error occured!');
-                },
-            });
-        }
-
-
-
-        //function GetNarcoticsDetails(URL) {
-        //    $.ajax({
-        //        url: URL,
-        //        type: 'POST',
-        //        contentType: 'application/json;',
-        //        dataType: 'json',
-        //        success: function (data) {
-        //            if (data && data.length > 0) {
-        //                PopulateTab2Table(data);
-        //            } else {
-        //                toastr.info("No data found!");
-        //                $("#tblItems tbody").empty().append("<tr><td colspan='2'>No data found.</td></tr>");
-        //            }
-        //        },
-        //        error: function () {
-        //            alert('Error occurred while fetching items.');
-        //        },
-        //    });
-        //}
         function GetNarcoticsDetails(URL) {
             $.ajax({
                 url: URL,
@@ -229,11 +159,9 @@
                 dataType: 'json',
                 success: function (data) {
                     if (data && data.length > 0) {
-                        // Initialize or update the grid with the data
                         InitializeNarcoticsGrid(data);
                     } else {
                         toastr.info("No data found!");
-                        // Clear the grid if no data
                         var grid = $("#narcoticsGrid").data("kendoGrid");
                         if (grid) {
                             grid.dataSource.data([]);
@@ -242,22 +170,18 @@
                 },
                 error: function () {
                     alert('Error occurred while fetching items.');
-                },
+                }
             });
         }
 
         function InitializeNarcoticsGrid(data) {
-            // Store the original data for resetting
-            var originalData = data.slice(); // Create a copy of the original data
-
-            // Check if grid already exists
+            var originalData = data.slice();
             var grid = $("#narcoticsGrid").data("kendoGrid");
 
             if (!grid) {
-                // Create the grid if it doesn't exist
                 grid = $("#narcoticsGrid").kendoGrid({
                     dataSource: {
-                        data: originalData, // Use the original data
+                        data: originalData,
                         pageSize: 10,
                         schema: {
                             model: {
@@ -292,22 +216,18 @@
                     }
                 }).data("kendoGrid");
 
-                // Store original data in the grid element for later access
                 grid.element.data("originalData", originalData);
 
-                // Add search functionality
                 $("#narcoticsSearchBox").on("keyup", function () {
                     var searchValue = this.value.toLowerCase();
                     var grid = $("#narcoticsGrid").data("kendoGrid");
                     var originalData = grid.element.data("originalData");
 
                     if (!searchValue) {
-                        // If search box is empty, restore original data
                         grid.dataSource.data(originalData);
                         return;
                     }
 
-                    // Filter the data
                     var filteredData = $.grep(originalData, function (item) {
                         return (
                             (item.NarcoticSetupSl && item.NarcoticSetupSl.toString().toLowerCase().includes(searchValue)) ||
@@ -317,50 +237,26 @@
 
                     grid.dataSource.data(filteredData);
                 });
-
             } else {
-                // Update the existing grid's data
                 grid.dataSource.data(data);
-                // Store the new original data
                 grid.element.data("originalData", data.slice());
-                // Clear any existing search
                 $("#narcoticsSearchBox").val("");
             }
         }
 
-
-        function PopulateTab2Table(data) {
-            var tbody = $("#tblItems tbody");
-            tbody.empty();
-
-            $.each(data, function (i, item) {
-                var row = "<tr>";
-                row += "<td>" + item.NarcoticSetupSl + "</td>";
-                row += "<td>" + item.GenericName + "</td>";
-                row += "</tr>";
-                tbody.append(row);
-            });
-        }
-
-
-        function SetDetailData(data) {debugger
+        function SetDetailData(data) {
             if (!data || !Array.isArray(data) || data.length === 0) {
                 toastr.error("No data found!");
                 return;
             }
             for (var i = 0; i < data.length; i++) {
                 const item = data[i];
-                // Populate input fields dynamically
                 $.each(item, function (key, value) {
                     $('#' + key).val(value);
                 });
-
-                // toastr.success("Data found!");
             }
         }
 
-     
-        // Company window for find button
         var ViewPopupWindow = $("#ViewPopupWindow").kendoWindow({
             actions: ["Minimize", "Maximize", "Close"],
             width: "90%",
@@ -370,57 +266,63 @@
             title: "List of Narcotics"
         }).data("kendoWindow").center();
 
-       
-        $('#btnView').click(function () {
-            debugger;
+        $('#btnView').click(function () {debugger
             var activeTabIndex = $("#tabs").tabs("option", "active");
 
-            if (activeTabIndex === 0) {debugger // Tab 1: Setup Info
+            if (activeTabIndex === 0) {
                 ViewPopupWindow.open();
                 $.ajax({
-                    url: '/Regulatory/TabNarcotics/GetViewItems', // Include area in URL
+                    url: '/Regulatory/TabNarcotics/GetViewItems',
                     method: 'GET',
-                    dataType: 'json', // Expect JSON response
-                    success: function (data) {
+                    dataType: 'json',
+                    success: function (data) {debugger
                         if (data && data.length > 0) {
-                            var grid = $('#PopupWindowGrid').data('kendoGrid');
-                            if (grid) {
-                                grid.dataSource.data(data);
-                            } else {
-                                console.error('Kendo grid not initialized');
-                            }
-                        }
-                        else {
+                            originalGridData = data.slice();
+                            PopupGrid.setOptions({
+                                columns: [
+                                    { field: "GenericName", title: "Generic Name", width: 200 },
+                                    { field: "NarcoticSetupSl", title: "Setup ID", width: 100 }
+                                ]
+                            });
+                            PopupGrid.dataSource.data(data);
+                            $('#txtPopupInput').val('');
+                        } else {
                             ViewPopupWindow.close();
                             AcknowledgeMsg();
                         }
                     },
-                    error: function (xhr, status, error) {
+                    error: function () {
                         alert('Error occurred while loading narcotic items');
                         ViewPopupWindow.close();
                     }
                 });
-            } else if (activeTabIndex === 2) {debugger // Tab 3: Entry Item Info
+            } else if (activeTabIndex === 2) {
                 ViewPopupWindow.open();
                 $.ajax({
-                    url: '/Regulatory/TabNarcotics/GetEntryInfoItems', // Create this endpoint for Tab 3 items
+                    url: '/Regulatory/TabNarcotics/GetEntryInfoItems',
                     method: 'GET',
                     dataType: 'json',
                     success: function (data) {
                         if (data && data.length > 0) {
-                            var grid = $('#PopupWindowGrid').data('kendoGrid');
-                            if (grid) {
-                                grid.dataSource.data(data);
-                            } else {
-                                console.error('Kendo grid not initialized');
-                            }
-                        }
-                        else {
+                            originalGridData = data.slice();
+                            PopupGrid.setOptions({
+                                columns: [
+                                    { field: "ItemName", title: "Item Name", width: 200 },
+                                    { field: "FiscalYear", title: "Fiscal Year", width: 100 },
+                                    { field: "AnnualQuota", title: "Annual Quota", width: 100 },
+                                    { field: "SubmissionType", title: "Submission Type", width: 120 },
+                                    { field: "ApprovedQuantity", title: "Approved Qty", width: 100 }
+                                ]
+                            });
+                            PopupGrid.dataSource.data(data);
+                            $('#txtPopupInput').val('');
+
+                        } else {
                             ViewPopupWindow.close();
                             AcknowledgeMsg();
                         }
                     },
-                    error: function (xhr, status, error) {
+                    error: function () {
                         alert('Error occurred while loading entry items');
                         ViewPopupWindow.close();
                     }
@@ -429,8 +331,31 @@
                 toastr.warning("View operation is not configured for this tab.");
             }
         });
-        
-        // Initialize the grid with dynamic columns based on active tab
+
+
+        function loadUploadedFiles(genericBrandId, documentName) {
+            $.ajax({
+                url: '/Regulatory/TabNarcotics/GetUploadedFiles',
+                method: 'GET',
+                data: {
+                    genericBrandId: genericBrandId,
+                    documentName: documentName
+                },
+                success: function (result) {
+                    if (result && Array.isArray(result)) {
+                        $("#Tab3FileGrid1").data("kendoGrid").dataSource.data(result);
+                    } else {
+                        toastr.warning("No uploaded files found.");
+                    }
+                },
+                error: function () {
+                    toastr.error("Error loading uploaded files.");
+                }
+            });
+        }
+
+
+
         var PopupGrid = $('#PopupWindowGrid').kendoGrid({
             dataSource: new kendo.data.DataSource({
                 batch: true,
@@ -457,33 +382,27 @@
             columnMenu: true,
             reorderable: true,
             resizable: true,
-            columns: [] // Initialize with empty columns, will be set dynamically
+            columns: []
         }).data('kendoGrid');
-        // Store original data reference
+
         var originalGridData = [];
 
-
-        // Search functionality
-        $(document).on('keyup', '#gridSearchBox', function () {debugger
+        $(document).on('keyup', '#txtPopupInput', function () {
             var searchValue = this.value.toLowerCase();
             var grid = PopupGrid;
 
             if (!searchValue) {
-                // Restore original data if search is empty
                 grid.dataSource.data(originalGridData);
                 return;
             }
 
-            // Filter the data
             var filteredData = $.grep(originalGridData, function (item) {
-                // Check all string fields (modify as needed)
                 for (var key in item) {
                     if (item.hasOwnProperty(key) && typeof item[key] === 'string') {
                         if (item[key].toLowerCase().includes(searchValue)) {
                             return true;
                         }
                     }
-                    // Also check numeric fields if needed
                     if (item.hasOwnProperty(key) && typeof item[key] === 'number') {
                         if (item[key].toString().includes(searchValue)) {
                             return true;
@@ -496,96 +415,19 @@
             grid.dataSource.data(filteredData);
         });
 
-
-        $('#btnView').click(function () {
-            debugger;
-            var activeTabIndex = $("#tabs").tabs("option", "active");
-
-            if (activeTabIndex === 0) { // Tab 1: Setup Info
-                ViewPopupWindow.open();
-                $.ajax({
-                    url: '/Regulatory/TabNarcotics/GetViewItems',
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data && data.length > 0) {
-                            originalGridData = data.slice();
-                            // Set columns for Tab 1
-                            PopupGrid.setOptions({
-                                columns: [
-                                    { field: "GenericName", title: "Generic Name", width: 200 },
-                                    { field: "NarcoticSetupSl", title: "Setup ID", width: 100 }
-                                    // Add other Tab 1 columns as needed
-                                ]
-                            });
-                            PopupGrid.dataSource.data(data);
-                            // Clear search box
-                            $('#gridSearchBox').val('');
-                        } else {
-                            ViewPopupWindow.close();
-                            AcknowledgeMsg();
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        //console.error('AJAX Error:', status, error);
-                        alert('Error occurred while loading narcotic items');
-                        ViewPopupWindow.close();
-                    }
-                });
-            } else if (activeTabIndex === 2) { debugger// Tab 3: Entry Item Info
-                ViewPopupWindow.open();
-                $.ajax({
-                    url: '/Regulatory/TabNarcotics/GetEntryInfoItems',
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data && data.length > 0) {
-                            originalGridData = data.slice();
-                            // Set columns for Tab 2
-                            PopupGrid.setOptions({
-                                columns: [
-                                    { field: "ItemName", title: "Item Name", width: 200 },
-                                    { field: "FiscalYear", title: "Fiscal Year", width: 100 },
-                                    { field: "AnnualQuota", title: "Annual Quota", width: 100 },
-                                    { field: "SubmissionType", title: "Submission Type", width: 120 },
-                                    { field: "ApprovedQuantity", title: "Approved Qty", width: 100 }
-                                    // Add other Tab 2 columns as needed
-                                ]
-                            });
-                            PopupGrid.dataSource.data(data);
-                            $('#gridSearchBox').val('');
-                        } else {
-                            ViewPopupWindow.close();
-                            AcknowledgeMsg();
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                       // console.error('AJAX Error:', status, error);
-                        alert('Error occurred while loading entry items');
-                        ViewPopupWindow.close();
-                    }
-                });
-            } else {
-                toastr.warning("View operation is not configured for this tab.");
-            }
-        });
-
-        $('#PopupWindowGrid').dblclick(function () {debugger
+        $('#PopupWindowGrid').dblclick(function () {
             var grid = $(this).data('kendoGrid');
             var selectRow = grid.dataItem(grid.select());
             ViewPopupWindow.close();
 
             var activeTabIndex = $("#tabs").tabs("option", "active");
             if (activeTabIndex === 0) {
-                // Handle Tab 1 data
                 SetMasterData(selectRow);
             } else if (activeTabIndex === 2) {
-                // Handle Tab 2 data
                 SetEntryItemData(selectRow);
             }
         });
 
-        // You'll need to implement this function to populate Tab 2 fields
         function SetEntryItemData(data) {debugger
             $('#NarcoticEntrySl').val(data.NarcoticEntrySl);
             $('#GenericBrandId').val(data.GenericBrandId);
@@ -597,7 +439,6 @@
             $('#ApprovedQuantity').val(data.ApprovedQuantity);
             $('#RecordStatus').val(data.RecordStatus);
 
-            // Format dates for display
             $('#DgdaReceiveDate').val(formatDate(data.DgdaReceiveDate));
             $('#DgdaSubmissionDate').val(formatDate(data.DgdaSubmissionDate));
             $('#DgdaRecommendationDate').val(formatDate(data.DgdaRecommendationDate));
@@ -607,13 +448,10 @@
             $('#DivNarcRecvDate').val(formatDate(data.DivNarcRecvDate));
             $('#DncSendDate').val(formatDate(data.DncSendDate));
             $('#NarcApvlDate').val(formatDate(data.NarcApvlDate));
-        }
 
-        // Helper function to format dates for display (MM/DD/YYYY format)
-        function formatDateForDisplay(date) {
-            if (!date) return '';
-            var d = new Date(parseInt(date.substr(6)));
-            return (d.getMonth() + 1) + '/' + d.getDate() + '/' + d.getFullYear();
+            if (data.GenericBrandId && data.ItemName) {
+                loadUploadedFiles(data.GenericBrandId, data.ItemName);
+            }
         }
 
         function formatDate(date) {
@@ -621,57 +459,21 @@
             var d = new Date(parseInt(date.substr(6)));
             return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
         }
-        function SaveTab3EntryItem() {
-            debugger;
-            var entryItem = {
-                GenericBrandId: $('#ItemCode').val(),
-                ItemName: $('#GENERIC_BRAND_ID').val(),
-                FiscalYear: $('#FiscalYear').val(),
-                AnnualQuota: $('#AnnualQuota').val(),
-                SubmissionType: $('#SubmissionType').val(),
-                SubmissionQuantity: $('#SubmissionQuantity').val(),
-                ApprovedQuantity: $('#ApprovedQuantity').val(),
-                RecordStatus: $('#RecordStatus').val(),
-                DgdaReceiveDate: $('#DgdaReceiveDate').val(),
-                DgdaSubmissionDate: $('#DgdaSubmissionDate').val(),
-                DgdaRecommendationDate: $('#DgdaRecommendationDate').val(),
-                RecSendDate: $('#RecSendDate').val(),
-                InsReceiveDate: $('#InsReceiveDate').val(),
-                DivSendDate: $('#DivSendDate').val(),
-                DivNarcRecvDate: $('#DivNarcRecvDate').val(),
-                DncSendDate: $('#DncSendDate').val(),
-                NarcApvlDate: $('#NarcApvlDate').val()
-            };
 
-            $.ajax({
-                url: '/Regulatory/TabNarcotics/SaveTab3EntryItem',
-                data: JSON.stringify(entryItem),
-                type: 'POST',
-                contentType: 'application/json;',
-                dataType: 'json',
-                success: function (data) {
-                    debugger;
-                    if (data.Status === "Yes") {
-                        toastr.success("Entry item saved successfully!");
-                        // Clear fields if needed
-                        $('#tab3Form input').val('');
-                    } else {
-                        toastr.error(data.Status);
-                    }
-                },
-                error: function () {
-                    alert('Error occurred while saving Tab 3 entry item!');
-                }
-            });
+        function formatDateForBackend(dateString) {
+            if (!dateString) return null;
+            var parts = dateString.split('/');
+            if (parts.length === 3) {
+                return parts[2] + '-' + parts[1] + '-' + parts[0];
+            }
+            return dateString;
         }
-
-        //=========================SAVE_DATA=============================================
-        $('#btnSave').click(function () {
-            debugger;
+        //============SAVE==============================
+        @*$('#btnSave').click(function () {debugger
             var activeTabIndex = $("#tabs").tabs("option", "active");
-            var userId = $('#UserId').val(); // Assuming you have UserId in your hidden field
+            var userId = $('#UserId').val();
 
-            if (activeTabIndex === 0) { // Tab 1: Setup Info
+            if (activeTabIndex === 0) {debugger
                 var Input = InputValidation('GenericName');
                 if (Input == 0) {
                     var master = {};
@@ -696,90 +498,254 @@
                 } else {
                     ValidationMsg();
                 }
-            } else if (activeTabIndex === 2) { 
-                    entryItem.NarcoticEntrySl = $('#NarcoticEntrySl').val();
-                    entryItem.GenericBrandId = $('#GenericBrandId').val(); // This should be populated with selected NARCOTIC_SETUP_SL
-                    entryItem.ItemName = $('#GENERIC_BRAND_ID').val();
-                    entryItem.FiscalYear = $('#FiscalYear').val();
-                    entryItem.AnnualQuota = $('#AnnualQuota').val();
-                    entryItem.SubmissionType = $('#SubmissionType').val();
-                    entryItem.SubmissionQuantity = $('#SubmissionQuantity').val();
-                    entryItem.ApprovedQuantity = $('#ApprovedQuantity').val();
-                    entryItem.RecordStatus = $('#RecordStatus').val();
+            } else if (activeTabIndex === 2) {debugger
+                var checkInput = InputValidation('DocumentName');
+                if (checkInput != 0) {
+                    toastr.error(OperationMsg("SDN"));
+                    return;
+                }
+                debugger
+                var entryItem = {
+                    NarcoticEntrySl: $('#NarcoticEntrySl').val(),
+                    GenericBrandId: $('#GenericBrandId').val(),
+                    ItemName: $('#GENERIC_BRAND_ID').val(),
+                    FiscalYear: $('#FiscalYear').val(),
+                    AnnualQuota: $('#AnnualQuota').val(),
+                    SubmissionType: $('#SubmissionType').val(),
+                    SubmissionQuantity: $('#SubmissionQuantity').val(),
+                    ApprovedQuantity: $('#ApprovedQuantity').val(),
+                    RecordStatus: $('#RecordStatus').val(),
+                    DgdaReceiveDate: formatDateForBackend($('#DgdaReceiveDate').val()),
+                    DgdaSubmissionDate: formatDateForBackend($('#DgdaSubmissionDate').val()),
+                    DgdaRecommendationDate: formatDateForBackend($('#DgdaRecommendationDate').val()),
+                    RecSendDate: formatDateForBackend($('#RecSendDate').val()),
+                    InsReceiveDate: formatDateForBackend($('#InsReceiveDate').val()),
+                    DivSendDate: formatDateForBackend($('#DivSendDate').val()),
+                    DivNarcRecvDate: formatDateForBackend($('#DivNarcRecvDate').val()),
+                    DncSendDate: formatDateForBackend($('#DncSendDate').val()),
+                    NarcApvlDate: formatDateForBackend($('#NarcApvlDate').val())
+                };
+                debugger
+                var files = $('#UploadFile')[0].files;
+                var refLevel1 = $("#GenericBrandId").val();
+                var refNo = $("#DocumentName").val();
 
-                    entryItem.DgdaReceiveDate = formatDateForBackend($('#DgdaReceiveDate').val());
-                    entryItem.DgdaSubmissionDate = formatDateForBackend($('#DgdaSubmissionDate').val());
-                    entryItem.DgdaRecommendationDate = formatDateForBackend($('#DgdaRecommendationDate').val());
-                    entryItem.RecSendDate = formatDateForBackend($('#RecSendDate').val());
-                    entryItem.InsReceiveDate = formatDateForBackend($('#InsReceiveDate').val());
-                    entryItem.DivSendDate = formatDateForBackend($('#DivSendDate').val());
-                    entryItem.DivNarcRecvDate = formatDateForBackend($('#DivNarcRecvDate').val());
-                    entryItem.DncSendDate = formatDateForBackend($('#DncSendDate').val());
-                    entryItem.NarcApvlDate = formatDateForBackend($('#NarcApvlDate').val());
+                if (!refLevel1) {
+                    toastr.warning(OperationMsg("FI"));
+                    return;
+                }
 
+                var formData = new FormData();
+                formData.append("entryItem", JSON.stringify(entryItem));
+
+                var fileSize = 0;
+                var fSizeStrg = "";
+                if (files.length > 0) {
+                    for (var f = 0; f < files.length; f++) {
+                        var fileExtension = files[f].name.split('.').pop().toLowerCase();
+                        if (fileExtension !== 'pdf') {
+                            toastr.warning("Only PDF files are allowed.");
+                            return;
+                        }
+                        var iSize = (files[f].size / 1024);
+                        fileSize = (Math.round((iSize / 1024) * 100) / 100);
+                        if (fSizeStrg != "") {
+                            fSizeStrg += ',' + fileSize;
+                        } else {
+                            fSizeStrg = fileSize;
+                        }
+                        if (iSize / 1024 > 25) {
+                            iSize = (Math.round((iSize / 1024) * 100) / 100);
+                            toastr.warning('File size is ' + iSize + ' MB. Maximum allowed size is 25 MB.');
+                            return;
+                        }
+                        formData.append("file" + f, files[f]);
+                    }
+                }
+
+                $("#divLoading").show();debugger
+                $.ajax({
+                    url: '@Url.Action("UploadFile", "TabNarcotics")' + '?refLevel1=' + refLevel1 + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + refNo,
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (result) {debugger
+                        $("#divLoading").hide();
+                        if (result.Status == "Yes" && result.msgType == "FUS") {debugger
+                            toastr.success("Entry item and file saved successfully!");
+                            $("#Tab3FileGrid1").data("kendoGrid").dataSource.data(result.FileList);
+                            $('#tab3Form input').val('');
+                        } else if (result.msgType == "FLI") {
+                            toastr.warning(OperationMsg("FLI"));
+                        } else {
+                            toastr.error(result.Status || "Error saving data or uploading file.");
+                        }
+                    },
+                    error: function () {
+                        $("#divLoading").hide();
+                        toastr.error("Error occurred while saving data or uploading file.");
+                    }
+                });
+            } else {
+                toastr.warning("Save operation is not configured for this tab.");
+            }
+        });*@
+
+        $('#btnSave').click(function () {
+            var activeTabIndex = $("#tabs").tabs("option", "active");
+            var userId = $('#UserId').val();
+
+            if (activeTabIndex === 0) {
+                var Input = InputValidation('GenericName');
+                if (Input == 0) {
+                    var master = {};
+                    master.GenericName = $('#GenericName').val();
+                    master.NarcoticSetupSl = $('#NarcoticSetupSl').val();
+                    master.SetOn = $('#SetOn').val();
+                    master.SetBy = $('#SetBy').val();
                     $.ajax({
-                        url: '/Regulatory/TabNarcotics/SaveTab3EntryItem', // Create this action for Tab 3 saving
-                        data: JSON.stringify(entryItem),
+                        url: '/Regulatory/TabNarcotics/frmTabNarcotics',
+                        data: JSON.stringify(master),
                         type: 'POST',
                         contentType: 'application/json;',
                         dataType: 'json',
                         success: function (data) {
-                            if (data.Status == "Yes") {debugger
+                            if (data.Status == "Yes") {
                                 OperationMsg(data.Mode);
-                                // ✅ Upload file only if document selected
-                                var files = $('#UploadFile')[0].files;
-                                var documentName = $('#DocumentName').val();
-
-                                if (files.length > 0 && documentName != "") {
-                                    var formData = new FormData();
-                                    for (var i = 0; i < files.length; i++) {
-                                        formData.append("file" + i, files[i]);
-                                    }
-
-                                    $("#divLoading").show();
-                                    $.ajax({
-                                        url: '/Regulatory/TabNarcotics/UploadNarcoticFile?entryInfoId=' + data.GenericBrandId + '&documentName=' + documentName,
-                                        type: 'POST',
-                                        data: formData,
-                                        processData: false,
-                                        contentType: false,
-                                        success: function (uploadResult) {
-                                            $("#divLoading").hide();
-                                            if (uploadResult.msgType == "FUS") {
-                                                toastr.success("File uploaded successfully");
-                                                // Optionally refresh file grid here
-                                            } else {
-                                                toastr.error("File upload failed");
-                                            }
-                                        },
-                                        error: function () {
-                                            $("#divLoading").hide();
-                                            toastr.error("Error uploading file");
-                                        }
-                                    });
-                                }
                             } else {
                                 ErrorFrmServerMsg(data.Status);
                             }
                         }
                     });
+                } else {
+                    ValidationMsg();
+                }
+            } else if (activeTabIndex === 2) {
+                var checkInput = InputValidation('DocumentName');
+                if (checkInput != 0) {
+                    toastr.error(OperationMsg("SDN"));
+                    return;
+                }
+
+                var entryItem = {
+                    NarcoticEntrySl: $('#NarcoticEntrySl').val(),
+                    GenericBrandId: $('#GenericBrandId').val(),
+                    ItemName: $('#GENERIC_BRAND_ID').val(),
+                    FiscalYear: $('#FiscalYear').val(),
+                    AnnualQuota: $('#AnnualQuota').val(),
+                    SubmissionType: $('#SubmissionType').val(),
+                    SubmissionQuantity: $('#SubmissionQuantity').val(),
+                    ApprovedQuantity: $('#ApprovedQuantity').val(),
+                    RecordStatus: $('#RecordStatus').val(),
+                    DgdaReceiveDate: formatDateForBackend($('#DgdaReceiveDate').val()),
+                    DgdaSubmissionDate: formatDateForBackend($('#DgdaSubmissionDate').val()),
+                    DgdaRecommendationDate: formatDateForBackend($('#DgdaRecommendationDate').val()),
+                    RecSendDate: formatDateForBackend($('#RecSendDate').val()),
+                    InsReceiveDate: formatDateForBackend($('#InsReceiveDate').val()),
+                    DivSendDate: formatDateForBackend($('#DivSendDate').val()),
+                    DivNarcRecvDate: formatDateForBackend($('#DivNarcRecvDate').val()),
+                    DncSendDate: formatDateForBackend($('#DncSendDate').val()),
+                    NarcApvlDate: formatDateForBackend($('#NarcApvlDate').val())
+                };
+
+                var files = $('#UploadFile')[0].files;
+                var refLevel1 = $("#GenericBrandId").val();
+                var refNo = $("#DocumentName").val();
+
+                if (!refLevel1) {
+                    toastr.warning(OperationMsg("FI"));
+                    return;
+                }
+
+                // First, save the entry item
+                $("#divLoading").show();
+
+                $.ajax({
+                    url: '/Regulatory/TabNarcotics/SaveTab3EntryItem', // Make sure this matches your controller action
+                    data: JSON.stringify(entryItem),
+                    type: 'POST',
+                    contentType: 'application/json;',
+                    dataType: 'json',
+                    success: function (entryResult) {
+                        if (entryResult.Status == "Yes") {
+                            // Entry item saved successfully, now handle file upload if there are files
+                            if (files.length > 0) {
+                                // Validate files
+                                var formData = new FormData();
+                                formData.append("entryItem", JSON.stringify(entryItem));
+
+                                var fileSize = 0;
+                                var fSizeStrg = "";
+                                var isValidFiles = true;
+
+                                for (var f = 0; f < files.length; f++) {
+                                    var fileExtension = files[f].name.split('.').pop().toLowerCase();
+                                    if (fileExtension !== 'pdf') {
+                                        toastr.warning("Only PDF files are allowed.");
+                                        $("#divLoading").hide();
+                                        return;
+                                    }
+                                    var iSize = (files[f].size / 1024);
+                                    fileSize = (Math.round((iSize / 1024) * 100) / 100);
+                                    if (fSizeStrg != "") {
+                                        fSizeStrg += ',' + fileSize;
+                                    } else {
+                                        fSizeStrg = fileSize;
+                                    }
+                                    if (iSize / 1024 > 25) {
+                                        iSize = (Math.round((iSize / 1024) * 100) / 100);
+                                        toastr.warning('File size is ' + iSize + ' MB. Maximum allowed size is 25 MB.');
+                                        $("#divLoading").hide();
+                                        return;
+                                    }
+                                    formData.append("file" + f, files[f]);
+                                }
+
+                                // Upload files
+                                $.ajax({
+                                    url: '@Url.Action("UploadFile", "TabNarcotics")' + '?refLevel1=' + refLevel1 + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + refNo,
+                                    type: 'POST',
+                                    data: formData,
+                                    contentType: false,
+                                    processData: false,
+                                    success: function (result) {
+                                        $("#divLoading").hide();
+                                        if (result.Status == "Yes" && result.msgType == "FUS") {
+                                            toastr.success("Entry item and file saved successfully!");
+                                            $("#Tab3FileGrid1").data("kendoGrid").dataSource.data(result.FileList);
+                                            $('#tab3Form input').val('');
+                                        } else if (result.msgType == "FLI") {
+                                            toastr.warning(OperationMsg("FLI"));
+                                        } else {
+                                            toastr.error(result.Status || "Error uploading file.");
+                                        }
+                                    },
+                                    error: function () {
+                                        $("#divLoading").hide();
+                                        toastr.error("Error occurred while uploading file.");
+                                    }
+                                });
+                            } else {
+                                // No files to upload, just show success message
+                                $("#divLoading").hide();
+                                toastr.success("Entry item saved successfully!");
+                                $('#tab3Form input').val('');
+                            }
+                        } else {
+                            $("#divLoading").hide();
+                            toastr.error(entryResult.Status || "Error saving entry item.");
+                        }
+                    },
+                    error: function () {
+                        $("#divLoading").hide();
+                        toastr.error("Error occurred while saving entry item.");
+                    }
+                });
             } else {
                 toastr.warning("Save operation is not configured for this tab.");
             }
         });
-        var entryItem = { "GenericBrandId": "", "ItemName": "", "FiscalYear": "", "AnnualQuota": "", "SubmissionType": "", "SubmissionQuantity": "", "ApprovedQuantity": "", "RecordStatus": "", "DgdaReceiveDate": "", "DgdaSubmissionDate": "", "DgdaRecommendationDate": "", "RecSendDate": "", "InsReceiveDate": "", "DivSendDate": "", "DivNarcRecvDate": "", "DncSendDate": "", "NarcApvlDate": "" };
-
-
-        // Helper function to format dates for backend
-        function formatDateForBackend(dateString) {
-            if (!dateString) return null;
-            var parts = dateString.split('/');
-            if (parts.length === 3) {
-                return parts[2] + '-' + parts[1] + '-' + parts[0]; // yyyy-mm-dd format
-            }
-            return dateString; // return as-is if not in expected format
-        }
-
 
         var ItemWindow = $("#ItemWindow").kendoWindow({
             actions: ["Minimize", "Maximize", "Close"],
@@ -790,24 +756,22 @@
             title: "List of Item."
         }).data("kendoWindow").center();
 
-        $('#btnFind').click(function () {debugger
+        $('#btnFind').click(function () {
             ItemWindow.open();
             $.ajax({
                 url: '@Url.Action("GetAllItems", "TabNarcotics")',
                 method: 'get',
-                data: 'json',
+                dataType: 'json',
                 success: function (data) {
                     if (data != "") {
                         $('#ItemWindowGrid').data('kendoGrid').dataSource.data(data);
-                    }
-                    else {
+                    } else {
                         ItemWindow.close();
                         AcknowledgeMsg();
                     }
                 }
             });
         });
-
 
         var itemGrid = $('#ItemWindowGrid').kendoGrid({
             dataSource: new kendo.data.DataSource({
@@ -823,31 +787,28 @@
                 pageSize: 10,
             }),
             pageable: {
-                //refresh: true,
-                pageSizes: true, buttonCount: 10
+                pageSizes: true,
+                buttonCount: 10
             },
             scrollable: true,
             sortable: true,
             filterable: true,
             editable: false,
             selectable: "row",
-            //selectable: "multiple",
-            toolbar: [{ template: "<input type='text' id='txtItemKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: [{ template: "<input type='text' id='txtItemKeyword' style='float:right' placeholder='Search...' class='k-textbox'>" }],
             navigatable: true,
             height: 430,
-            // groupable: true,
             groupable: { messages: { empty: "Custom message text" } },
             columnMenu: true,
             reorderable: true,
             resizable: true,
             columns: [
-                 { field: "NarcoticSetupSl", title: "ItemCode", width: 80 },
-                 { field: "GenericName", title: "ItemName", width: 100, filterable: { multi: true } }
+                { field: "NarcoticSetupSl", title: "ItemCode", width: 80 },
+                { field: "GenericName", title: "ItemName", width: 100, filterable: { multi: true } }
             ]
-
         }).data('kendoGrid');
 
-        $('#ItemWindowGrid').dblclick(function () {debugger
+        $('#ItemWindowGrid').dblclick(function () {
             var grid = $(this).data('kendoGrid');
             var selectRow = grid.dataItem(grid.select());
             $('#NarcoticSetupSl').val(selectRow.NarcoticSetupSl);
@@ -855,38 +816,116 @@
             $('#GENERIC_BRAND_ID').val(selectRow.GenericName);
             ItemWindow.close();
             changeAny = 1;
-
         });
 
-        //Company Name wise Filter table row
         $("#txtItemKeyword").keyup(function () {
             var val = $(this).val();
             $("#ItemWindowGrid").data("kendoGrid").dataSource.filter({
                 logic: "or",
                 filters: [
-                     { field: "GenericName", operator: "contains", value: val }
+                    { field: "GenericName", operator: "contains", value: val }
                 ]
             });
         });
 
-      
-        //Tab1 Start
+        var fileDataSource = new kendo.data.DataSource({
+            batch: true,
+            schema: {
+                model: {
+                    id: "FileID",
+                    fields: {
+                        FileID: { editable: false },
+                        FileCode: { editable: false },
+                        Extention: { editable: false },
+                        FileName: { editable: false },
+                        RefNo: { editable: false },
+                        FileSize: { editable: false },
+                        SetOn: { editable: false },
+                        SetByName: { editable: false }
+                    }
+                }
+            },
+            pageSize: 10
+        });
 
+        var fileGrid = $('#Tab3FileGrid1').kendoGrid({
+            dataSource: fileDataSource,
+            pageable: {
+                pageSizes: true,
+                buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: true,
+            selectable: "row",
+            toolbar: [{ template: "<input type='text' id='txtFileInput' style='float:right' placeholder='Search...' class='k-textbox'>" }],
+            navigatable: true,
+            groupable: true,
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                { field: "FileID", hidden: true },
+                { field: "FileCode", hidden: true },
+                { field: "Extention", hidden: true },
+                { field: "RefNo", title: "Document Name", width: 200, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+                { field: "FileName", title: "File Name", width: 300, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+                { field: "FileSize", filterable: false, title: "Size(MB)", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+                { command: [{ name: "Download", text: "Download", imageClass: "glyphicon glyphicon-download", click: handleDownload }], title: "Download Action", width: "120px", attributes: { "class": "btnDownload" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+                { command: [{ name: "Delete", text: "Delete", imageClass: "glyphicon glyphicon-trash", click: handleFileDelete }], title: "Delete Action", width: "120px", attributes: { "class": "btnDelete" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } }
+            ]
+        }).data('kendoGrid');
+
+        $("#txtFileInput").keyup(function () {
+            var val = $(this).val();
+            $("#Tab3FileGrid1").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                    { field: "RefNo", operator: "contains", value: val },
+                    { field: "FileName", operator: "contains", value: val },
+                    { field: "FileSize", operator: "contains", value: val }
+                ]
+            });
+        });
+
+        function handleFileDelete(event) {
+            var dataItemInfo = fileGrid.dataItem($(event.currentTarget).closest("tr"));
+            if (confirm('Do you really want to delete this file?')) {
+                $.ajax({
+                    url: '@Url.Action("DeleteFile", "General")',
+                    type: 'POST',
+                    data: JSON.stringify({ "fileId": dataItemInfo.FileID, "fileCode": dataItemInfo.FileCode, "extention": dataItemInfo.Extention }),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    cache: false,
+                    success: function (response) {
+                        if (response.Status == "Yes") {
+                            toastr.success(OperationMsg("FD"));
+                            $("#Tab3FileGrid1").data("kendoGrid").dataSource.remove(dataItemInfo);
+                        } else {
+                            toastr.error(OperationMsg("FND"));
+                        }
+                    }
+                });
+            }
+        }
+
+        function handleDownload(event) {
+            var dataItemInfo = fileGrid.dataItem($(event.currentTarget).closest("tr"));
+            window.location.href = '@Url.Action("Download", "General")' + '?path=' + dataItemInfo.FileCode + dataItemInfo.Extention + '&fileName=' + dataItemInfo.FileName + '&fileId=' + dataItemInfo.FileID;
+        }
     });
-
 </script>
-
 
 <div id="tabs">
     <ul id="btnList">
         <li><a href="#tabs-1">Setup Info</a></li>
         <li><a href="#tabs-2">View Item</a></li>
         <li><a href="#tabs-3">Entry Item Info</a></li>
-      
     </ul>
 
-
-    <div class="box-header with-border">       
+    <div class="box-header with-border">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
                 <div class="input-group">
@@ -894,15 +933,14 @@
                     <span class="input-group-btn" style="width:0px;"></span>
                     <input type="text" id="CompanyName" name="CompanyName" placeholder="Company Name" readonly="readonly" class="RequiredField form-control input-sm" />
                     <span class="input-group-btn" style="width:0px;"></span>
-                    <input type="text" id="Address" name="Address" placeholder="Company Addess" readonly="readonly" class="RequiredField form-control input-sm" />
+                    <input type="text" id="Address" name="Address" placeholder="Company Address" readonly="readonly" class="RequiredField form-control input-sm" />
                 </div>
             </div>
             <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"></div>
         </div>
 
         <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-            </div>
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"></div>
             <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"><div id="MessageText" style="text-align:center"></div></div>
             <div class="col-xs-0 col-sm-0 col-md-6 col-lg-6">
                 <div style="text-align:right;">
@@ -914,50 +952,32 @@
         </div>
     </div>
 
-    <div id="tabs-1">       
+    <div id="tabs-1">
         <div class="form-group">
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">Generic/Brand Name :</div>
                 <div class="col-xs-0 col-sm-6 col-md-3 col-lg-3">
                     <input type="text" id="GenericName" name="GenericName" maxlength="300" placeholder="Enter Generic / Brand Name" class="form-control" />
-                </div>                
+                </div>
             </div>
         </div>
-
-    </div> @*tab1 closed*@
-
-    @*<div id="tabs-2">
-        <div id="tab2Content">
-            <table class="table table-bordered" id="tblItems">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Generic/Brand Name</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-    </div>*@
+    </div>
 
     <div id="tabs-2">
         <div id="tab2Content">
             <div id="narcoticsGrid"></div>
         </div>
     </div>
-        @*Tab2 Closed*@
-   
+
     <div id="tabs-3">
-        <div class="box-body">        
+        <div class="box-body">
             <div class="form-group">
                 <fieldset class="panel-border">
                     <legend class="panel-border">Entry Info :</legend>
-
                     <div class="form-group">
-                        <div class="row">                            
-                                <input type="hidden" id="GenericBrandId" name="GenericBrandId" />
-                                <input type="hidden" id="NarcoticEntrySl" name="NarcoticEntrySl" />
-                            
+                        <div class="row">
+                            <input type="hidden" id="GenericBrandId" name="GenericBrandId" />
+                            <input type="hidden" id="NarcoticEntrySl" name="NarcoticEntrySl" />
                             <div class="col-sm-2">Item Name<span style="color: red">*</span> : </div>
                             <div class="col-sm-2">
                                 <input type="text" id="GENERIC_BRAND_ID" name="GENERIC_BRAND_ID" class="form-control txtBox" readonly />
@@ -967,13 +987,12 @@
                             <div class="col-sm-1" hidden>
                                 <input type="text" id="NarcoticSetupSl" name="NarcoticSetupSl" class="form-control txtBox" />
                             </div>
-
                             <div class="col-sm-2">Fiscal Year :</div>
                             <div class="col-sm-2">
                                 <input type="text" id="FiscalYear" name="FiscalYear" class="form-control" />
                             </div>
                         </div>
-                    </div>                   
+                    </div>
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2">Annual Quota :</div>
@@ -985,16 +1004,19 @@
                                 <select id="SubmissionType" name="SubmissionType" class="form-control">
                                     <option value="Import Permit">Import Permit</option>
                                     <option value="Export">Export</option>
+                                    <option value="New license">New license</option>
+                                    <option value="Quota allocation & Endorsement">Quota allocation & Endorsement</option>
+                                    <option value="Endorsement">Endorsement</option>
                                     <option value="Quota Increase">Quota Increase</option>
+                                    <option value="Others">Others</option>
                                 </select>
                             </div>
                             <div class="col-sm-2">Submission Quantity :</div>
                             <div class="col-sm-2">
                                 <input type="text" id="SubmissionQuantity" name="SubmissionQuantity" class="form-control" placeholder="Submission Quantity" />
-                            </div>                          
+                            </div>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <div class="row">
                             <div class="col-sm-2">Approved Quantity :</div>
@@ -1012,13 +1034,12 @@
                         </div>
                     </div>
                 </fieldset>
-            </div>     
-
+            </div>
             <div class="form-group" id="divDGDA">
                 <fieldset class="panel-border">
                     <legend class="panel-border">DGDA:</legend>
                     <div class="form-group">
-                        <div class="row">                            
+                        <div class="row">
                             <div class="col-xs-12 col-sm-6 col-md-2 col-lg-3">Received Date : </div>
                             <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
                                 <div class="input-group date">
@@ -1035,7 +1056,6 @@
                             </div>
                         </div>
                     </div>
-                   
                     <div class="form-group">
                         <div class="row">
                             <div class="col-xs-12 col-sm-6 col-md-2 col-lg-3">Recommendation Approval Date : </div>
@@ -1049,8 +1069,6 @@
                     </div>
                 </fieldset>
             </div>
-
-
             <div class="form-group" id="divDNCLoc">
                 <fieldset class="panel-border">
                     <legend class="panel-border">DNC Local Office : </legend>
@@ -1074,8 +1092,6 @@
                     </div>
                 </fieldset>
             </div>
-
-
             <div class="form-group" id="divDNCDiv">
                 <fieldset class="panel-border">
                     <legend class="panel-border">DNC Divisional Office : </legend>
@@ -1099,7 +1115,6 @@
                     </div>
                 </fieldset>
             </div>
-
             <div class="form-group" id="divDNCHead">
                 <fieldset class="panel-border">
                     <legend class="panel-border">DNC Head Office : </legend>
@@ -1122,8 +1137,7 @@
                         </div>
                     </div>
                 </fieldset>
-            </div>     
-                        
+            </div>
             <div class="row">
                 <div class="col-sm-12">
                     <fieldset class="panel-border">
@@ -1144,7 +1158,7 @@
                                 </select>
                             </div>
                             <div class="col-sm-4">
-                                <input type="file" class="txtBox" id="UploadFile" name="UploadFile" />
+                                <input type="file" class="txtBox" id="UploadFile" name="UploadFile" accept="application/pdf" />
                                 <i class="fa fa-cloud-upload form-control-feedback"></i>
                             </div>
                             <div class="col-sm-3">
@@ -1154,41 +1168,41 @@
                             <br />
                         </div>
                         <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="col-sm-12">
                                 <label>List of Document File</label>
-                                <div id="FileGrid" class=""></div>
+                                <div id="Tab3FileGrid1" class=""></div>
                             </div>
                         </div>
                     </fieldset>
                 </div>
             </div>
         </div>
-        @*Tab3 Closed*@
-    </div>  
+    </div>
 </div>
 
 <div class="row">
     <div id="ViewPopupWindow" class="PopupWindowLayout" style="display: none;">
         <div id="PopupWindowGrid" class="PopUpGrid"></div>
-    </div>     
-
+    </div>
     <div id="PopupWindowDosageForm" class="PopupWindowLayout" style="display: none;">
         <div id="PopupWindowGridDosageForm" class="PopUpGrid"></div>
     </div>
-
     <div id="PopupWindowPackSize" class="PopupWindowLayout" style="display: none;">
         <div id="PopupWindowGridPackSize" class="PopUpGrid"></div>
     </div>
-
     <div id="PopupWindowProductType" class="PopupWindowLayout" style="display: none;">
         <div id="PopupWindowGridProductType" class="PopUpGrid"></div>
     </div>
-
     <div id="PopupWindowTherapeuticClass" class="PopupWindowLayout" style="display: none;">
         <div id="PopupWindowGridTherapeuticClass" class="PopUpGrid"></div>
     </div>
     <div id="ItemWindow" class="PopupWindowLayout" style="display: none;">
         <div id="ItemWindowGrid" class="PopUpGrid"></div>
     </div>
+</div>
 
+<div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: #666666; z-index: 30001; opacity: .8; filter: alpha(opacity=70); display: none">
+    <p style="position: absolute; top: 50%; left: 42%; color: White;">
+        Please wait... <img src="../../Content/Images/ajax-loader1.gif">
+    </p>
 </div>

@@ -60,7 +60,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
                 string userId = Session["UserID"] as string;
                 if (primaryDAO.SaveUpdateTab3(model, userId))
                 {
-                    return Json(new { ID = primaryDAO.MaxID, Mode = primaryDAO.IUMode, Status = "Yes", GenericBrandId = model.GenericBrandId});
+                    return Json(new { ID = primaryDAO.MaxID, Mode = primaryDAO.IUMode, Status = "Yes", GenericBrandId = model.GenericBrandId });
                 }
                 else
                 {
@@ -84,8 +84,8 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         public ActionResult GetNarcoticItems(string CompanyCode, string ButtonEvent)
         {
             var data = primaryDAO.GetNarcoticLists();
-               return Json(data, JsonRequestBehavior.AllowGet);
-       } 
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
 
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult GetAllItems()
@@ -194,5 +194,5 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             }
         }
 
-	}
+    }
 }

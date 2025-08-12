@@ -1425,8 +1425,10 @@
 </script>
 
 <script>
-    $('#UploadFileTab1').on('change', function (e) {
-        var checkInput = InputValidation('Tab1RefNo');
+    $(document).ready(function () {
+    $('#Tab1UploadFile').on('change', function (e) {
+        debugger;
+        var checkInput =InputValidation('Tab1RefNo');
         if (checkInput == 0)
         {
             var files = e.target.files;
@@ -1464,7 +1466,7 @@
                         $("#divLoading").show();
                         $.ajax({
                             type: "POST",
-                            url: '@Url.Action("UploadFile", "CompanyLicense")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#RefNo").val(),
+                            url: '@Url.Action("UploadFile", "CompanyLicense")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#Tab1RefNo").val(),
                             contentType: false,
                             processData: false,
                             data: data,
@@ -1525,7 +1527,7 @@
 
         if (checkInput == 0) {
             var files = e.target.files;
-            var refId = $("#ID").val();
+            var refId = $("#Tab3ID").val();
             if (refId != "") {
                 var fileSize = 0;
                 var fSizeStrg = "";
@@ -1559,7 +1561,7 @@
                         $("#divLoading").show();
                         $.ajax({
                             type: "POST",
-                            url: '@Url.Action("UploadFile", "GmpCertificate")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#RefNo").val(),
+                            url: '@Url.Action("UploadFile", "GmpCertificate")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#Tab3RefNo").val(),
                             contentType: false,
                             processData: false,
                             data: data,
@@ -1594,6 +1596,7 @@
 
     });
 
+    });
 </script>
 <div id="tabs" style="font-family:'Times New Roman' ">
     <ul id="btnList">
@@ -2010,7 +2013,7 @@
         <div class="row">
             <div class="col-md-3">Submission Type :</div>
             <div class="col-md-3">
-                <select id="SubmissionType" class="txtBox">
+                <select id="Tab4SubmissionType" class="txtBox">
                     <option selected value="All">All</option>
                     <option value="License">License</option>
                     <option value="Renewal">Renewal</option>
@@ -2027,14 +2030,14 @@
             <div class="col-md-3">Submission From Date : </div>
             <div class="col-md-3">
                 <div class="input-group date">
-                    <input type="text" class="form-control txtBox" id="FromDate" name="FromDate" placeholder="dd/mm/yyyy">
+                    <input type="text" class="form-control txtBox" id="Tab4FromDate" name="Tab4FromDate" placeholder="dd/mm/yyyy">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                 </div>
             </div>
             <div class="col-md-3">Submission To Date : </div>
             <div class="col-md-3">
                 <div class="input-group date">
-                    <input type="text" class="form-control txtBox" id="ToDate" name="ToDate" placeholder="dd/mm/yyyy">
+                    <input type="text" class="form-control txtBox" id="Tab4ToDate" name="Tab4ToDate" placeholder="dd/mm/yyyy">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                 </div>
             </div>

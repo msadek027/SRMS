@@ -81,7 +81,7 @@
                         options.push('<option  value="Import Document">Import Document</option>');
                         options.push('<option  value="Approval Document">Approval Document</option>');
                         options.push('<option  value="Inspection Document">Inspection Document</option>');
-                        $("#Tab2RefNoTab").html(options.join(''));
+                        $("#Tab2RefNo").html(options.join(''));
                         break;
                     case "P":
                         var options = new Array();
@@ -91,7 +91,7 @@
                         options.push('<option  value="BCC Reference Document"">BCC Reference Document</option>');
                         options.push('<option  value="Technical Document">Technical Document</option>');
                         options.push('<option  value="Import Document">Import Document</option>');
-                        $("#Tab2RefNoTab").html(options.join(''));
+                        $("#Tab2RefNo").html(options.join(''));
                         break;
                 }
 
@@ -444,7 +444,7 @@
                     break;
                 case "MA Certificate":
                     $('#btnReset').prop('disabled', false);
-                    $('#btnSave').prop('disabled', true);
+                    $('#btnSave').prop('disabled', false);
                     $('#btnSearch').prop('disabled', false);
                     GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
 
@@ -641,7 +641,7 @@
             switch (ButtonEvent) {
                 case "Product Info":
                     ResetData();
-                    $("#Status").val("Active");
+                    $("#Tab1Status").val("Active");
                     GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent)
                     break;
 
@@ -754,7 +754,7 @@
                             model.CompanyCode = $('#CompanyCode').val();
                             model.ProductCode = $('#Tab2ProductCode').val();
                             model.MeetingType = $('#Tab2MeetingType').val();
-                            model.ManufacturerType = $('#ManufacturerType').val();
+                            model.ManufacturerType = $('#Tab2ManufacturerType').val();
                             model.DccNo = $('#Tab2DccNo').val();
                             model.ReceivedDate = $('#Tab2ReceivedDate').val();
                             model.ProposalDate = $('#Tab2ProposalDate').val();
@@ -1022,7 +1022,7 @@
             var grid = $(this).data('kendoGrid');
             var selectRow = grid.dataItem(grid.select());
             Tab1SearchBtn_PopupWindow.close();
-            SetMasterData(selectRow);
+            SetMasterDataTab(selectRow,'Tab1');
         });
 
         var PopupWindowDosageForm = $("#PopupWindowDosageForm").kendoWindow({
@@ -1703,7 +1703,7 @@
             CheckPagePartAccessPrivilegeTab( $('#CompanyCode').val(),ButtonEvent, selectRow.StateStatus);
             var options = new Array();
             options.push('<option selected value="' + selectRow.StateStatus + '">' + selectRow.StateStatus + '</option>');
-            $("#StateStatus").html(options.join(''));           
+            $("#Tab3StateStatus").html(options.join(''));           
             $.ajax({
                 url: '@Url.Action("GetFileByRefId", "ProductReg")',
                 type: 'GET',
@@ -2481,9 +2481,10 @@
         }).data('kendoGrid');
 
         $('#Tab5FindProduct_PopupWindowGrid').dblclick(function () {
+            
             var gridP = $(this).data('kendoGrid');
             var selectRow = gridP.dataItem(gridP.select());
-            SetMasterData(selectRow);
+            SetMasterDataTab(selectRow,'Tab5');
             Tab5FindProduct_PopupWindow.close();
 
         });
@@ -2606,13 +2607,13 @@
 </script>
 
 <script>
-
+    $(document).ready(function () {
     $('#Tab2UploadFile').on('change', function (e) {
-        var checkInput = InputValidation('Tab2RefNoTab');
+        var checkInput = InputValidation('Tab2RefNo');
 
         if (checkInput == 0) {
             var files = e.target.files;
-            var refId = $("#ID").val();
+            var refId = $("#Tab2ID").val();
             if (refId != "") {
                 var fileSize = 0;
                 var fSizeStrg = "";
@@ -2646,7 +2647,7 @@
                         $("#divLoading").show();
                         $.ajax({
                             type: "POST",
-                            url: '@Url.Action("UploadFile", "RecipeInfo")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#RefNo").val(),
+                            url: '@Url.Action("UploadFile", "RecipeInfo")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#Tab2RefNo").val(),
                             contentType: false,
                             processData: false,
                             data: data,
@@ -2655,9 +2656,9 @@
                                 if (result.msgType == "FUS") {
                                     toastr.success(OperationMsg(result.msgType));
                                     $("#Tab2FileGrid1").data("kendoGrid").dataSource.data(result.FileList);
-                                    $("#Tab2RefNoTab").val('--Select Any--');
-                                    $("#ReceivedDate").val(result.ReceiveDate);
-                                    $('#ReceivedDate').attr('disabled', 'disabled');
+                                    $("#Tab2RefNo").val('--Select Any--');
+                                    $("#Tab2ReceivedDate").val(result.ReceiveDate);
+                                    $('#Tab2ReceivedDate').attr('disabled', 'disabled');
                                 }
                                 else if (result.msgType == "FLI") {
                                     toastr.warning(OperationMsg(result.msgType));
@@ -2688,7 +2689,7 @@
         var checkInput = InputValidation('Tab3RefNo');
         if (checkInput == 0) {
             var files = e.target.files;
-            var refId = $("#AnnexId").val();
+            var refId = $("#Tab3AnnexId").val();
             if (refId != "") {
                 var fileSize = 0;
                 var fSizeStrg = "";
@@ -2722,7 +2723,7 @@
                         $("#divLoading").show();
                         $.ajax({
                             type: "POST",
-                            url: '@Url.Action("UploadFile", "ProductReg")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#RefNo").val() + '&sStatus=' + $("#StateStatus").val(),
+                            url: '@Url.Action("UploadFile", "ProductReg")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#Tab3RefNo").val() + '&sStatus=' + $("#Tab3StateStatus").val(),
                             contentType: false,
                             processData: false,
                             data: data,
@@ -2731,8 +2732,8 @@
                                 if (result.msgType == "FUS") {
                                     toastr.success(OperationMsg(result.msgType));
                                     $("#Tab3FileGrid1").data("kendoGrid").dataSource.data(result.FileList);
-                                    $("#RefNo").val('--Select Any--');
-                                    $("#ReceivedDate").val(result.ReceiveDate);
+                                    $("#Tab3RefNo").val('--Select Any--');
+                                    $("#Tab3ReceivedDate").val(result.ReceiveDate);
                                 }
                                 else if (result.msgType == "FLI") {
                                     toastr.warning(OperationMsg(result.msgType));
@@ -2764,7 +2765,7 @@
 
         if (checkInput == 0) {
             var files = e.target.files;
-            var refId = $("#ID").val();
+            var refId = $("#Tab4ID").val();
             if (refId != "") {
                 var fileSize = 0;
                 var fSizeStrg = "";
@@ -2798,7 +2799,7 @@
                         $("#divLoading").show();
                         $.ajax({
                             type: "POST",
-                            url: '@Url.Action("UploadFile", "ProductPrice")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#RefNo").val(),
+                            url: '@Url.Action("UploadFile", "ProductPrice")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#Tab4RefNo").val(),
                             contentType: false,
                             processData: false,
                             data: data,
@@ -2808,7 +2809,7 @@
                                     toastr.success(OperationMsg(result.msgType));
                                     $("#Tab4FileGrid1").data("kendoGrid").dataSource.data(result.FileList);
                                     $("#Tab4RefNo").val('--Select Any--');
-                                    $("#ReceivedDate").val(result.ReceiveDate);
+                                    $("#Rab4ReceivedDate").val(result.ReceiveDate);
                                 }
                                 else if (result.msgType == "FLI") {
                                     toastr.warning(OperationMsg(result.msgType));
@@ -2839,7 +2840,7 @@
 
         if (checkInput == 0) {
             var files = e.target.files;
-            var refId = $("#ID").val();
+            var refId = $("#Tab5ID").val();
             if (refId != "") {
                 var fileSize = 0;
                 var fSizeStrg = "";
@@ -2873,7 +2874,7 @@
                         $("#divLoading").show();
                         $.ajax({
                             type: "POST",
-                            url: '@Url.Action("UploadFile", "MarketAuthCertificate")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#RefNo").val(),
+                            url: '@Url.Action("UploadFile", "MarketAuthCertificate")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#Tab5RefNo").val(),
                             contentType: false,
                             processData: false,
                             data: data,
@@ -2908,1217 +2909,1216 @@
         }
 
     });
+    });
 </script>
 
 
 
-                <div id="tabs">
-                    <ul id="btnList">
-                        <li><a href="#tabs-1">Product Info</a></li>
-                        <li><a href="#tabs-2">Recipe</a></li>
-                        <li><a href="#tabs-3">Registration</a></li>
-                        <li><a href="#tabs-4">Price</a></li>
-                        <li><a href="#tabs-5">MA Certificate</a></li>
-                    </ul>
+                <div id="tabs" style="font-family:'Times New Roman' ">
+    <ul id="btnList">
+        <li><a href="#tabs-1">Product Info</a></li>
+        <li><a href="#tabs-2">Recipe</a></li>
+        <li><a href="#tabs-3">Registration</a></li>
+        <li><a href="#tabs-4">Price</a></li>
+        <li><a href="#tabs-5">MA Certificate</a></li>
+    </ul>
 
 
-                    <div class="box-header with-border" id="TabCommonValue">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
-                                <div class="input-group">
-                                    <input type="text" id="CompanyCode" name="CompanyCode" placeholder="Company Code" readonly="readonly" class="RequiredField form-control input-sm" />
-                                    <span class="input-group-btn" style="width:0px;"></span>
-                                    <input type="text" id="CompanyName" name="CompanyName" placeholder="Company Name" readonly="readonly" class="RequiredField form-control input-sm" />
-                                    <span class="input-group-btn" style="width:0px;"></span>
-                                    <input type="text" id="Address" name="Address" placeholder="Company Addess" readonly="readonly" class="RequiredField form-control input-sm" />
-                                </div>
-                            </div>
-                            <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"></div>
+    <div class="box-header with-border" id="TabCommonValue">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+                <div class="input-group">
+                    <input type="text" id="CompanyCode" name="CompanyCode" placeholder="Company Code" readonly="readonly" class="RequiredField form-control input-sm" style="width:80px" />
+                    <span class="input-group-btn" style="width:0px;"></span>
+                    <input type="text" id="CompanyName" name="CompanyName" placeholder="Company Name" readonly="readonly" class="RequiredField form-control input-sm" style="width:350px" />
+                    <span class="input-group-btn" style="width:0px;"></span>
+                    <input type="text" id="Address" name="Address" placeholder="Company Addess" readonly="readonly" class="RequiredField form-control input-sm" style="width:150px" />
+                </div>
+            </div>
+            <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"></div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                <div id="MessageText" style="text-align:center"></div>
+            </div>
+            <div class="col-xs-0 col-sm-0 col-md-6 col-lg-6">
+                <div style="text-align:right;">
+                    <button id="btnReset" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+                    <button id="btnSave" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-save"></i>Save</button>
+                    <button id="btnSearch" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+                    <button id="btnViewMode" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-plane"></i>View</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="tabs-1">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-2"> Product Code:</div>
+                <div class="col-md-3"><input type="text" id="ProductCode" name="ProductCode" readonly="readonly" class="form-control" placeholder="Auto" /></div>
+
+                <div class="col-md-1"></div>
+                <div class="col-md-2"> SAP Product Code:</div>
+                <div class="col-md-3">
+                    <input type="text" maxlength="150" id="SAPProductCode" name="SAPProductCode" placeholder="SAP Product Code" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-2"> Generic & Strength<span style="color: red">*</span>:</div>
+            <div class="col-md-9">
+                <textarea class="form-control" id="GenericCode" name="GenericCode" maxlength="1000" placeholder="Generic & Strength" rows="3"></textarea>
+            </div>
+
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-2">Pack Size :</div>
+            <div class="col-md-3">
+                <input type="text" id="PackSizeName" name="PackSizeName" maxlength="300" placeholder="Pack Size" class="form-control" />
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-2">Dosage Form :</div>
+            <div class="col-md-3">
+                <input type="hidden" id="DosageFormCode" name="DosageFormCode" class="form-control" />
+                <input type="text" id="DosageFormName" name="DosageFormName" placeholder="Dosage Form" class="form-control" />
+            </div>
+
+            <div class="col-md-1">
+                <button id="btnDosageForm" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+            </div>
+
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-2"> Introduced In Bangladesh:</div>
+            <div class="col-md-3">
+                <select class="form-control text" id="IntroducedInBD">
+                    <option selected="selected" value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-2">Brand Name :</div>
+            <div class="col-md-3">
+                <input type="text" id="BrandName" name="BrandName" placeholder="Brand Name" class="form-control" />
+            </div>
+
+
+
+
+        </div>
+
+
+
+        <div class="row">
+
+            <div class="col-md-2">Product Specification :</div>
+            <div class="col-md-3">
+                <select class="form-control text" id="ProductSpecification">
+                    <option value="INN">INN</option>
+                    <option selected="selected" value="Compendial">Compendial</option>
+                </select>
+
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-2"> Therapeutic Class :</div>
+            <div class="col-md-3">
+                <input type="hidden" id="TherapeuticClassCode" name="TherapeuticClassCode" class="form-control" />
+                <input type="text" id="TherapeuticClassName" name="TherapeuticClassName" placeholder="Therapeutic Class" class="form-control" />
+            </div>
+
+            <div class="col-md-1">
+                <button id="btnTherapeuticClass" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+            </div>
+
+        </div>
+
+
+
+
+        <div class="row">
+            <div class="col-md-2">Product Category :</div>
+            <div class="col-md-3">
+                <select class="form-control text" id="ProductCategory">
+                    <option selected="selected" value="Biological">Biological</option>
+                    <option value="Non-Biological">Non-Biological</option>
+                </select>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-2">Manufacturing Type :</div>
+            <div class="col-md-3">
+
+                <select class="form-control text" id="ManufacturingType">
+                    <option selected="selected" value="Local">Local</option>
+                    <option value="Import">Import</option>
+                </select>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="row">
+
+            <div class="col-md-2">Status : </div>
+            <div class="col-md-3">
+                <select class="form-control text" id="Status">
+                    <option selected="selected" value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+
+                </select>
+
+
+
+
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-2">Remarks : </div>
+            <div class="col-md-9">
+                <textarea class="form-control" id="Remarks" name="Remarks" placeholder="Remarks" rows="3"></textarea>
+            </div>
+
+        </div>
+
+
+
+
+
+        <div class="row">
+            <div id="Tab1SearchBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
+                <div id="Tab1SearchBtn_PopupWindowGrid" class="PopUpGrid"></div>
+            </div>
+            <div id="PopupWindowDosageForm" class="PopupWindowLayout" style="display: none;">
+                <div id="PopupWindowGridDosageForm" class="PopUpGrid"></div>
+            </div>
+
+            <div id="PopupWindowTherapeuticClass" class="PopupWindowLayout" style="display: none;">
+                <div id="PopupWindowGridTherapeuticClass" class="PopUpGrid"></div>
+            </div>
+        </div>
+    </div> @*tab1 closed*@
+
+
+
+
+
+    <div id="tabs-2">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-2">Recipe No :</div>
+                <div class="col-md-2"><input type="text" id="Tab2SlNo" name="Tab2SlNo" class="form-control" placeholder="Auto" readonly /></div>
+                <input type="hidden" id="Tab2ID" name="Tab2ID" class="txtBox" />
+                <div class="col-md-1"></div>
+                <div class="col-md-2">Revision No :</div>
+                <div class="col-md-2"><input type="text" id="Tab2RevisionNo" name="Tab2RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
+                <div class="col-md-3">
+                    <button id="btnRevisionTab2" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Add Revision</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <fieldset class="panel-border">
+                <legend class="panel-border">Product Information :</legend>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">Product Code<span style="color: red">*</span> : </div>
+                        <div class="col-md-2">
+                            <input type="text" id="Tab2ProductCode" name="Tab2ProductCode" class="form-control txtBox" readonly />
                         </div>
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                           <div id="MessageText" style="text-align:center"></div>
+                        <div class="col-md-1"><button id="btnFindProduct" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+
+                        <div class="col-md-2">&nbsp;&nbsp; PackSize:</div>
+                        <div class="col-md-5"><input type="text" id="Tab2PackSizeName" name="Tab2PackSizeName" class="form-control" readonly /></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            Product Specification :
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" id="Tab2ProductSpecification" name="Tab2ProductSpecification" class="form-control txtBox" readonly />
+                        </div>
+                        <div class="col-md-3">Introduced in Bangladesh : </div>
+                        <div class="col-md-2">
+                            <input type="text" id="Tab2IntroducedInBD" name="Tab2IntroducedInBD" class="form-control txtBox" readonly />
+                        </div>
+                        <div class="col-md-1">SAP Code</div>
+                        <div class="col-sm-2"><input type="text" id="Tab2SAPProductCode" name="Tab2SAPProductCode" class="form-control" readonly /></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-2">Generic Name & Strength : </div>
+                        <div class=" col-sm-6">
+                            <textarea class="form-control" id="Tab2GenAndStrength" name="Tab2GenAndStrength" placeholder="Generic Name and Strength" rows="4" readonly></textarea>
+                        </div>
+                        <div class="col-sm-2">Dosage Form :</div>
+                        <div class="col-sm-2"><input type="text" id="Tab2DosageFormName" name="Tab2DosageFormName" class="form-control" readonly /></div>
+
+                    </div>
+                </div>
+
+            </fieldset>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-3">Submission Type :</div>
+                <div class="col-md-3">
+                    <select class="form-control txtBox" id="Tab2MeetingType">
+                        <option selected="selected" value="Local">Local</option>
+                        <option value="DCC">DCC</option>
+                    </select>
+                </div>
+                <div class="col-md-3">Manufacturing Type :</div>
+                <div class="col-md-3">
+                    <select class="form-control txtBox" id="Tab2ManufacturerType">
+                        <option selected="selected" value="Local">Local</option>
+                        <option value="Import">Import</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <fieldset class="panel-border">
+                <legend class="panel-border" id="lgMeetingType">Local</legend>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-1"> </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Received Date : </div>
+                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="Tab2ReceivedDate" name="Tab2ReceivedDate" disabled placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i> </span>
                             </div>
-                            <div class="col-xs-0 col-sm-0 col-md-6 col-lg-6">
-                                <div style="text-align:right;">
-                                    <button id="btnReset" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
-                                    <button id="btnSave" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-save"></i>Save</button>
-                                    <button id="btnSearch" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
-                                    <button id="btnViewMode" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-plane"></i>View</button>                               
-                                </div>
+                        </div>
+                        <div id="divLocal">
+                            <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">DCC No : </div>
+                            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                <input type="text" class="form-control" id="Tab2DccNo" name="Tab2DccNo">
                             </div>
                         </div>
                     </div>
-
-
-
-                    <div id="tabs-1">
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-2"> Product Code:</div>
-                                <div class="col-md-3"><input type="text" id="ProductCode" name="ProductCode" readonly="readonly" class="form-control" placeholder="Auto" /></div>
-
-                                <div class="col-md-1"></div>
-                                <div class="col-md-2"> SAP Product Code:</div>
-                                <div class="col-md-3">
-                                    <input type="text" maxlength="150" id="SAPProductCode" name="SAPProductCode" placeholder="SAP Product Code" class="form-control" />
-                                </div>
-                            </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-1"> </div>
+                        <div class="col-sm-2">Remarks : </div>
+                        <div class="col-sm-8">
+                            <input type="text" id="Tab2MeetingRemarks" name="Tab2MeetingRemarks" placeholder="Remarks" class="txtBox form-control " />
                         </div>
-
-                       
-                            <div class="row">
-                                <div class="col-md-2"> Generic & Strength<span style="color: red">*</span>:</div>
-                                <div class="col-md-9">
-                                    <textarea class="form-control" id="GenericCode" name="GenericCode" maxlength="1000" placeholder="Generic & Strength" rows="3"></textarea>
-                                </div>
-
-                            </div>
-                      
-                  
-                            <div class="row">
-                                <div class="col-md-2">Pack Size :</div>
-                                <div class="col-md-3">
-                                    <input type="text" id="PackSizeName" name="PackSizeName" maxlength="300" placeholder="Pack Size" class="form-control" />
-                                </div>
-                                <div class="col-md-1"></div>
-                                <div class="col-md-2">Dosage Form :</div>
-                                <div class="col-md-3">
-                                    <input type="hidden" id="DosageFormCode" name="DosageFormCode" class="form-control" />
-                                    <input type="text" id="DosageFormName" name="DosageFormName" placeholder="Dosage Form" class="form-control" />
-                                </div>
-
-                                <div class="col-md-1">
-                                    <button id="btnDosageForm" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
-                                </div>
-
-                            </div>
-                    
-                    
-                            <div class="row">
-                                <div class="col-md-2"> Introduced In Bangladesh:</div>
-                                <div class="col-md-3">
-                                    <select class="form-control text" id="IntroducedInBD">
-                                        <option selected="selected" value="Yes">Yes</option>
-                                        <option value="No">No</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-1"></div>
-                                <div class="col-md-2">Brand Name :</div>
-                                <div class="col-md-3">
-                                    <input type="text" id="BrandName" name="BrandName" placeholder="Brand Name" class="form-control" />
-                                </div>
-
-
-
-                           
-                        </div>
-
-
-                    
-                            <div class="row">
-
-                                <div class="col-md-2">Product Specification :</div>
-                                <div class="col-md-3">
-                                    <select class="form-control text" id="ProductSpecification">
-                                        <option value="INN">INN</option>
-                                        <option selected="selected" value="Compendial">Compendial</option>
-                                    </select>
-
-                                </div>
-                                <div class="col-md-1"></div>
-                                <div class="col-md-2"> Therapeutic Class :</div>
-                                <div class="col-md-3">
-                                    <input type="hidden" id="TherapeuticClassCode" name="TherapeuticClassCode" class="form-control" />
-                                    <input type="text" id="TherapeuticClassName" name="TherapeuticClassName" placeholder="Therapeutic Class" class="form-control" />
-                                </div>
-
-                                <div class="col-md-1">
-                                    <button id="btnTherapeuticClass" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
-                                </div>
-
-                            </div>
-                     
-
-
-                   
-                            <div class="row">
-                                <div class="col-md-2">Product Category :</div>
-                                <div class="col-md-3">
-                                    <select class="form-control text" id="ProductCategory">
-                                        <option selected="selected" value="Biological">Biological</option>
-                                        <option value="Non-Biological">Non-Biological</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-1"></div>
-                                <div class="col-md-2">Manufacturing Type :</div>
-                                <div class="col-md-3">
-
-                                    <select class="form-control text" id="ManufacturingType">
-                                        <option selected="selected" value="Local">Local</option>
-                                        <option value="Import">Import</option>
-                                    </select>
-
-                                </div>
-                         
-                        </div>
-
-
-                     
-                            <div class="row">
-
-                                <div class="col-md-2">Status : </div>
-                                <div class="col-md-3">
-                                    <select class="form-control text" id="Status">
-                                        <option selected="selected" value="Active">Active</option>
-                                        <option value="Inactive">Inactive</option>
-
-                                    </select>
-
-
-
-
-                                </div>
-                        </div>
-
-                       
-                            <div class="row">
-                                <div class="col-md-2">Remarks : </div>
-                                <div class="col-md-9">
-                                    <textarea class="form-control" id="Remarks" name="Remarks" placeholder="Remarks" rows="3"></textarea>
-                                </div>
-
-                            </div>
-                  
-
-
-
-
-                        <div class="row">
-                            <div id="Tab1SearchBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
-                                <div id="Tab1SearchBtn_PopupWindowGrid" class="PopUpGrid"></div>
-                            </div>
-                            <div id="PopupWindowDosageForm" class="PopupWindowLayout" style="display: none;">
-                                <div id="PopupWindowGridDosageForm" class="PopUpGrid"></div>
-                            </div>
-
-                            <div id="PopupWindowTherapeuticClass" class="PopupWindowLayout" style="display: none;">
-                                <div id="PopupWindowGridTherapeuticClass" class="PopUpGrid"></div>
-                            </div>
-                        </div>
-                    </div> @*tab1 closed*@
-
-
-
-
-
-                    <div id="tabs-2">
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-2">Recipe No :</div>
-                                <div class="col-md-2"><input type="text" id="Tab2SlNo" name="Tab2SlNo" class="form-control" placeholder="Auto" readonly /></div>
-                                <input type="hidden" id="Tab2ID" name="Tab2ID" class="txtBox" />
-                                <div class="col-md-1"></div>
-                                <div class="col-md-2">Revision No :</div>
-                                <div class="col-md-2"><input type="text" id="Tab2RevisionNo" name="Tab2RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
-                                <div class="col-md-3">
-                                    <button id="btnRevisionTab2" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Add Revision</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <fieldset class="panel-border">
-                                <legend class="panel-border">Product Information :</legend>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-md-2">Product Code<span style="color: red">*</span> : </div>
-                                        <div class="col-md-2">
-                                            <input type="text" id="Tab2ProductCode" name="Tab2ProductCode" class="form-control txtBox" readonly />
-                                        </div>
-                                        <div class="col-md-1"><button id="btnFindProduct" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
-                                   
-                                        <div class="col-md-2">&nbsp;&nbsp; PackSize:</div>
-                                        <div class="col-md-5"><input type="text" id="Tab2PackSizeName" name="Tab2PackSizeName" class="form-control" readonly /></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                            Product Specification :
-                                        </div>
-                                        <div class="col-md-2">
-                                            <input type="text" id="Tab2ProductSpecification" name="Tab2ProductSpecification" class="form-control txtBox" readonly />
-                                        </div>
-                                        <div class="col-md-3">Introduced in Bangladesh : </div>
-                                        <div class="col-md-2">
-                                            <input type="text" id="Tab2IntroducedInBD" name="Tab2IntroducedInBD" class="form-control txtBox" readonly />
-                                        </div>
-                                        <div class="col-md-1">SAP Code</div>
-                                        <div class="col-sm-2"><input type="text" id="Tab2SAPProductCode" name="Tab2SAPProductCode" class="form-control" readonly /></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-2">Generic Name & Strength : </div>
-                                        <div class=" col-sm-6">
-                                            <textarea class="form-control" id="Tab2GenAndStrength" name="Tab2GenAndStrength" placeholder="Generic Name and Strength" rows="4" readonly></textarea>
-                                        </div>
-                                        <div class="col-sm-2">Dosage Form :</div>
-                                        <div class="col-sm-2"><input type="text" id="Tab2DosageFormName" name="Tab2DosageFormName" class="form-control" readonly /></div>
-                                     
-                                    </div>
-                                </div>
-
-                            </fieldset>
-                        </div>
-                        <div class="form-group">
-                            <div class="row">
-                             
-                                <div class="col-md-3">Submission Type :</div>
-                                <div class="col-md-3">
-                                    <select class="form-control txtBox" id="Tab2MeetingType">
-                                        <option selected="selected" value="Local">Local</option>
-                                        <option value="DCC">DCC</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">Manufacturing Type :</div>
-                                <div class="col-md-3">
-                                    <select class="form-control txtBox" id="Tab2ManufacturerType">
-                                        <option selected="selected" value="Local">Local</option>
-                                        <option value="Import">Import</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <fieldset class="panel-border">
-                                <legend class="panel-border" id="lgMeetingType">Local</legend>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Received Date : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" id="Tab2ReceivedDate" name="Tab2ReceivedDate" disabled placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i> </span>
-                                            </div>
-                                        </div>
-                                        <div id="divLocal">
-                                            <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">DCC No : </div>
-                                            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                                <input type="text" class="form-control" id="Tab2DccNo" name="Tab2DccNo">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-sm-2">Remarks : </div>
-                                        <div class="col-sm-8">
-                                            <input type="text" id="Tab2MeetingRemarks" name="Tab2MeetingRemarks" placeholder="Remarks" class="txtBox form-control " />
-                                        </div>
-                                        <div class="col-sm-1"> </div>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                        <div class="form-group" id="divImportInfo">
-                            <fieldset class="panel-border">
-                                <legend class="panel-border">Import Information :</legend>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Country of Origin : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                            <input type="text" class="form-control" id="Tab2CountryOfOrigin" name="Tab2CountryOfOrigin" placeholder="Country of Origin">
-                                        </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Manufacturer Name : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                            <input type="text" id="Tab2ManufacturerName" name="Tab2ManufacturerName" placeholder="Manufacturer Name" class="txtBox form-control " />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Received Date : </div>
-                                        <div class="col-sm-3">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control txtBox" id="Tab2ImportProposalDate" name="Tab2ImportProposalDate" placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Submission Date : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control" id="Tab2ImportSubmissionDate" name="Tab2ImportSubmissionDate" placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-1"> </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-sm-2">Remarks : </div>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control txtBox" id="Tab2ImportRemarks" name="Tab2ImportRemarks" placeholder="Remarks">
-                                        </div>
-                                        <div class="col-sm-1"> </div>
-                                    </div>
-                                </div>
-
-                            </fieldset>
-                        </div>
-                        <div class="form-group" id="divRenew">
-                            <fieldset class="panel-border">
-                                <legend class="panel-border">Approval Information :</legend>
-                                <div class="form-group">
-                                    <div class="row">
-                                    
-                                        <div class="col-md-3">Status : </div>
-                                        <div class="col-md-3">
-                                            <select class="form-control txtBox" id="Tab2ApprovalStatus">
-                                                <option selected="selected" value="Approved">Approved</option>
-                                                <option value="Not Approved">Not Approved</option>
-                                                <option value="Inspection">Inspection</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3">Submission Date : </div>
-                                        <div class="col-md-3">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control" id="Tab2ApvSubmissionDate" name="Tab2ApvSubmissionDate" placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                     
-                                        <div class="col-md-3">Meeting Date : </div>
-                                        <div class="col-md-3">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control txtBox" id="Tab2ApvMeetingDate" name="Tab2ApvMeetingDate" placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">Approval Date : </div>
-                                        <div class="col-md-3">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control" id="Tab2ApvApprovalDate" name="Tab2ApvApprovalDate" placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                              
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                   
-                                        <div class="col-md-3">Valid Up To : </div>
-                                        <div class="col-md-3">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control txtBox" id="Tab2ApvValidUptoDate" name="Tab2ApvValidUptoDate" placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">Date of Extension : </div>
-                                        <div class="col-md-3">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control" id="Tab2ApvDateOfExtension" name="Tab2ApvDateOfExtension" placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                     
-                                        <div class="col-md-3">Remarks : </div>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control txtBox" id="Tab2ApvRemarks" name="Tab2ApvRemarks" placeholder="Remarks" maxlength="300">
-                                        </div>
-                                   
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                        <div class="form-group" id="divInspection">
-                            <fieldset class="panel-border">
-                                <legend class="panel-border">Inspection Information :</legend>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Inspection Date : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control" id="Tab2InspectionDate" name="Tab2InspectionDate" placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Remarks : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                            <input type="text" class="form-control" id="Tab2InspectionRemarks" name="Tab2InspectionRemarks" maxlength="300">
-                                        </div>
-                                        <div class="col-sm-1"> </div>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-sm-1"></div>
-                                <div class="col-sm-2">Proposed By :</div>
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="Tab2ProposedBy" maxlength="30" name="Tab2ProposedBy">
-                                </div>
-                                <div class="col-sm-2">Alarm Days :</div>
-                                <div class="col-sm-1">
-                                    <input type="text" id="Tab2AlarmDays" name="Tab2AlarmDays" maxlength="5" placeholder="Alarm Days" class="txtBox form-control numeric " />
-                                </div>
-                                <div class="col-sm-3"></div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <fieldset class="panel-border">
-                                        <legend class="panel-border">Upload Documents :</legend>
-                                        <div class="row">
-                                            <div class="col-md-3">
-                                                Document Name:<span style="color: red">*</span>:
-                                            </div>
-                                            <div class="col-md-3">
-                                                <select id="Tab2RefNoTab" class="form-control txtBox" tabindex="" name="Tab2RefNoTab"></select>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <input type="file" class="txtBox" id="Tab2UploadFile" name="Tab2UploadFile" />
-                                                <i class="glyphicon glyphicon-upload form-control-feedback"></i>
-                                            </div>
-                                            <div class="col-sm-3">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <br />
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                                <label>List of Document File</label>
-                                                <div id="Tab2FileGrid1" class=""></div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div id="Tab2SearchBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
-                                <div id="Tab2SearchBtn_PopupWindowGrid" class="PopUpGrid"></div>
-                            </div>
-                         
-                            <div id="Tab2FindProductBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
-                                <div id="Tab2FindProductBtn_PopupWindowGrid" class="PopUpGrid"></div>
-                            </div>
-                        </div>
-                        @*Tab2 Closed*@
+                        <div class="col-sm-1"> </div>
                     </div>
-                    <div id="tabs-3">
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-2">Recipe No<span style="color: red">*</span> :</div>
-                                <div class="col-md-3"><input type="text" id="Tab3SlNo" name="Tab3SlNo" class="form-control" placeholder="Get from Find" readonly /></div>
-                                <input type="hidden" id="Tab3RecipeId" name="Tab3RecipeId" class="txtBox" />
-                                <div class="col-md-2"><button id="btnFindRecipeTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
-                                <div class="col-md-2">Annex No:</div>
-                                <div class="col-md-3"><input type="text" id="Tab3AnnexureNo" name="Tab3AnnexureNo" placeholder="Auto" class="form-control" readonly /></div>
-                                <input type="hidden" id="Tab3AnnexId" name="Tab3AnnexId" class="txtBox" />
-                              
-                            </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="form-group" id="divImportInfo">
+            <fieldset class="panel-border">
+                <legend class="panel-border">Import Information :</legend>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-1"> </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Country of Origin : </div>
+                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                            <input type="text" class="form-control" id="Tab2CountryOfOrigin" name="Tab2CountryOfOrigin" placeholder="Country of Origin">
                         </div>
-
-                    
-                            <div class="row">
-                                <div class="col-md-2">Revision No :</div>
-                                <div class="col-md-3"><input type="text" id="Tab3AnnexRevisionNo" name="Tab3AnnexRevisionNo" placeholder="Auto" class="form-control" readonly /></div>
-                                <div class="col-md-2"></div>
-                                <div class="col-md-2">Record Status :</div>
-                                <div class="col-md-3">
-                                    <select id="Tab3StateStatus" class="form-control txtBox" tabindex="" name="Tab3StateStatus"></select>
-                                </div>
-                             
-                                
-                            </div>
-                      
-                      
-                            <div class="row">
-                                <div class="col-md-9"></div>
-                             
-                                <div class="col-md-3">
-                                    <button id="btnRevisionTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew/Amendment</button>
-                                </div>
-
-                            </div>
-                      
-                        <div class="form-group">
-                            <fieldset class="panel-border">
-                                <legend class="panel-border">Product Information :</legend>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-2">Product Code : </div>
-                                        <div class="col-sm-2">
-                                            <input type="text" id="Tab3ProductCode" name="Tab3ProductCode" class="form-control txtBox" readonly />
-                                        </div>
-                                        <div class="col-sm-2">SAP Code :</div>
-                                        <div class="col-sm-2"><input type="text" id="Tab3SAPProductCode" name="Tab3SAPProductCode" class="form-control" readonly /></div>
-                                        <div class="col-sm-2">Pack Size :</div>
-                                        <div class="col-sm-2"><input type="text" id="Tab3PackSizeName" name="Tab3PackSizeName" class="form-control" readonly /></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-2">Dosage Form : </div>
-                                        <div class="col-sm-2">
-                                            <input type="text" id="Tab3DosageFormName" name="Tab3DosageFormName" class="form-control txtBox" readonly />
-                                        </div>
-                                        <div class="col-sm-2">Product Category :</div>
-                                        <div class="col-sm-2"><input type="text" id="Tab3ProductCategory" name="Tab3ProductCategory" class="form-control" readonly /></div>
-                                        <div class="col-sm-2">Brand Name :</div>
-                                        <div class="col-sm-2"><input type="text" id="Tab3BrandName" name="Tab3BrandName" class="form-control" readonly /></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-2">Generic Name & Strength : </div>
-                                        <div class=" col-sm-10">
-                                            <textarea class="form-control" id="Tab3GenAndStrength" name="Tab3GenAndStrength" placeholder="Generic Name and Strength" rows="2" readonly></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-2">Product Specification: </div>
-                                        <div class="col-sm-2">
-                                            <input type="text" id="Tab3ProductSpecification" name="Tab3ProductSpecification" class="form-control txtBox" readonly />
-                                        </div>
-                                        <div class="col-sm-8"></div>
-                                    </div>
-                                </div>
-                            </fieldset>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Manufacturer Name : </div>
+                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                            <input type="text" id="Tab2ManufacturerName" name="Tab2ManufacturerName" placeholder="Manufacturer Name" class="txtBox form-control " />
                         </div>
-
-
-
-                        <div class="form-group" id="divInnProduct">
-                            <fieldset class="panel-border">
-                                <legend class="panel-border">INN Product Info :</legend>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">DTL Sample Receive Date : </div>
-                                        <div class="col-sm-3">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control txtBox" id="Tab3DtlReceivedDate" name="Tab3DtlReceivedDate" placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">DTL Sample Submission Date : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control" id="Tab3DtlSubmissionDate" name="Tab3DtlSubmissionDate" placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-1"> </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">DTL Sample Approval Date : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control" id="Tab3DtlApprovalDate" name="Tab3DtlApprovalDate" placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Remarks : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                            <input type="text" id="DtlRemarks" name="Tab3DtlRemarks" placeholder="Remarks" class="txtBox form-control " />
-                                        </div>
-                                        <div class="col-sm-1"> </div>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                        <div class="form-group" id="divRenew">
-                            <fieldset class="panel-border">
-                                <legend class="panel-border">Registration Information :</legend>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Received Date : </div>
-                                        <div class="col-sm-3">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control txtBox" id="Tab3ReceivedDate" name="Tab3ReceivedDate" disabled placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6"> </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Submission Date : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control" id="Tab3SubmissionDate" name="Tab3SubmissionDate" placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Inclusion Date : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control" id="Tab3InclusionDate" name="Tab3InclusionDate" placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-1"> </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Approval/Renewal Date: </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control" id="Tab3RenewalDate" name="Tab3RenewalDate" placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Valid Up To : </div>
-                                        <div class="col-sm-3">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control txtBox" id="Tab3ValidUptoDate" name="Tab3ValidUptoDate" placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-1"> </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-sm-2">Justification : </div>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control txtBox" id="Tab3Remarks" name="Tab3Remarks" placeholder="Remarks" maxlength="300">
-                                        </div>
-                                        <div class="col-sm-1"> </div>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-sm-1"></div>
-                                <div class="col-sm-2">DAR No :</div>
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="Tab3DarNo" maxlength="30" name="Tab3DarNo">
-                                </div>
-                                <div class="col-sm-2">Annexure Status :</div>
-                                <div class="col-sm-2">
-                                    <select id="Tab3AnnexStatus" class="form-control txtBox" tabindex="" name="Tab3AnnexStatus">
-                                        <option selected value="Active">Active</option>
-                                        <option value="Inactive">Inactive</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-2"></div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-sm-1"></div>
-                                <div class="col-sm-2">Proposed By :</div>
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="Tab3ProposedBy" maxlength="30" name="Tab3ProposedBy">
-                                </div>
-                                <div class="col-sm-2">Alarm Days :</div>
-                                <div class="col-sm-2">
-                                    <input type="text" id="Tab3AlarmDays" name="Tab3AlarmDays" maxlength="5" placeholder="Alarm Days" class="txtBox form-control numeric" />
-                                </div>
-                                <div class="col-sm-2"></div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <fieldset class="panel-border">
-                                        <legend class="panel-border">Upload Documents :</legend>
-                                        <div class="row">
-                                            <div class="col-md-3">
-                                                Document Name:<span style="color: red">*</span>:
-                                            </div>
-                                            <div class="col-md-3">
-                                                <select id="Tab3RefNo" class="form-control txtBox" tabindex="" name="Tab3RefNo"></select>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <input type="file" class="txtBox" id="Tab3UploadFile" name="Tab3UploadFile" />
-                                                <i class="glyphicon glyphicon-upload form-control-feedback"></i>
-                                            </div>
-                                         
-                                        </div>
-                                        <div class="row">
-                                            <br />
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <label>List of Document File</label>
-                                                <div id="Tab3FileGrid1" class=""></div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div id="Tab3SearchBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
-                                <div id="Tab3SearchBtn_PopupWindowGrid" class="PopUpGrid"></div>
-                            </div>
-                            <div id="Tab3FindRecipeBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
-                                <div id="Tab3FindRecipeBtn_PopupWindowGrid" class="PopUpGrid"></div>
-                            </div>
-                        </div>
-                            @*tab3 closed*@
                     </div>
-                    <div id="tabs-4">
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-sm-2">Annexure No<span style="color: red">*</span> :</div>
-                                <div class="col-sm-2"><input type="text" id="Tab4AnnexureNo" name="Tab4AnnexureNo" class="form-control" placeholder="Get from Find" readonly /></div>
-                                <input type="hidden" id="Tab4AnnexId" name="Tab4AnnexId" class="txtBox" />
-                                <input type="hidden" id="Tab4ID" name="Tab4ID" class="txtBox" />
-                                <div class="col-sm-1"><button id="btnFindAnnexureTab4" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
-                                <div class="col-sm-2">Revision No :</div>
-                                <div class="col-sm-2"><input type="text" id="Tab4RevisionNo" name="Tab4RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
-                                <div class="col-sm-1">Price Type</div>
-                                <div class="col-sm-2">
-                                    <select id="Tab4PriceType" class="txtBox" disabled="disabled">
-                                        <option selected value="New">New</option>
-                                        <option value="Revised">Revised</option>
-                                    </select>
-                                </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-1"> </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Received Date : </div>
+                        <div class="col-sm-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control txtBox" id="Tab2ImportProposalDate" name="Tab2ImportProposalDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-sm-2">Price Change Type :</div>
-                                <div class="col-sm-2">
-                                    <select id="Tab4PriceChangeType" class="txtBox">
-                                        <option value="">--N/A--</option>
-                                        <option value="Increase">Increase</option>
-                                        <option value="Decrease">Decrease</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-1"></div>
-                                <div class="col-sm-2">Price Category :</div>
-                                <div class="col-sm-2">
-                                    <select id="Tab4PriceCategory" class="txtBox">
-                                        <option value="">--N/A--</option>
-                                        <option value="IP">IP</option>
-                                        <option value="MRP">MRP</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-2">
-                                    <button id="btnRevisionTab4" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Revised</button>
-                                </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Submission Date : </div>
+                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control" id="Tab2ImportSubmissionDate" name="Tab2ImportSubmissionDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-1"> </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-1"> </div>
+                        <div class="col-sm-2">Remarks : </div>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control txtBox" id="Tab2ImportRemarks" name="Tab2ImportRemarks" placeholder="Remarks">
+                        </div>
+                        <div class="col-sm-1"> </div>
+                    </div>
+                </div>
+
+            </fieldset>
+        </div>
+        <div class="form-group" id="divRenew">
+            <fieldset class="panel-border">
+                <legend class="panel-border">Approval Information :</legend>
+                <div class="form-group">
+                    <div class="row">
+
+                        <div class="col-md-3">Status : </div>
+                        <div class="col-md-3">
+                            <select class="form-control txtBox" id="Tab2ApprovalStatus">
+                                <option selected="selected" value="Approved">Approved</option>
+                                <option value="Not Approved">Not Approved</option>
+                                <option value="Inspection">Inspection</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">Submission Date : </div>
+                        <div class="col-md-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control" id="Tab2ApvSubmissionDate" name="Tab2ApvSubmissionDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+
+                        <div class="col-md-3">Meeting Date : </div>
+                        <div class="col-md-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control txtBox" id="Tab2ApvMeetingDate" name="Tab2ApvMeetingDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">Approval Date : </div>
+                        <div class="col-md-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control" id="Tab2ApvApprovalDate" name="Tab2ApvApprovalDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <fieldset class="panel-border">
-                                <legend class="panel-border">Product Information :</legend>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-2">Product Code : </div>
-                                        <div class="col-sm-2">
-                                            <input type="text" id="Tab4ProductCode" name="Tab4ProductCode" class="form-control txtBox" readonly />
-                                        </div>
-                                        <div class="col-sm-2">SAP Code :</div>
-                                        <div class="col-sm-2"><input type="text" id="Tab4SAPProductCode" name="Tab4SAPProductCode" class="form-control" readonly /></div>
-                                        <div class="col-sm-2">Pack Size :</div>
-                                        <div class="col-sm-2"><input type="text" id="Tab4PackSizeName" name="Tab4PackSizeName" class="form-control" readonly /></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-2">Dosage Form : </div>
-                                        <div class="col-sm-2">
-                                            <input type="text" id="Tab4DosageFormName" name="Tab4DosageFormName" class="form-control txtBox" readonly />
-                                        </div>
-                                        <div class="col-sm-2">DAR No :</div>
-                                        <div class="col-sm-2"><input type="text" id="Tab4DarNo" name="Tab4DarNo" class="form-control" readonly /></div>
-                                        <div class="col-sm-2">Brand Name :</div>
-                                        <div class="col-sm-2"><input type="text" id="Tab4BrandName" name="Tab4BrandName" class="form-control" readonly /></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-2">Generic Name & Strength : </div>
-                                        <div class=" col-sm-10">
-                                            <textarea class="form-control" id="Tab4GenAndStrength" name="Tab4GenAndStrength" placeholder="Generic Name and Strength" rows="2" readonly></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                        <div class="form-group" id="divRenew">
-                            <fieldset class="panel-border">
-                                <legend class="panel-border">Revision Info :</legend>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Receive Date : </div>
-                                        <div class="col-sm-3">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control txtBox" id="Tab4ReceivedDate" name="Tab4ReceivedDate" disabled placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Submission Date : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control" id="Tab4PriceSubmissionDate" name="Tab4PriceSubmissionDate" placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-1"> </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Approval Date : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control" id="Tab4ApprovalDate" name="Tab4ApprovalDate" placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Approved Price : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                            <input type="text" class="form-control" id="Tab4UnitPrice" name="Tab4UnitPrice" placeholder="2ml:4.5,3ml:6.66">
-                                        </div>
-                                        <div class="col-sm-1"> </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-1"> </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Launching Date : </div>
-                                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                            <div class="input-group date">
-                                                <input type="text" class="form-control" id="Tab4LaunchingDate" name="Tab4LaunchingDate" placeholder="dd/mm/yyyy">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                            </div>
-                                        </div>
-                                        <div id="divHighestPrice">
-                                            <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Highest Price : </div>
-                                            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                                <input type="text" class="form-control" id="Tab4HighestPrice" name="Tab4HighestPrice" maxlength="100" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-1"> </div>
-                                    </div>
-                                </div>
-                            </fieldset>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-sm-1"></div>
-                                    <div class="col-sm-2">Proposed By :</div>
-                                    <div class="col-sm-3">
-                                        <input type="text" class="form-control" id="Tab4PriceProposedBy" maxlength="30" name="Tab4PriceProposedBy">
-                                    </div>
-                                    <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Entry Date : </div>
-                                    <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                                        <input type="text" class="form-control" id="Tab4SetOn" name="Tab4SetOn" readonly>
-                                    </div>
-                                    <div class="col-sm-1"></div>
-                                </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
 
+                        <div class="col-md-3">Valid Up To : </div>
+                        <div class="col-md-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control txtBox" id="Tab2ApvValidUptoDate" name="Tab2ApvValidUptoDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-sm-1"></div>
-                                    <div class="col-sm-2">Remarks :</div>
-                                    <div class="col-sm-8">
-                                        <textarea class="form-control" id="Tab4PriceRemarks" name="Tab4PriceRemarks" placeholder="Remarks" rows="1"></textarea>
-                                    </div>
-                                    <div class="col-sm-1"></div>
-                                </div>
+                        </div>
+                        <div class="col-md-3">Date of Extension : </div>
+                        <div class="col-md-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control" id="Tab2ApvDateOfExtension" name="Tab2ApvDateOfExtension" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <fieldset class="panel-border">
-                                        <legend class="panel-border">Upload Documents :</legend>
-                                        <div class="row">
-                                            <div class="col-sm-2">
-                                                Document Name<span style="color: red">*</span>:
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <select id="Tab4RefNo" class="form-control txtBox" tabindex="" name="Tab4RefNo"></select>
-                                            </div>
-                                            <div class="col-sm-4">
-                                                <input type="file" class="txtBox" id="Tab4UploadFile" name="Tab4UploadFile" />
-                                                <i class="glyphicon glyphicon-upload form-control-feedback"></i>
-                                            </div>
-                                            <div class="col-sm-3">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <br />
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <label>List of Document File</label>
-                                                <div id="Tab4FileGrid1" class=""></div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+
+                        <div class="col-md-3">Remarks : </div>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control txtBox" id="Tab2ApvRemarks" name="Tab2ApvRemarks" placeholder="Remarks" maxlength="300">
+                        </div>
+
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="form-group" id="divInspection">
+            <fieldset class="panel-border">
+                <legend class="panel-border">Inspection Information :</legend>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-1"> </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Inspection Date : </div>
+                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control" id="Tab2InspectionDate" name="Tab2InspectionDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Remarks : </div>
+                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                            <input type="text" class="form-control" id="Tab2InspectionRemarks" name="Tab2InspectionRemarks" maxlength="300">
+                        </div>
+                        <div class="col-sm-1"> </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-2">Proposed By :</div>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="Tab2ProposedBy" maxlength="30" name="Tab2ProposedBy">
+                </div>
+                <div class="col-sm-2">Alarm Days :</div>
+                <div class="col-sm-1">
+                    <input type="text" id="Tab2AlarmDays" name="Tab2AlarmDays" maxlength="5" placeholder="Alarm Days" class="txtBox form-control numeric " />
+                </div>
+                <div class="col-sm-3"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-12">
+                    <fieldset class="panel-border">
+                        <legend class="panel-border">Upload Documents :</legend>
+                        <div class="row">
+                            <div class="col-md-3">
+                                Document Name:<span style="color: red">*</span>:
+                            </div>
+                            <div class="col-md-3">
+                                <select id="Tab2RefNo" class="form-control txtBox" tabindex="" name="Tab2RefNo"></select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="file" class="txtBox" id="Tab2UploadFile" name="Tab2UploadFile" />
+                                <i class="glyphicon glyphicon-upload form-control-feedback"></i>
+                            </div>
+                            <div class="col-sm-3">
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-8">
+                            <br />
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <label>List of Document File</label>
+                                <div id="Tab2FileGrid1" class=""></div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="Tab2SearchBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
+                <div id="Tab2SearchBtn_PopupWindowGrid" class="PopUpGrid"></div>
+            </div>
+
+            <div id="Tab2FindProductBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
+                <div id="Tab2FindProductBtn_PopupWindowGrid" class="PopUpGrid"></div>
+            </div>
+        </div>
+        @*Tab2 Closed*@
+    </div>
+    <div id="tabs-3">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-2">Recipe No<span style="color: red">*</span> :</div>
+                <div class="col-md-3"><input type="text" id="Tab3SlNo" name="Tab3SlNo" class="form-control" placeholder="Get from Find" readonly /></div>
+                <input type="hidden" id="Tab3RecipeId" name="Tab3RecipeId" class="txtBox" />
+                <div class="col-md-2"><button id="btnFindRecipeTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+                <div class="col-md-2">Annex No:</div>
+                <div class="col-md-3"><input type="text" id="Tab3AnnexureNo" name="Tab3AnnexureNo" placeholder="Auto" class="form-control" readonly /></div>
+                <input type="hidden" id="Tab3AnnexId" name="Tab3AnnexId" class="txtBox" />
+
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-2">Revision No :</div>
+            <div class="col-md-3"><input type="text" id="Tab3AnnexRevisionNo" name="Tab3AnnexRevisionNo" placeholder="Auto" class="form-control" readonly /></div>
+            <div class="col-md-2"></div>
+            <div class="col-md-2">Record Status :</div>
+            <div class="col-md-3">
+                <select id="Tab3StateStatus" class="form-control txtBox" tabindex="" name="Tab3StateStatus"></select>
+            </div>
+
+
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-9"></div>
+
+            <div class="col-md-3">
+                <button id="btnRevisionTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew/Amendment</button>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <fieldset class="panel-border">
+                <legend class="panel-border">Product Information :</legend>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-2">Product Code : </div>
+                        <div class="col-sm-2">
+                            <input type="text" id="Tab3ProductCode" name="Tab3ProductCode" class="form-control txtBox" readonly />
+                        </div>
+                        <div class="col-sm-2">SAP Code :</div>
+                        <div class="col-sm-2"><input type="text" id="Tab3SAPProductCode" name="Tab3SAPProductCode" class="form-control" readonly /></div>
+                        <div class="col-sm-2">Pack Size :</div>
+                        <div class="col-sm-2"><input type="text" id="Tab3PackSizeName" name="Tab3PackSizeName" class="form-control" readonly /></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-2">Dosage Form : </div>
+                        <div class="col-sm-2">
+                            <input type="text" id="Tab3DosageFormName" name="Tab3DosageFormName" class="form-control txtBox" readonly />
+                        </div>
+                        <div class="col-sm-2">Product Category :</div>
+                        <div class="col-sm-2"><input type="text" id="Tab3ProductCategory" name="Tab3ProductCategory" class="form-control" readonly /></div>
+                        <div class="col-sm-2">Brand Name :</div>
+                        <div class="col-sm-2"><input type="text" id="Tab3BrandName" name="Tab3BrandName" class="form-control" readonly /></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-2">Generic Name & Strength : </div>
+                        <div class=" col-sm-10">
+                            <textarea class="form-control" id="Tab3GenAndStrength" name="Tab3GenAndStrength" placeholder="Generic Name and Strength" rows="2" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-2">Product Specification: </div>
+                        <div class="col-sm-2">
+                            <input type="text" id="Tab3ProductSpecification" name="Tab3ProductSpecification" class="form-control txtBox" readonly />
+                        </div>
+                        <div class="col-sm-8"></div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+
+
+        <div class="form-group" id="divInnProduct">
+            <fieldset class="panel-border">
+                <legend class="panel-border">INN Product Info :</legend>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-1"> </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">DTL Sample Receive Date : </div>
+                        <div class="col-sm-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control txtBox" id="Tab3DtlReceivedDate" name="Tab3DtlReceivedDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">DTL Sample Submission Date : </div>
+                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control" id="Tab3DtlSubmissionDate" name="Tab3DtlSubmissionDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-1"> </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-1"> </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">DTL Sample Approval Date : </div>
+                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control" id="Tab3DtlApprovalDate" name="Tab3DtlApprovalDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Remarks : </div>
+                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                            <input type="text" id="Tab3DtlRemarks" name="Tab3DtlRemarks" placeholder="Remarks" class="txtBox form-control " />
+                        </div>
+                        <div class="col-sm-1"> </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="form-group" id="divRenew">
+            <fieldset class="panel-border">
+                <legend class="panel-border">Registration Information :</legend>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-1"> </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Received Date : </div>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <input type="text" class="form-control txtBox" id="Tab3ReceivedDate" name="Tab3ReceivedDate" disabled placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6"> </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-1"> </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Submission Date : </div>
+                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control" id="Tab3SubmissionDate" name="Tab3SubmissionDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Inclusion Date : </div>
+                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control" id="Tab3InclusionDate" name="Tab3InclusionDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-1"> </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-1"> </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Approval/Renewal Date: </div>
+                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control" id="Tab3RenewalDate" name="Tab3RenewalDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Valid Up To : </div>
+                        <div class="col-sm-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control txtBox" id="Tab3ValidUptoDate" name="Tab3ValidUptoDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-1"> </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-1"> </div>
+                        <div class="col-sm-2">Justification : </div>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control txtBox" id="Tab3Remarks" name="Tab3Remarks" placeholder="Remarks" maxlength="300">
+                        </div>
+                        <div class="col-sm-1"> </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-2">DAR No :</div>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="Tab3DarNo" maxlength="30" name="Tab3DarNo">
+                </div>
+                <div class="col-sm-2">Annexure Status :</div>
+                <div class="col-sm-2">
+                    <select id="Tab3AnnexStatus" class="form-control txtBox" tabindex="" name="Tab3AnnexStatus">
+                        <option selected value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="col-sm-2"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-2">Proposed By :</div>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="Tab3ProposedBy" maxlength="30" name="Tab3ProposedBy">
+                </div>
+                <div class="col-sm-2">Alarm Days :</div>
+                <div class="col-sm-2">
+                    <input type="text" id="Tab3AlarmDays" name="Tab3AlarmDays" maxlength="5" placeholder="Alarm Days" class="txtBox form-control numeric" />
+                </div>
+                <div class="col-sm-2"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-12">
+                    <fieldset class="panel-border">
+                        <legend class="panel-border">Upload Documents :</legend>
+                        <div class="row">
+                            <div class="col-md-3">
+                                Document Name:<span style="color: red">*</span>:
+                            </div>
+                            <div class="col-md-3">
+                                <select id="Tab3RefNo" class="form-control txtBox" tabindex="" name="Tab3RefNo"></select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="file" class="txtBox" id="Tab3UploadFile" name="Tab3UploadFile" />
+                                <i class="glyphicon glyphicon-upload form-control-feedback"></i>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <br />
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label>List of Document File</label>
+                                <div id="Tab3FileGrid1" class=""></div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div id="Tab3SearchBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
+                <div id="Tab3SearchBtn_PopupWindowGrid" class="PopUpGrid"></div>
+            </div>
+            <div id="Tab3FindRecipeBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
+                <div id="Tab3FindRecipeBtn_PopupWindowGrid" class="PopUpGrid"></div>
+            </div>
+        </div>
+        @*tab3 closed*@
+    </div>
+    <div id="tabs-4">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-2">Annexure No<span style="color: red">*</span> :</div>
+                <div class="col-sm-2"><input type="text" id="Tab4AnnexureNo" name="Tab4AnnexureNo" class="form-control" placeholder="Get from Find" readonly /></div>
+                <input type="hidden" id="Tab4AnnexId" name="Tab4AnnexId" class="txtBox" />
+                <input type="hidden" id="Tab4ID" name="Tab4ID" class="txtBox" />
+                <div class="col-sm-1"><button id="btnFindAnnexureTab4" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+                <div class="col-sm-2">Revision No :</div>
+                <div class="col-sm-2"><input type="text" id="Tab4RevisionNo" name="Tab4RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
+                <div class="col-sm-1">Price Type</div>
+                <div class="col-sm-2">
+                    <select id="Tab4PriceType" class="txtBox" disabled="disabled">
+                        <option selected value="New">New</option>
+                        <option value="Revised">Revised</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-2">Price Change Type :</div>
+                <div class="col-sm-2">
+                    <select id="Tab4PriceChangeType" class="txtBox">
+                        <option value="">--N/A--</option>
+                        <option value="Increase">Increase</option>
+                        <option value="Decrease">Decrease</option>
+                    </select>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="col-sm-2">Price Category :</div>
+                <div class="col-sm-2">
+                    <select id="Tab4PriceCategory" class="txtBox">
+                        <option value="">--N/A--</option>
+                        <option value="IP">IP</option>
+                        <option value="MRP">MRP</option>
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <button id="btnRevisionTab4" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Revised</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <fieldset class="panel-border">
+                <legend class="panel-border">Product Information :</legend>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-2">Product Code : </div>
+                        <div class="col-sm-2">
+                            <input type="text" id="Tab4ProductCode" name="Tab4ProductCode" class="form-control txtBox" readonly />
+                        </div>
+                        <div class="col-sm-2">SAP Code :</div>
+                        <div class="col-sm-2"><input type="text" id="Tab4SAPProductCode" name="Tab4SAPProductCode" class="form-control" readonly /></div>
+                        <div class="col-sm-2">Pack Size :</div>
+                        <div class="col-sm-2"><input type="text" id="Tab4PackSizeName" name="Tab4PackSizeName" class="form-control" readonly /></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-2">Dosage Form : </div>
+                        <div class="col-sm-2">
+                            <input type="text" id="Tab4DosageFormName" name="Tab4DosageFormName" class="form-control txtBox" readonly />
+                        </div>
+                        <div class="col-sm-2">DAR No :</div>
+                        <div class="col-sm-2"><input type="text" id="Tab4DarNo" name="Tab4DarNo" class="form-control" readonly /></div>
+                        <div class="col-sm-2">Brand Name :</div>
+                        <div class="col-sm-2"><input type="text" id="Tab4BrandName" name="Tab4BrandName" class="form-control" readonly /></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-2">Generic Name & Strength : </div>
+                        <div class=" col-sm-10">
+                            <textarea class="form-control" id="Tab4GenAndStrength" name="Tab4GenAndStrength" placeholder="Generic Name and Strength" rows="2" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="form-group" id="divRenew">
+            <fieldset class="panel-border">
+                <legend class="panel-border">Revision Info :</legend>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-1"> </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Receive Date : </div>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <input type="text" class="form-control txtBox" id="Tab4ReceivedDate" name="Tab4ReceivedDate" disabled placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Submission Date : </div>
+                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control" id="Tab4PriceSubmissionDate" name="Tab4PriceSubmissionDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-1"> </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-1"> </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Approval Date : </div>
+                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control" id="Tab4ApprovalDate" name="Tab4ApprovalDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Approved Price : </div>
+                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                            <input type="text" class="form-control" id="Tab4UnitPrice" name="Tab4UnitPrice" placeholder="2ml:4.5,3ml:6.66">
+                        </div>
+                        <div class="col-sm-1"> </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-1"> </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Launching Date : </div>
+                        <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control" id="Tab4LaunchingDate" name="Tab4LaunchingDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div id="divHighestPrice">
+                            <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Highest Price : </div>
+                            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                <input type="text" class="form-control" id="Tab4HighestPrice" name="Tab4HighestPrice" maxlength="100" placeholder="">
+                            </div>
+                        </div>
+                        <div class="col-sm-1"> </div>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-2">Proposed By :</div>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" id="Tab4PriceProposedBy" maxlength="30" name="Tab4PriceProposedBy">
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Entry Date : </div>
+                    <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                        <input type="text" class="form-control" id="Tab4SetOn" name="Tab4SetOn" readonly>
+                    </div>
+                    <div class="col-sm-1"></div>
+                </div>
+
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-2">Remarks :</div>
+                    <div class="col-sm-8">
+                        <textarea class="form-control" id="Tab4PriceRemarks" name="Tab4PriceRemarks" placeholder="Remarks" rows="1"></textarea>
+                    </div>
+                    <div class="col-sm-1"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <fieldset class="panel-border">
+                        <legend class="panel-border">Upload Documents :</legend>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                Document Name<span style="color: red">*</span>:
+                            </div>
+                            <div class="col-sm-3">
+                                <select id="Tab4RefNo" class="form-control txtBox" tabindex="" name="Tab4RefNo"></select>
                             </div>
                             <div class="col-sm-4">
-                                <a class="btn btn-primary btn-md" href='@Url.Action("frmProductPriceView", "ProductPrice")'>Click here to display All Report</a>
+                                <input type="file" class="txtBox" id="Tab4UploadFile" name="Tab4UploadFile" />
+                                <i class="glyphicon glyphicon-upload form-control-feedback"></i>
+                            </div>
+                            <div class="col-sm-3">
                             </div>
                         </div>
                         <div class="row">
-                            <div id="Tab4SearchBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
-                                <div id="Tab4SearchBtn_PopupWindowGrid" class="PopUpGrid"></div>
-                            </div>
-
-                            <div id="Tab4FindAnnexureBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
-                                <div id="Tab4FindAnnexureBtn_PopupWindowGrid" class="PopUpGrid"></div>
-                            </div>
-                        </div>
-                    </div>  @*Tab4 Closed*@
-
-
-                    <div id="tabs-5">
-
-                        <div class="row">
-                            <div class="col-md-2">Revision No :</div>
-                            <div class="col-md-2">
-                            <input type="text" id="Tab5RevisionNo" name="Tab5RevisionNo" placeholder="Auto" class="form-control" readonly />
-                            
-                           
-                                <input type="hidden" id="Tab5ID" name="Tab5ID" placeholder="ID" class="txtBox form-control" />
-                             
-                            
-                            </div>
-                        
-                            <div class="col-md-2">Record Status :</div>
-                            <div class="col-md-3">
-                                <select id="Tab5StateStatus" class="form-control txtBox" tabindex="" name="Tab5StateStatus"></select>
-                            </div>
-
-                            <div class="col-md-3">
-                                <button id="btnRevisionTab5" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew/Amendment</button>
-                            </div>
-                        </div>
-
-
-                    
-
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <fieldset class="panel-border">
-                                    <legend class="panel-border">Product Information :</legend>
-                                  
-                                        <div class="row">
-                                            <div class="col-md-3">Product Code<span style="color: red">*</span></div>
-                                            <div class="col-md-2"><input type="text" maxlength="50" id="Tab5ProductCode" name="Tab5ProductCode" readonly="readonly" class="RequiredField form-control" /></div>
-                                            <div class="col-md-2"><button id="btnFindProdTab5" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
-                                       
-                                            <div class="col-md-2">SAP Product Code</div>
-                                            <div class="col-md-3"><input type="text" maxlength="50" id="Tab5SapProductCode" name="Tab5SapProductCode" readonly="readonly" class="RequiredField form-control" /></div>
-                                        </div>
-                                    
-                          
-                                        <div class="row">
-                                            <div class="col-md-3">Generic and Strength</div>
-                                            <div class="col-md-4"><textarea id="Tab5GenericStrength" name="Tab5GenericStrength" readonly="readonly" class="RequiredField form-control"> </textarea></div>
-                                       
-                                            <div class="col-md-2">Pack Size</div>
-                                            <div class="col-md-3"><input type="text" maxlength="50" id="Tab5PackSize" name="Tab5PackSize" readonly="readonly" class="RequiredField form-control" /></div>
-
-                                         </div>
-                                  
-
-                                        <div class="row">
-                                      
-                                            <div class="col-md-3">Dosage Form</div>
-                                            <div class="col-md-4"><input type="text" maxlength="50" id="Tab5DosageForm" name="Tab5DosageForm" readonly="readonly" class="RequiredField form-control" /></div>
-                                         
-                                             <div class="col-md-2">DAR No</div>
-                                            <div class="col-md-3"><input type="text" maxlength="50" id="Tab5DarNo" name="Tab5DarNo" readonly="readonly" class="RequiredField form-control" /></div>
-
-                                         </div>
-                                    
-
-                              
-                                        <div class="row">                                     
-                                            <div class="col-md-3">Brand Name</div>
-                                            <div class="col-md-4"><input type="text" maxlength="50" id="Tab5BrandName" name="Tab5BrandName" readonly="readonly" class="RequiredField form-control" /></div>
-                                        </div>
-                                    
-                                </fieldset>
-                            </div>
-                        </div>
-
-
-
-
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <fieldset class="panel-border">
-                                    <legend class="panel-border">Approval & Notification Information :</legend>
-
-                                 
-                                        <div class="row">
-                                            <div class="col-md-2">Submission Date</div>
-                                            <div class="col-md-3">
-                                                <div class="input-group date">
-                                                    <input type="text" class="form-control txtBox" id="Tab5SubmissionDate" name="Tab5SubmissionDate" placeholder="dd/mm/yyyy">
-                                                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-1"></div>
-                                            <div class="col-md-2">Receive Date</div>
-                                            <div class="col-md-3">
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control txtBox" id="Tab5ReceiveDate" name="Tab5ReceiveDate" disabled placeholder="dd/mm/yyyy">
-                                                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                   
-                             
-                                        <div class="row">
-
-                                            <div class="col-md-2">Approval Date</div>
-                                            <div class="col-md-3">
-                                                <div class="input-group date">
-                                                    <input type="text" class="form-control txtBox" id="Tab5ApprovalDate" name="Tab5ApprovalDate" placeholder="dd/mm/yyyy">
-                                                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-1"></div>
-                                            <div class="col-md-2">Valid Upto</div>
-                                            <div class="col-md-3">
-                                                <div class="input-group date">
-                                                    <input type="text" class="form-control txtBox" id="Tab5ValiduptoDate" name="Tab5ValiduptoDate" placeholder="dd/mm/yyyy">
-                                                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                  
-
-                            
-                                        <div class="row">
-                                            <div class="col-md-2">Alarm Days</div>
-                                            <div class="col-md-3"><input type="text" maxlength="5" id="Tab5NotificationDay" name="Tab5NotificationDay" class="txtBox form-control numeric" /></div>
-                                            <div class="col-md-1"></div>
-                                            <div class="col-md-2">Market Authorization No</div>
-                                            <div class="col-md-3"><input type="text" maxlength="150" id="Tab5MarketAuthorizationNo" name="Tab5MarketAuthorizationNo" class="txtBox form-control" /></div>
-                                        </div>
-                                
-                                        <div class="row">
-                                            <div class="col-md-2">Remarks</div>
-                                            <div class="col-md-3"><textarea id="Tab5Remarks" name="Tab5Remarks" class="RequiredField form-control"> </textarea></div>
-                                        </div>
-                                    
-                                </fieldset>
-                            </div>
+                            <br />
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
-                                <fieldset class="panel-border">
-                                    <legend class="panel-border">Upload Documents :</legend>
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            Document Name<span style="color: red">*</span>:
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <select id="Tab5RefNo" class="form-control txtBox" tabindex="" name="Tab5RefNo"></select>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <input type="file" class="txtBox" id="Tab5UploadFile" name="Tab5UploadFile" />
-                                            <i class="glyphicon glyphicon-upload form-control-feedback"></i>
-                                        </div>
-                                      
-                                    </div>
-                                  
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <label>List of Document File</label>
-                                            <div id="Tab5FileGrid1" class=""></div>
-                                        </div>
-                                    </div>
-                                </fieldset>
+                                <label>List of Document File</label>
+                                <div id="Tab4FileGrid1" class=""></div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8">
+            </div>
+            <div class="col-sm-4">
+                <a class="btn btn-primary btn-md" href='@Url.Action("frmProductPriceView", "ProductPrice")'>Click here to display All Report</a>
+            </div>
+        </div>
+        <div class="row">
+            <div id="Tab4SearchBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
+                <div id="Tab4SearchBtn_PopupWindowGrid" class="PopUpGrid"></div>
+            </div>
+
+            <div id="Tab4FindAnnexureBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
+                <div id="Tab4FindAnnexureBtn_PopupWindowGrid" class="PopUpGrid"></div>
+            </div>
+        </div>
+    </div>  @*Tab4 Closed*@
+
+
+    <div id="tabs-5">
+
+        <div class="row">
+            <div class="col-md-2">Revision No :</div>
+            <div class="col-md-2">
+                <input type="text" id="Tab5RevisionNo" name="Tab5RevisionNo" placeholder="Auto" class="form-control" readonly />
+
+
+                <input type="hidden" id="Tab5ID" name="Tab5ID" placeholder="ID" class="txtBox form-control" />
+
+
+            </div>
+
+            <div class="col-md-2">Record Status :</div>
+            <div class="col-md-3">
+                <select id="Tab5StateStatus" class="form-control txtBox" tabindex="" name="Tab5StateStatus"></select>
+            </div>
+
+            <div class="col-md-3">
+                <button id="btnRevisionTab5" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew/Amendment</button>
+            </div>
+        </div>
+
+
+
+
+        <div class="row">
+            <div class="col-sm-12">
+                <fieldset class="panel-border">
+                    <legend class="panel-border">Product Information :</legend>
+
+                    <div class="row">
+                        <div class="col-md-3">Product Code<span style="color: red">*</span></div>
+                        <div class="col-md-2"><input type="text" maxlength="50" id="Tab5ProductCode" name="Tab5ProductCode" readonly="readonly" class="RequiredField form-control" /></div>
+                        <div class="col-md-2"><button id="btnFindProdTab5" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+
+                        <div class="col-md-2">SAP Product Code</div>
+                        <div class="col-md-3"><input type="text" maxlength="50" id="Tab5SapProductCode" name="Tab5SapProductCode" readonly="readonly" class="RequiredField form-control" /></div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-3">Generic and Strength</div>
+                        <div class="col-md-4"><textarea id="Tab5GenericStrength" name="Tab5GenericStrength" readonly="readonly" class="RequiredField form-control"> </textarea></div>
+
+                        <div class="col-md-2">Pack Size</div>
+                        <div class="col-md-3"><input type="text" maxlength="50" id="Tab5PackSize" name="Tab5PackSize" readonly="readonly" class="RequiredField form-control" /></div>
+
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-md-3">Dosage Form</div>
+                        <div class="col-md-4"><input type="text" maxlength="50" id="Tab5DosageForm" name="Tab5DosageForm" readonly="readonly" class="RequiredField form-control" /></div>
+
+                        <div class="col-md-2">DAR No</div>
+                        <div class="col-md-3"><input type="text" maxlength="50" id="Tab5DarNo" name="Tab5DarNo" readonly="readonly" class="RequiredField form-control" /></div>
+
+                    </div>
+
+
+
+                    <div class="row">
+                        <div class="col-md-3">Brand Name</div>
+                        <div class="col-md-4"><input type="text" maxlength="50" id="Tab5BrandName" name="Tab5BrandName" readonly="readonly" class="RequiredField form-control" /></div>
+                    </div>
+
+                </fieldset>
+            </div>
+        </div>
+
+
+
+
+        <div class="row">
+            <div class="col-sm-12">
+                <fieldset class="panel-border">
+                    <legend class="panel-border">Approval & Notification Information :</legend>
+
+
+                    <div class="row">
+                        <div class="col-md-2">Submission Date</div>
+                        <div class="col-md-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control txtBox" id="Tab5SubmissionDate" name="Tab5SubmissionDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2">Receive Date</div>
+                        <div class="col-md-3">
+                            <div class="input-group">
+                                <input type="text" class="form-control txtBox" id="Tab5ReceiveDate" name="Tab5ReceiveDate" disabled placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-md-2">Approval Date</div>
+                        <div class="col-md-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control txtBox" id="Tab5ApprovalDate" name="Tab5ApprovalDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div id="Tab5SearchBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
-                                <div id="Tab5SearchBtn_PopupWindowGrid" class="PopUpGrid"></div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div id="Tab5FindProduct_PopupWindow" class="PopupWindowLayout" style="display: none;">
-                                <div id="Tab5FindProduct_PopupWindowGrid" class="PopUpGrid"></div>
-                            </div>
-                        </div>
-
-                    </div>  @*Tab5 Closed*@
-
-
-
-                    <div class="modal fade" id="tabModal" tabindex="-1" role="dialog">
-                        <div class="modal-dialog modal-lg" role="document">
-                            <div class="modal-content">
-
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="modalTitle">Tab Content</h5>
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                </div>
-                                <div class="modal-header" id="modalCommonHeader">
-                                    <!-- Dynamic content goes here -->
-                                </div>
-                                <div class="modal-body" id="modalBody">
-                                    <!-- Dynamic content goes here -->
-                                </div>
-                                <div class="modal-footer">
-                               
-                                </div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2">Valid Upto</div>
+                        <div class="col-md-3">
+                            <div class="input-group date">
+                                <input type="text" class="form-control txtBox" id="Tab5ValiduptoDate" name="Tab5ValiduptoDate" placeholder="dd/mm/yyyy">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
                         </div>
                     </div>
 
 
 
+                    <div class="row">
+                        <div class="col-md-2">Alarm Days</div>
+                        <div class="col-md-3"><input type="text" maxlength="5" id="Tab5NotificationDay" name="Tab5NotificationDay" class="txtBox form-control numeric" /></div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2">Market Authorization No</div>
+                        <div class="col-md-3"><input type="text" maxlength="150" id="Tab5MarketAuthorizationNo" name="Tab5MarketAuthorizationNo" class="txtBox form-control" /></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-2">Remarks</div>
+                        <div class="col-md-3"><textarea id="Tab5Remarks" name="Tab5Remarks" class="RequiredField form-control"> </textarea></div>
+                    </div>
+
+                </fieldset>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <fieldset class="panel-border">
+                    <legend class="panel-border">Upload Documents :</legend>
+                    <div class="row">
+                        <div class="col-md-3">
+                            Document Name<span style="color: red">*</span>:
+                        </div>
+                        <div class="col-sm-4">
+                            <select id="Tab5RefNo" class="form-control txtBox" tabindex="" name="Tab5RefNo"></select>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="file" class="txtBox" id="Tab5UploadFile" name="Tab5UploadFile" />
+                            <i class="glyphicon glyphicon-upload form-control-feedback"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>List of Document File</label>
+                            <div id="Tab5FileGrid1" class=""></div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="row">
+            <div id="Tab5SearchBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
+                <div id="Tab5SearchBtn_PopupWindowGrid" class="PopUpGrid"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div id="Tab5FindProduct_PopupWindow" class="PopupWindowLayout" style="display: none;">
+                <div id="Tab5FindProduct_PopupWindowGrid" class="PopUpGrid"></div>
+            </div>
+        </div>
+
+    </div>  @*Tab5 Closed*@
+
+
+
+    <div class="modal fade" id="tabModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Tab Content</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-header" id="modalCommonHeader">
+                    <!-- Dynamic content goes here -->
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Dynamic content goes here -->
+                </div>
+                <div class="modal-footer">
 
                 </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
 
 
 

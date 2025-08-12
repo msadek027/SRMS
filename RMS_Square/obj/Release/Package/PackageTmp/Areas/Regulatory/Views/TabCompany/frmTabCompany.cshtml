@@ -1425,8 +1425,10 @@
 </script>
 
 <script>
-    $('#UploadFileTab1').on('change', function (e) {
-        var checkInput = InputValidation('Tab1RefNo');
+    $(document).ready(function () {
+    $('#Tab1UploadFile').on('change', function (e) {
+        debugger;
+        var checkInput =InputValidation('Tab1RefNo');
         if (checkInput == 0)
         {
             var files = e.target.files;
@@ -1464,7 +1466,7 @@
                         $("#divLoading").show();
                         $.ajax({
                             type: "POST",
-                            url: '@Url.Action("UploadFile", "CompanyLicense")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#RefNo").val(),
+                            url: '@Url.Action("UploadFile", "CompanyLicense")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#Tab1RefNo").val(),
                             contentType: false,
                             processData: false,
                             data: data,
@@ -1525,7 +1527,7 @@
 
         if (checkInput == 0) {
             var files = e.target.files;
-            var refId = $("#ID").val();
+            var refId = $("#Tab3ID").val();
             if (refId != "") {
                 var fileSize = 0;
                 var fSizeStrg = "";
@@ -1559,7 +1561,7 @@
                         $("#divLoading").show();
                         $.ajax({
                             type: "POST",
-                            url: '@Url.Action("UploadFile", "GmpCertificate")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#RefNo").val(),
+                            url: '@Url.Action("UploadFile", "GmpCertificate")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#Tab3RefNo").val(),
                             contentType: false,
                             processData: false,
                             data: data,
@@ -1594,8 +1596,9 @@
 
     });
 
+    });
 </script>
-<div id="tabs">
+<div id="tabs" style="font-family:'Times New Roman' ">
     <ul id="btnList">
         <li><a href="#tabs-1">Entry License Info</a></li>
         <li><a href="#tabs-2">View License</a></li>
@@ -1603,17 +1606,17 @@
         <li><a href="#tabs-4">View GMP Certificate</a></li>
         <li><a href="#tabs-5">Products</a></li>
     </ul>
-     
-          
+
+
     <div class="box-header with-border" id="TabCommonValue">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
                 <div class="input-group">
-                    <input type="text" id="CompanyCode" name="CompanyCode" placeholder="Company Code" readonly="readonly" class="RequiredField form-control input-sm" />
+                    <input type="text" id="CompanyCode" name="CompanyCode" placeholder="Company Code" readonly="readonly" class="RequiredField form-control input-sm" style="width:80px" />
                     <span class="input-group-btn" style="width:0px;"></span>
-                    <input type="text" id="CompanyName" name="CompanyName" placeholder="Company Name" readonly="readonly" class="RequiredField form-control input-sm" />
+                    <input type="text" id="CompanyName" name="CompanyName" placeholder="Company Name" readonly="readonly" class="RequiredField form-control input-sm" style="width:350px" />
                     <span class="input-group-btn" style="width:0px;"></span>
-                    <input type="text" id="Address" name="Address" placeholder="Company Addess" readonly="readonly" class="RequiredField form-control input-sm" />
+                    <input type="text" id="Address" name="Address" placeholder="Company Addess" readonly="readonly" class="RequiredField form-control input-sm" style="width:150px" />
                 </div>
             </div>
             <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"></div>
@@ -1635,210 +1638,210 @@
 
 
 
-             <div id="tabs-1">
-                 <div class="row">                               
-                     <div class="col-md-3">Revision No :</div>
-                     <div class="col-md-3"><input type="text" id="Tab1RevisionNo" name="Tab1RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
-                     <div class="col-md-3"><input type="hidden" id="Tab1CLID" name="Tab1CLID" class="txtBox" /></div>
-                 </div>
-                 
-                     <div class="row">
-                         <div class="col-md-3">License Type & No<span style="color: red">*</span> :</div>
-                         <div class="col-md-3"><input type="text" id="Tab1LicenseNo" name="Tab1LicenseNo" class="form-control txtBox" /></div>
-                         <div class="col-md-3">Submission Type :</div>
-                         <div class="col-md-3">
-                             <select id="Tab1SubmissionType" class="txtBox" disabled="disabled">
-                                 <option selected="selected" value="License">License</option>
-                                 <option value="Renewal">Renewal</option>
-                             </select>
-                         </div>
-                     </div>
-                       
-                  
-                
-                     <div class="row">
-                         <div class="col-md-10"></div>
+    <div id="tabs-1">
+        <div class="row">
+            <div class="col-md-3">Revision No :</div>
+            <div class="col-md-3"><input type="text" id="Tab1RevisionNo" name="Tab1RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
+            <div class="col-md-3"><input type="hidden" id="Tab1CLID" name="Tab1CLID" class="txtBox" /></div>
+        </div>
 
-                         <div class="col-md-2">
-                             <div style="text-align:right;">
-                                 <button id="btnRevisionTab1" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew</button>
-                             </div>
-                         </div>
-                     </div>
-               
-
-                     <fieldset class="panel-border" id="divRenew">
-                         <legend class="panel-border">License/Renew Info :</legend>
-                         <div class="form-group">
-                             <div class="row">
-                             
-                                 <div class="col-md-3">Submission Date : </div>
-                                 <div class="col-md-3">
-                                     <div class="input-group date">
-                                         <input type="text" class="form-control" id="Tab1SubmissionDate" name="Tab1SubmissionDate" placeholder="dd/mm/yyyy">
-                                         <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                     </div>
-                                 </div>
-                                 <div class="col-md-3">Factory Inspection Date: </div>
-                                 <div class="col-md-3">
-                                     <div class="input-group date">
-                                         <input type="text" class="form-control" id="Tab1InspectionDate" name="Tab1InspectionDate" placeholder="dd/mm/yyyy">
-                                         <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                     </div>
-                                 </div>
-                             </div>
-                         </div>
-                         <div class="form-group">
-                             <div class="row">                                
-                                 <div class="col-md-3">Post Inspection Date: </div>
-                                 <div class="col-md-3">
-                                     <div class="input-group date">
-                                         <input type="text" class="form-control" id="Tab1PostInspectionDate" name="Tab1PostInspectionDate" placeholder="dd/mm/yyyy">
-                                         <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                     </div>
-                                 </div>
-                             </div>
-                         </div>
-                         <div class="form-group">
-                             <div class="row">
-                              
-                                 <div class="col-md-3">Approval/Renewal Date : </div>
-                                 <div class="col-md-3">
-                                     <div class="input-group date">
-                                         <input type="text" class="form-control" id="Tab1ApprovalDate" name="Tab1ApprovalDate" placeholder="dd/mm/yyyy">
-                                         <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                     </div>
-                                 </div>
-                                 <div class="col-md-3">Alarm Days : </div>
-                                 <div class="col-md-3">
-                                     <input type="text" id="Tab1AlarmDays" name="Tab1AlarmDays" maxlength="5" placeholder="Alarm Days" class="txtBox form-control numeric " />
-                                 </div>
-                             </div>
-                         </div>
-                         <div class="form-group">
-                             <div class="row">
-                               
-                                 <div class="col-md-3">Valid Up To </div>
-                                 <div class="col-md-3">
-                                     <div class="input-group date">
-                                         <input type="text" class="form-control txtBox" id="Tab1ValidUpto" name="Tab1ValidUpto" placeholder="dd/mm/yyyy">
-                                         <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                                     </div>
-                                 </div>
-                                 <div class="col-md-3">Entry Date : </div>
-                                 <div class="col-md-3">
-                                     <input type="text" class="form-control" id="Tab1RevisionDate" name="Tab1RevisionDate" readonly>
-                                 </div>
-                             </div>
-                         </div>
-                     </fieldset>
-
-                     <div class="row">
-                         <div class="col-sm-12">
-                             <fieldset class="panel-border">
-                                 <legend class="panel-border">Upload Documents :</legend>
-                                 <div class="row">
-                                     <div class="col-md-3">
-                                         Document Name:<span style="color: red">*</span>:
-                                     </div>
-                                     <div class="col-md-3">
-                                         <select id="Tab1RefNo" class="form-control txtBox" tabindex="" name="Tab1RefNo">
-                                             <option value="">--Select Any--</option>
-                                             <option value="Inspection Letter">Inspection Letter</option>
-                                             <option value="Post Inspection Letter">Post Inspection Letter</option>
-                                             <option value="Inspection Report">Inspection Report</option>
-                                             <option value="Original License">Original License</option>
-                                             <option value="License Renewal Letter">License Renewal Letter</option>
-                                             <option value="List of Annexure">List of Annexure</option>
-                                             <option value="List of Technical Person">List of Technical Person</option>
-                                             <option value="List of Machineries">List of Machineries</option>
-                                         </select>
-                                     </div>
-                                     <div class="col-md-4">
-                                         <input type="file" class="txtBox" id="Tab1UploadFile" name="Tab1UploadFile" />
-                                         <i class="fa fa-cloud-upload form-control-feedback"></i>
-                                     </div>
-                                     <div class="col-md-2">
-                                     </div>
-                                 </div>
-                           
-
-
-                                 <div class="row">
-                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                         <label>List of Document File</label>
-                                         <div id="Tab1FileGrid1" class=""></div>
-                                     </div>
-                                 </div>
-                             </fieldset>
-                         </div>
-                     </div>
-               
-                 <div class="row">
-                     <div class="col-sm-9">
-                     </div>
-                     <div class="col-sm-3">
-                         <a class="btn btn-primary btn-md" href='@Url.Action("frmCompanyLicenseView", "CompanyLicense")'>Click here to display All Report</a>
-                     </div>
-                 </div>
-                 <div class="row" id="divIframe">
-                     <iframe id="frameID" src="" style="width: 100%;" frameborder="0"></iframe>
-                 </div>
-                 <div class="row">
-                     <div id="Tab1SearchBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
-                         <div id="Tab1SearchBtn_PopupWindowGrid" class="PopUpGrid"></div>
-                     </div>
-
-                 
-                 </div>
-
-
-
-
-
-
-             </div> @*tab1 closed*@
-         
-          
-
-
- 
-    <div id="tabs-2">       
-        <div class="box-body">      
-        
-                <div class="row">
-                    <div class="col-md-3">Submission Type :</div>
-                    <div class="col-md-3">
-                        <select id="Tab2SubmissionType" class="txtBox">
-                            <option selected value="All">All</option>
-                            <option value="License">License</option>
-                            <option value="Renewal">Renewal</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">Expired Within :</div>
-                    <div class="col-md-3"><input type="text" id="Tab2AlarmDays" name="Tab2AlarmDays" class="form-control txtBox numeric" maxlength="3" placeholder="days" /></div>
-
-                    
-               
+        <div class="row">
+            <div class="col-md-3">License Type & No<span style="color: red">*</span> :</div>
+            <div class="col-md-3"><input type="text" id="Tab1LicenseNo" name="Tab1LicenseNo" class="form-control txtBox" /></div>
+            <div class="col-md-3">Submission Type :</div>
+            <div class="col-md-3">
+                <select id="Tab1SubmissionType" class="txtBox" disabled="disabled">
+                    <option selected="selected" value="License">License</option>
+                    <option value="Renewal">Renewal</option>
+                </select>
             </div>
-       
+        </div>
+
+
+
+        <div class="row">
+            <div class="col-md-10"></div>
+
+            <div class="col-md-2">
+                <div style="text-align:right;">
+                    <button id="btnRevisionTab1" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew</button>
+                </div>
+            </div>
+        </div>
+
+
+        <fieldset class="panel-border" id="divRenew">
+            <legend class="panel-border">License/Renew Info :</legend>
+            <div class="form-group">
                 <div class="row">
-                    <div class="col-md-3">Submission From Date : </div>
+
+                    <div class="col-md-3">Submission Date : </div>
                     <div class="col-md-3">
                         <div class="input-group date">
-                            <input type="text" class="form-control txtBox" id="Tab2FromDate" name="Tab2FromDate" placeholder="dd/mm/yyyy">
+                            <input type="text" class="form-control" id="Tab1SubmissionDate" name="Tab1SubmissionDate" placeholder="dd/mm/yyyy">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                         </div>
                     </div>
-                    <div class="col-md-3">Submission To Date : </div>
+                    <div class="col-md-3">Factory Inspection Date: </div>
                     <div class="col-md-3">
                         <div class="input-group date">
-                            <input type="text" class="form-control txtBox" id="Tab2ToDate" name="Tab2ToDate" placeholder="dd/mm/yyyy">
+                            <input type="text" class="form-control" id="Tab1InspectionDate" name="Tab1InspectionDate" placeholder="dd/mm/yyyy">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                         </div>
                     </div>
-                   
-            
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-3">Post Inspection Date: </div>
+                    <div class="col-md-3">
+                        <div class="input-group date">
+                            <input type="text" class="form-control" id="Tab1PostInspectionDate" name="Tab1PostInspectionDate" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+
+                    <div class="col-md-3">Approval/Renewal Date : </div>
+                    <div class="col-md-3">
+                        <div class="input-group date">
+                            <input type="text" class="form-control" id="Tab1ApprovalDate" name="Tab1ApprovalDate" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">Alarm Days : </div>
+                    <div class="col-md-3">
+                        <input type="text" id="Tab1AlarmDays" name="Tab1AlarmDays" maxlength="5" placeholder="Alarm Days" class="txtBox form-control numeric " />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+
+                    <div class="col-md-3">Valid Up To </div>
+                    <div class="col-md-3">
+                        <div class="input-group date">
+                            <input type="text" class="form-control txtBox" id="Tab1ValidUpto" name="Tab1ValidUpto" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">Entry Date : </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" id="Tab1RevisionDate" name="Tab1RevisionDate" readonly>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <fieldset class="panel-border">
+                    <legend class="panel-border">Upload Documents :</legend>
+                    <div class="row">
+                        <div class="col-md-3">
+                            Document Name:<span style="color: red">*</span>:
+                        </div>
+                        <div class="col-md-3">
+                            <select id="Tab1RefNo" class="form-control txtBox" tabindex="" name="Tab1RefNo">
+                                <option value="">--Select Any--</option>
+                                <option value="Inspection Letter">Inspection Letter</option>
+                                <option value="Post Inspection Letter">Post Inspection Letter</option>
+                                <option value="Inspection Report">Inspection Report</option>
+                                <option value="Original License">Original License</option>
+                                <option value="License Renewal Letter">License Renewal Letter</option>
+                                <option value="List of Annexure">List of Annexure</option>
+                                <option value="List of Technical Person">List of Technical Person</option>
+                                <option value="List of Machineries">List of Machineries</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="file" class="txtBox" id="Tab1UploadFile" name="Tab1UploadFile" />
+                            <i class="fa fa-cloud-upload form-control-feedback"></i>
+                        </div>
+                        <div class="col-md-2">
+                        </div>
+                    </div>
+
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <label>List of Document File</label>
+                            <div id="Tab1FileGrid1" class=""></div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-9">
+            </div>
+            <div class="col-sm-3">
+                <a class="btn btn-primary btn-md" href='@Url.Action("frmCompanyLicenseView", "CompanyLicense")'>Click here to display All Report</a>
+            </div>
+        </div>
+        <div class="row" id="divIframe">
+            <iframe id="frameID" src="" style="width: 100%;" frameborder="0"></iframe>
+        </div>
+        <div class="row">
+            <div id="Tab1SearchBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
+                <div id="Tab1SearchBtn_PopupWindowGrid" class="PopUpGrid"></div>
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+    </div> @*tab1 closed*@
+
+
+
+
+
+    <div id="tabs-2">
+        <div class="box-body">
+
+            <div class="row">
+                <div class="col-md-3">Submission Type :</div>
+                <div class="col-md-3">
+                    <select id="Tab2SubmissionType" class="txtBox">
+                        <option selected value="All">All</option>
+                        <option value="License">License</option>
+                        <option value="Renewal">Renewal</option>
+                    </select>
+                </div>
+                <div class="col-md-3">Expired Within :</div>
+                <div class="col-md-3"><input type="text" id="Tab2AlarmDays" name="Tab2AlarmDays" class="form-control txtBox numeric" maxlength="3" placeholder="days" /></div>
+
+
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-3">Submission From Date : </div>
+                <div class="col-md-3">
+                    <div class="input-group date">
+                        <input type="text" class="form-control txtBox" id="Tab2FromDate" name="Tab2FromDate" placeholder="dd/mm/yyyy">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                    </div>
+                </div>
+                <div class="col-md-3">Submission To Date : </div>
+                <div class="col-md-3">
+                    <div class="input-group date">
+                        <input type="text" class="form-control txtBox" id="Tab2ToDate" name="Tab2ToDate" placeholder="dd/mm/yyyy">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                    </div>
+                </div>
+
+
             </div>
             <div class="form-group">
                 <fieldset class="panel-border" id="divRenew">
@@ -1855,9 +1858,9 @@
                     <div class="col-sm-12">
                         <fieldset class="panel-border">
                             <legend class="panel-border">Document Information :</legend>
-                           
+
                             <div class="row">
-                                <div class="col-md-12">                            
+                                <div class="col-md-12">
                                     <div id="Tab2FileGrid1" class=""></div>
                                 </div>
                             </div>
@@ -1867,125 +1870,125 @@
             </div>
 
         </div>
-    
-      
+
+
         @*Tab2 Closed*@
     </div>
     <div id="tabs-3">
-    
+
+        <div class="row">
+            <div class="col-md-3">Revision No :</div>
+            <div class="col-md-3"><input type="text" id="Tab3RevisionNo" name="Tab3RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
+            <div class="col-md-3"></div>
+            <div class="col-md-3">
+                <input type="hidden" id="Tab3ID" name="Tab3ID" class="txtBox" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">License Type & No:<span style="color: red">*</span> :</div>
+            <div class="col-md-3"><input type="text" id="Tab3LicenseNo" name="Tab3LicenseNo" class="form-control txtBox" /></div>
+            <div class="col-md-3">Submission Type :</div>
+            <div class="col-md-3">
+                <select id="Tab3SubmissionType" class="txtBox" disabled="disabled">
+                    <option selected="selected" value="License">License</option>
+                    <option value="Renewal">Renewal</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-10"></div>
+            <div class="col-md-2">
+                <div style="text-align:right;">
+                    <button id="btnRevisionTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew</button>
+                </div>
+            </div>
+        </div>
+        <fieldset class="panel-border" id="divRenew">
+            <legend class="panel-border">Renew Info :</legend>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-3">Submission Date : </div>
+                    <div class="col-md-3">
+                        <div class="input-group date">
+                            <input type="text" class="form-control" id="Tab3SubmissionDate" name="Tab3SubmissionDate" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">Factory Inspection Date: </div>
+                    <div class="col-md-3">
+                        <div class="input-group date">
+                            <input type="text" class="form-control" id="Tab3InspectionDate" name="Tab3InspectionDate" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
-                <div class="col-md-3">Revision No :</div>
-                <div class="col-md-3"><input type="text" id="Tab3RevisionNo" name="Tab3RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
-                <div class="col-md-3"></div>
+
+                <div class="col-md-3">Approval Date : </div>
                 <div class="col-md-3">
-                    <input type="hidden" id="Tab3ID" name="Tab3ID" class="txtBox" />
+                    <div class="input-group date">
+                        <input type="text" class="form-control" id="Tab3ApprovalDate" name="Tab3ApprovalDate" placeholder="dd/mm/yyyy">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-3">License Type & No:<span style="color: red">*</span> :</div>
-                <div class="col-md-3"><input type="text" id="Tab3LicenseNo" name="Tab3LicenseNo" class="form-control txtBox" /></div>
-                <div class="col-md-3">Submission Type :</div>
+                <div class="col-md-3">Alarm Days : </div>
                 <div class="col-md-3">
-                    <select id="Tab3SubmissionType" class="txtBox" disabled="disabled">
-                        <option selected="selected" value="License">License</option>
-                        <option value="Renewal">Renewal</option>
-                    </select>
-                </div>                
+                    <input type="text" id="Tab3AlarmDays" name="Tab3AlarmDays" maxlength="5" placeholder="Alarm Days" class="txtBox form-control numeric " />
+                </div>
             </div>
+
+
             <div class="row">
-                <div class="col-md-10"></div>              
-                <div class="col-md-2">
-                    <div style="text-align:right;">
-                        <button id="btnRevisionTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew</button>
+
+                <div class="col-md-3">Valid Up To : </div>
+                <div class="col-md-3">
+                    <div class="input-group date">
+                        <input type="text" class="form-control txtBox" id="Tab3ValidUpto" name="Tab3ValidUpto" placeholder="dd/mm/yyyy">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                     </div>
+                </div>
+                <div class="col-md-3">Entry Date : </div>
+                <div class="col-md-3">
+                    <input type="text" class="form-control" id="Tab3RevisionDate" name="Tab3RevisionDate" readonly>
                 </div>
             </div>
-            <fieldset class="panel-border" id="divRenew">
-                <legend class="panel-border">Renew Info :</legend>
-                <div class="form-group">
-                    <div class="row">                    
-                        <div class="col-md-3">Submission Date : </div>
-                        <div class="col-md-3">
-                            <div class="input-group date">
-                                <input type="text" class="form-control" id="Tab3SubmissionDate" name="Tab3SubmissionDate" placeholder="dd/mm/yyyy">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                            </div>
-                        </div>
-                        <div class="col-md-3">Factory Inspection Date: </div>
-                        <div class="col-md-3">
-                            <div class="input-group date">
-                                <input type="text" class="form-control" id="Tab3InspectionDate" name="Tab3InspectionDate" placeholder="dd/mm/yyyy">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-             
+
+        </fieldset>
+        <div class="row">
+            <div class="col-sm-12">
+                <fieldset class="panel-border">
+                    <legend class="panel-border">Document File Upload Info :</legend>
                     <div class="row">
-                        
-                        <div class="col-md-3">Approval Date : </div>
                         <div class="col-md-3">
-                            <div class="input-group date">
-                                <input type="text" class="form-control" id="Tab3ApprovalDate" name="Tab3ApprovalDate" placeholder="dd/mm/yyyy">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                            </div>
+                            Document Name<span style="color: red">*</span>:
                         </div>
-                        <div class="col-md-3">Alarm Days : </div>
                         <div class="col-md-3">
-                            <input type="text" id="Tab3AlarmDays" name="Tab3AlarmDays" maxlength="5" placeholder="Alarm Days" class="txtBox form-control numeric " />
+                            <select id="Tab3RefNo" class="form-control txtBox" tabindex="" name="Tab3RefNo">
+                                <option value="">--Select Any--</option>
+                                <option value="Inspection Letter">Inspection Letter</option>
+                                <option value="Inspection Report">Inspection Report</option>
+                                <option value="GMP Certificate">GMP Certificate</option>
+                            </select>
                         </div>
+                        <div class="col-sm-4">
+                            <input type="file" class="txtBox" id="Tab3UploadFile" name="Tab3UploadFile" />
+                            <i class="glyphicon glyphicon-upload form-control-feedback"></i>
+                        </div>
+
                     </div>
-         
-             
+
                     <div class="row">
-                      
-                        <div class="col-md-3">Valid Up To : </div>
-                        <div class="col-md-3">
-                            <div class="input-group date">
-                                <input type="text" class="form-control txtBox" id="Tab3ValidUpto" name="Tab3ValidUpto" placeholder="dd/mm/yyyy">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                            </div>
-                        </div>
-                        <div class="col-md-3">Entry Date : </div>
-                        <div class="col-md-3">
-                            <input type="text" class="form-control" id="Tab3RevisionDate" name="Tab3RevisionDate" readonly>
+                        <div class="col-sm-12">
+                            <label>List of Uploaded Document File</label>
+                            <div id="Tab3FileGrid1" class=""></div>
                         </div>
                     </div>
-              
-            </fieldset>
-            <div class="row">
-                <div class="col-sm-12">
-                    <fieldset class="panel-border">
-                        <legend class="panel-border">Document File Upload Info :</legend>
-                        <div class="row">
-                            <div class="col-md-3">
-                                Document Name<span style="color: red">*</span>:
-                            </div>
-                            <div class="col-md-3">
-                                <select id="Tab3RefNo" class="form-control txtBox" tabindex="" name="Tab3RefNo">
-                                    <option value="">--Select Any--</option>
-                                    <option value="Inspection Letter">Inspection Letter</option>
-                                    <option value="Inspection Report">Inspection Report</option>
-                                    <option value="GMP Certificate">GMP Certificate</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-4">
-                                <input type="file" class="txtBox" id="Tab3UploadFile" name="Tab3UploadFile" />
-                                <i class="glyphicon glyphicon-upload form-control-feedback"></i>
-                            </div>
-                         
-                        </div>
-                      
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <label>List of Uploaded Document File</label>
-                                <div id="Tab3FileGrid1" class=""></div>
-                            </div>
-                        </div>
-                    </fieldset>
-                </div>
+                </fieldset>
             </div>
-       
+        </div>
+
         <div class="row">
             <div class="col-sm-8">
             </div>
@@ -1993,52 +1996,52 @@
                 <a class="btn btn-primary btn-md" href='@Url.Action("frmGmpCertificateView", "GmpCertificate")'>Click here to display All Report</a>
             </div>
         </div>
-   
-   
-    <div class="row">
-        <div id="Tab3SearchBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
-            <div id="Tab3SearchBtn_PopupWindowGrid" class="PopUpGrid"></div>
-        </div>
-      
-   
-    </div>
 
-   
-   </div>
-    <div id="tabs-4">
-      
-            <div class="row">
-                <div class="col-md-3">Submission Type :</div>
-                <div class="col-md-3">
-                    <select id="SubmissionType" class="txtBox">
-                        <option selected value="All">All</option>
-                        <option value="License">License</option>
-                        <option value="Renewal">Renewal</option>
-                    </select>
-                </div>
-                <div class="col-md-3">Expired Within :</div>
-                <div class="col-md-3"><input type="text" id="AlarmDays" name="AlarmDays" class="form-control txtBox numeric" maxlength="3" placeholder="days" /></div>
 
-              
+        <div class="row">
+            <div id="Tab3SearchBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
+                <div id="Tab3SearchBtn_PopupWindowGrid" class="PopUpGrid"></div>
             </div>
-      
-     
-            <div class="row">
-                <div class="col-md-3">Submission From Date : </div>
-                <div class="col-md-3">
-                    <div class="input-group date">
-                        <input type="text" class="form-control txtBox" id="FromDate" name="FromDate" placeholder="dd/mm/yyyy">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                    </div>
+
+
+        </div>
+
+
+    </div>
+    <div id="tabs-4">
+
+        <div class="row">
+            <div class="col-md-3">Submission Type :</div>
+            <div class="col-md-3">
+                <select id="Tab4SubmissionType" class="txtBox">
+                    <option selected value="All">All</option>
+                    <option value="License">License</option>
+                    <option value="Renewal">Renewal</option>
+                </select>
+            </div>
+            <div class="col-md-3">Expired Within :</div>
+            <div class="col-md-3"><input type="text" id="AlarmDays" name="AlarmDays" class="form-control txtBox numeric" maxlength="3" placeholder="days" /></div>
+
+
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-3">Submission From Date : </div>
+            <div class="col-md-3">
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox" id="Tab4FromDate" name="Tab4FromDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                 </div>
-                <div class="col-md-3">Submission To Date : </div>
-                <div class="col-md-3">
-                    <div class="input-group date">
-                        <input type="text" class="form-control txtBox" id="ToDate" name="ToDate" placeholder="dd/mm/yyyy">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                    </div>
+            </div>
+            <div class="col-md-3">Submission To Date : </div>
+            <div class="col-md-3">
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox" id="Tab4ToDate" name="Tab4ToDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                 </div>
-           
+            </div>
+
         </div>
         <div class="form-group">
             <fieldset class="panel-border" id="divRenew">
@@ -2059,7 +2062,7 @@
                             <br />
                         </div>
                         <div class="row">
-                            <div class="col-sm-12">                              
+                            <div class="col-sm-12">
                                 <div id="Tab4FileGrid1" class=""></div>
                             </div>
                         </div>
@@ -2068,18 +2071,18 @@
             </div>
         </div>
     </div>
-             <div id="tabs-5">              
-                 <div class="row">                 
-                     <div class="col-sm-12">
-                         <label>Product List</label>
-                         <div id="ProductInfoViewGrid1" class=""></div>
-                     </div>                  
-                     </div>               
-             
-             </div>
-       
-    
-    
+    <div id="tabs-5">
+        <div class="row">
+            <div class="col-sm-12">
+                <label>Product List</label>
+                <div id="ProductInfoViewGrid1" class=""></div>
+            </div>
+        </div>
+
+    </div>
+
+
+
     <div class="modal fade" id="tabModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -2100,6 +2103,6 @@
             </div>
         </div>
     </div>
-    
-      
+
+
 </div>

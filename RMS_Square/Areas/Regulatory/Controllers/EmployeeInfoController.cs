@@ -25,7 +25,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             _serverFilePath = Utility.GetServerPath();
             _dalObj = new EmployeeInfoDAO();
         }
-        
+
 
         //
         // GET: /Regulatory/EmployeeInfo/
@@ -123,5 +123,5 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-	}
+    }
 }
