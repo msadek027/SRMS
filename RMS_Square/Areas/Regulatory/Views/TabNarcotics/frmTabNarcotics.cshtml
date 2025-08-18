@@ -316,7 +316,6 @@
                             });
                             PopupGrid.dataSource.data(data);
                             $('#txtPopupInput').val('');
-
                         } else {
                             ViewPopupWindow.close();
                             AcknowledgeMsg();
@@ -602,6 +601,7 @@
                     var master = {};
                     master.GenericName = $('#GenericName').val();
                     master.NarcoticSetupSl = $('#NarcoticSetupSl').val();
+                    master.CompanyCode = $('#CompanyCode').val();
                     master.SetOn = $('#SetOn').val();
                     master.SetBy = $('#SetBy').val();
                     $.ajax({
@@ -629,6 +629,7 @@
                 }
 
                 var entryItem = {
+                    CompanyCode : $('#CompanyCode').val(),
                     NarcoticEntrySl: $('#NarcoticEntrySl').val(),
                     GenericBrandId: $('#GenericBrandId').val(),
                     ItemName: $('#GENERIC_BRAND_ID').val(),

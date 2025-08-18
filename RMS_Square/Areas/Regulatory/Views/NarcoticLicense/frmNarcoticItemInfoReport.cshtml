@@ -44,13 +44,13 @@
         <div class="col-md-2">
             <div class="form-group">
                 <label class="control-label required">Type:</label>
-                <select id="Type" name="Type" class="form-control input-sm">
-                    <option selected value="All">All</option>                
-                    <option value="Import Permission">Import Permission</option>
+                <select id="SubmissionType" name="SubmissionType" class="form-control input-sm">
+                    <option selected value="All">All</option>
+                    <option value="Import Permit">Import Permission</option>
                     <option value="Export">Export</option>
                     <option value="Quota Increase">Quota Increase</option>
                     <option value="New license">New license</option>
-                    <option value="Annual Quota allocation & Endorsement">Annual Quota allocation & Endorsement</option>        
+                    <option value="Quota allocation & Endorsement">Annual Quota allocation & Endorsement</option>
                     <option value="Endorsement">Endorsement</option>
                     <option value="NOC">NOC</option>
                     <option value="Others">Others</option>
@@ -62,7 +62,7 @@
         <div class="col-md-2">
             <div class="form-group">
                 <label class="control-label required">Fiscal Year:</label>
-                <select id="Year" name="Year" class="form-control input-sm">
+                <select id="FiscalYear" name="FiscalYear" class="form-control input-sm">
                     <option selected value="All">All</option>
                     <option value="2024-2025">2024-2025</option>
                     <option value="2023-2024">2023-2024</option>
@@ -78,7 +78,7 @@
                 <select id="RecordStatus" name="RecordStatus" class="form-control input-sm">
                     <option selected value="All">All</option>
                     <option value="License">License</option>
-                    <option value="Renewal">Renew</option>
+                    <option value="Renew">Renew</option>
 
                 </select>
             </div>
@@ -104,6 +104,32 @@
 
 
     $(document).ready(function () {
+
+        function ResetData() {
+            // Reset all your dropdowns to "All"
+            $('#CompanyCode').val('All');
+            $('#GenericCode').val('All');
+            $('#SubmissionType').val('All');
+            $('#FiscalYear').val('All');
+            $('#RecordStatus').val('All');
+
+            // Reset any text inputs if you have them
+            $('#CompanyName').val('');
+            $('#Address').val('');
+
+            // Clear Kendo Grid data
+            var grid = $("#MainGrid").data("kendoGrid");
+            if (grid) {
+                grid.dataSource.data([]);
+            }
+        }
+
+        // Attach the click event
+        $('#btnReset').click(function () {
+            ResetData();
+        });
+
+
         $('.input-group.date').datepicker({
             format: "d/mm/yyyy",//dd M yyyy
             autoclose: true,
@@ -118,6 +144,20 @@
                         id: "ID",
                         fields: {
                             ID: { type: "string" },
+                            // Specify all your date fields here as type date:
+                            DgdaSubmissionDate: { type: "date" },
+                            DgdaRecommendationDate: { type: "date" },
+                            InsReceiveDate: { type: "date" },
+                            DivNarcRecvDate: { type: "date" },
+                            DncSendDate: { type: "date" },
+                            NarcApvlDate: { type: "date" },
+
+                            // Also any other dates you want to parse/display properly:
+                            DgdaReceiveDate: { type: "date" },
+                            RecSendDate: { type: "date" },
+                            DivSendDate: { type: "date" },
+                            SetOn: { type: "date" },
+                            UpdatedDate: { type: "date" }
                         }
                     }
                 },
@@ -151,68 +191,79 @@
 
                  { field: "CompanyCode", title: "Code", width: 70, hidden: true },
                  { field: "CompanyName", title: "CompanyName", width: 140 },
-                 { field: "RevisionNo", title: "RevisionNo", width: 100 },
+                 { field: "ItemName", title: "ItemName", width: 100 },
                  { field: "SubmissionType", title: "SubmissionType", width: 120 },
                  { field: "AnnualQuota", title: "AnnualQuota", width: 100, hidden: false },
-                 { field: "SubQty", title: "SubmissionQty", width: 100, hidden: false },
-                 { field: "SubmissionDate", title: "SubmissionDate", width: 120 },
+                 { field: "SubmissionQuantity", title: "SubmissionQuantity", width: 100, hidden: false },
+                 // Here you can add format for date columns:
+        {
+            field: "DgdaSubmissionDate",
+            title: "Date of Submission to DGDA",
+            width: 120,
+            format: "{0:dd.MM.yyyy}",
+            type: "date"
+        },
 
-                 { field: "SubDGDA", title: "SubDGDA", width: 100, hidden: false },
-                 { field: "ApproveDGDA", title: "ApproveDGDA", width: 100, hidden: false },
- 
-                  { field: "InspectionDate", title: "InspectionDate", width: 120 },
+        {
+            field: "DgdaRecommendationDate",
+            title: "DGDA recommendation approval Date",
+            width: 100,
+            format: "{0:dd.MM.yyyy}",
+            type: "date"
+        },
+        {
+            field: "InsReceiveDate",
+            title: "Inspection report received from DNC Local office",
+            width: 100,
+            format: "{0:dd.MM.yyyy}",
+            type: "date"
+        },
 
-                  { field: "DivToDnc", title: "DivToDnc", width: 100, hidden: true },
+        {
+            field: "DivNarcRecvDate",
+            title: "Inspection report received from DNC Divisional office",
+            width: 120,
+            format: "{0:dd.MM.yyyy}",
+            type: "date"
+        },
 
-                 { field: "LicenseNo", title: "LicenseType & No", width: 120 },
-                 { field: "LicenseType", title: "LicenseType", width: 100 },
-               
-         
-                 { field: "ValidUpto", title: "ValidUpto", width: 120 },
-                 { field: "ApprovalDate", title: "ApprovalDate", width: 120 },
-                // { field: "GenericName", title: "GenericName", width: 100, hidden: true },
-                //{ field: "BrandName", title: "BrandName", width: 100, hidden: true },
-                //{ field: "AnnualQuota", title: "AnnualQuota", width: 100, hidden: true },
-                //{ field: "SubQty", title: "SubQty", width: 100, hidden: true },
-         
-                //{ field: "SubNercotic", title: "SubNercotic", width: 100, hidden: true },
-                //{ field: "ImportQtyPerYr", title: "ImportQtyPerYr", width: 100, hidden: true },
-                //{ field: "ImportQtyCurYr", title: "ImportQtyCurYr", width: 100, hidden: true },
-                //{ field: "ImportPurpose", title: "ImportPurpose", width: 100, hidden: true },
-                //{ field: "PermitApprovalDate", title: "PermitApprovalDate", width: 100, hidden: true },
-                //{ field: "ImportDate", title: "ImportDate", width: 100, hidden: true },
-                //{ field: "ImportQty", title: "ImportQty", width: 100, hidden: true },
-                //{ field: "RecSentNarc", title: "RecSentNarc", width: 100, hidden: true },
-                //{ field: "InsRptRcvNarc", title: "InsRptRcvNarc", width: 100, hidden: true },
-                //{ field: "SubInsRptNhq", title: "SubInsRptNhq", width: 100, hidden: true },
-                //{ field: "SubInsRptNarc", title: "SubInsRptNarc", width: 100, hidden: true },
-                //{ field: "FinalImpPermit", title: "FinalImpPermit", width: 100, hidden: true },
-                //{ field: "RMImpQty", title: "RMImpQty", width: 100, hidden: true },
-                //{ field: "SendToPPIC", title: "SendToPPIC", width: 100, hidden: true },
-                //{ field: "PPICLocalApp", title: "PPICLocalApp", width: 100, hidden: true },
-                //{ field: "InsSampleCall", title: "InsSampleCall", width: 100, hidden: true },
-                //{ field: "SampleRec", title: "SampleRec", width: 100, hidden: true },
-                //{ field: "RPTDispatch", title: "RPTDispatch", width: 100, hidden: true },
-                //{ field: "PPICSent", title: "PPICSent", width: 100, hidden: true },
-                //{ field: "PPICApplyNarc", title: "PPICApplyNarc", width: 100, hidden: true },
-                //{ field: "RptForwrdRcv", title: "RptForwrdRcv", width: 100, hidden: true },
-                //{ field: "DivToDnc", title: "DivToDnc", width: 100, hidden: true },
-                //{ field: "FinalPermit", title: "FinalPermit", width: 100, hidden: true },
-                //{ field: "DeliverToIMD", title: "DeliverToIMD", width: 100, hidden: true },
-                //{ field: "DivToDnc", title: "DivToDnc", width: 100 },
+        {
+            field: "DncSendDate",
+            title: "Date of Submission to DNC Head Office",
+            width: 100,
+            hidden: true,
+            format: "{0:dd.MM.yyyy}",
+            type: "date"
+        },
 
+        {
+            field: "NarcApvlDate",
+            title: "DNC Approval Date",
+            width: 120,
+            format: "{0:dd.MM.yyyy}",
+            type: "date"
+        },
+                 { field: "ApprovedQuantity", title: "ApprovedQuantity", width: 100 },
+
+
+                 { field: "REMARKS", title: "REMARKS", width: 120 },
 
             ]
 
         }).data('kendoGrid');
 
+        function parseNetDate(dateString) {
+            if (!dateString) return null;
+            var match = /\/Date\((\d+)(?:-\d+)?\)\//.exec(dateString);
+            return match ? new Date(parseInt(match[1])) : null;
+        }
 
         $('#btnView').click(function () {
-
+            debugger
             var model = {};
             model.CompanyCode = $('#CompanyCode').val();
             model.GenericCode = $('#GenericCode').val();
-            model.Type = $('#Type').val();
+            model.SubmissionType = $('#SubmissionType').val();
             model.FiscalYear = $('#FiscalYear').val();
             model.RecordStatus = $('#RecordStatus').val();
             $.ajax({
@@ -221,21 +272,37 @@
                 type: 'POST',
                 contentType: 'application/json;',
                 dataType: 'json',
-                success: function (data) {
-                    if (data != "") {
-                        $('#MainGrid').data('kendoGrid').dataSource.data(data);
-                    }
-                    else {
+                success: function (data) {debugger
+                    if (data && data.length > 0) {
+                        // Map each item and convert date fields
+                        var processedData = data.map(function(item) {debugger
+                            return {
+                                ...item,
+                                    DgdaSubmissionDate: parseNetDate(item.DgdaSubmissionDate),
+                                DgdaRecommendationDate: parseNetDate(item.DgdaRecommendationDate),
+                            InsReceiveDate: parseNetDate(item.InsReceiveDate),
+                            DivNarcRecvDate: parseNetDate(item.DivNarcRecvDate),
+                            DncSendDate: parseNetDate(item.DncSendDate),
+                            NarcApvlDate: parseNetDate(item.NarcApvlDate),
+                            DgdaReceiveDate: parseNetDate(item.DgdaReceiveDate),
+                            RecSendDate: parseNetDate(item.RecSendDate),
+                            DivSendDate: parseNetDate(item.DivSendDate),
+                            SetOn: parseNetDate(item.SetOn),
+                            UpdatedDate: parseNetDate(item.UpdatedDate)
+                            // Add other date fields if you want
+                        };
+                    });
 
-                        AcknowledgeMsg();
-                    }
-                }
+                    $('#MainGrid').data('kendoGrid').dataSource.data(processedData);
+                } else {
+                  $('#MainGrid').data('kendoGrid').dataSource.data([]);
+        AcknowledgeMsg();
+        }
+        }
             });
 
         });
-        $('#btnReset').click(function () {
-            ResetData();
-        });
+
 
     });
 

@@ -43,6 +43,10 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         // Navigation properties
         public NarcoticSetupInfo GenericBrand { get; set; }
         public List<DocumentUpload> Documents { get; set; }
+
+        public string CompanyCode { get; set; }
+
+        public string CompanyName { get; set; }
     }
     public class NarcoticSetupInfo
     {

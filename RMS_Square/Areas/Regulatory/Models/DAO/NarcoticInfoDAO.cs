@@ -70,7 +70,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                 {
                     Qry = "INSERT INTO NARCOTIC_ENTRY_ITEM_INFO (NARCOTIC_ENTRY_SL, GENERIC_BRAND_ID, ITEM_NAME, FISCAL_YEAR, ANNUAL_QUOTA, SUBMISSION_TYPE, " +
                           "SUBMISSION_QUANTITY, APPROVED_QUANTITY, RECORD_STATUS, DGDA_RECEIVE_DATE, DGDA_SUBMISSION_DATE, DGDA_RECOMMENDATION_DATE, " +
-                          "REC_SEND_DATE, INS_RECEIVE_DATE, DIV_SEND_DATE, DIV_NARC_RECV_DATE, DNC_SEND_DATE, NARC_APVL_DATE, SET_BY, SET_ON) VALUES (" +
+                          "REC_SEND_DATE, INS_RECEIVE_DATE, DIV_SEND_DATE, DIV_NARC_RECV_DATE, DNC_SEND_DATE, NARC_APVL_DATE,COMPANY_CODE, SET_BY, SET_ON) VALUES (" +
                           MaxID + "," +
                           master.GenericBrandId + "," +
                           (master.ItemName != null ? "'" + master.ItemName + "'" : "NULL") + "," +
@@ -89,6 +89,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                           (master.DivNarcRecvDate != null ? "TO_DATE('" + Convert.ToDateTime(master.DivNarcRecvDate).ToString("dd/MM/yyyy") + "','dd/MM/yyyy')" : "NULL") + "," +
                           (master.DncSendDate != null ? "TO_DATE('" + Convert.ToDateTime(master.DncSendDate).ToString("dd/MM/yyyy") + "','dd/MM/yyyy')" : "NULL") + "," +
                           (master.NarcApvlDate != null ? "TO_DATE('" + Convert.ToDateTime(master.NarcApvlDate).ToString("dd/MM/yyyy") + "','dd/MM/yyyy')" : "NULL") + "," +
+                           (master.CompanyCode != null ? "'" + master.CompanyCode.Replace("'", "''") + "'" : "NULL") + "," +
                           "'" + userId + "', TO_DATE('" + setOndate + "','dd/MM/yyyy HH24:mi:ss'))";
                 }
                 else // Update
@@ -114,6 +115,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                           "DIV_NARC_RECV_DATE = " + (master.DivNarcRecvDate != null ? "TO_DATE('" + Convert.ToDateTime(master.DivNarcRecvDate).ToString("dd/MM/yyyy") + "','dd/MM/yyyy')" : "NULL") + "," +
                           "DNC_SEND_DATE = " + (master.DncSendDate != null ? "TO_DATE('" + Convert.ToDateTime(master.DncSendDate).ToString("dd/MM/yyyy") + "','dd/MM/yyyy')" : "NULL") + "," +
                           "NARC_APVL_DATE = " + (master.NarcApvlDate != null ? "TO_DATE('" + Convert.ToDateTime(master.NarcApvlDate).ToString("dd/MM/yyyy") + "','dd/MM/yyyy')" : "NULL") + "," +
+                          "COMPANY_CODE = " + (master.CompanyCode != null ? "'" + master.CompanyCode.Replace("'", "''") + "'" : "NULL") + "," +
                           "UPDATED_BY = '" + userId + "', " +
                           "UPDATED_DATE = TO_DATE('" + setOndate + "','dd/MM/yyyy HH24:mi:ss') " +
                           "WHERE NARCOTIC_ENTRY_SL = " + MaxID;

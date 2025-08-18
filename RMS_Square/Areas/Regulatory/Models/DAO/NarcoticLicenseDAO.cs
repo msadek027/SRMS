@@ -87,8 +87,8 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                             //qry.Append(",(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),,'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy'))");
                             //qry.Append(",(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),,'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy'))");
                             //qry.Append(",(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),,'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy'))");
-                           // qry.Append(",(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),,'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy'))");
-                           // qry.Append(",(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),,'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy'))");
+                            // qry.Append(",(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),,'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy'))");
+                            // qry.Append(",(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),,'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy'))");
                             //qry.Append(",(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),,'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy'))");
                             //qry.Append(",'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),,'dd/MM/yyyy')),(TO_DATE('" + Convert.ToDateTime(objItem.SubNercotic).Date.ToString("dd/MM/yyyy") + "','dd/MM/yyyy'))");
                             _dbHelper.CmdExecute(_dbConn.SAConnStrReader(), qry.ToString());
@@ -121,27 +121,27 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
 
                             string qry1 = "";
                             qry1 = "UPDATE NARCOTIC_LICENSE_DETAIL SET GENERIC_CODE='" + objItem.GenericCode + "',BRAND_NAME='" + objItem.BrandName + "',DTL_REMARKS='" + objItem.DtlRemarks + "', ANNUAL_QUOTA='" + objItem.AnnualQuota + "',IMPORT_QTY_PRE_YR='" + objItem.ImportQtyPerYr + "',IMPORT_QTY_CUR_YR='" + objItem.ImportQtyCurYr + "'," +
-                            " IMPORT_PURPOSE='" + objItem.ImportPurpose + "',IMPORT_QTY='" + objItem.ImportQty + "',"+
-                            " PERMIT_APPROVAL_DATE =(TO_DATE('" + objItem.PermitApprovalDate + "','dd/MM/yyyy')), IMPORT_DATE =(TO_DATE('" + objItem.ImportDate + "','dd/MM/yyyy')),"+
-                            " SUB_DGDA =(TO_DATE('" + objItem.SubDGDA + "','dd/MM/yyyy')), APPROVE_DGDA =(TO_DATE('" + objItem.ApproveDGDA + "','dd/MM/yyyy')),SUB_NERCOTIC =(TO_DATE('" + objItem.SubNercotic + "','dd/MM/yyyy')),"+
-                            " RECV_SENT_NARC =(TO_DATE('" + objItem.RecSentNarc + "','dd/MM/yyyy')), INST_RPT_RECV_NARC =(TO_DATE('" + objItem.InsRptRcvNarc + "','dd/MM/yyyy')),SUB_INST_RPT_NHQ =(TO_DATE('" + objItem.SubInsRptNhq + "','dd/MM/yyyy')),"+
-                            " SUB_INST_RPT_NARC =(TO_DATE('" + objItem.SubInsRptNarc + "','dd/MM/yyyy')), FINAL_IMP_PERMIT =(TO_DATE('" + objItem.FinalImpPermit + "','dd/MM/yyyy')),RM_IMPORT_QTY =(TO_DATE('" + objItem.RMImpQty + "','dd/MM/yyyy')),"+
-                            " SEND_TO_PPIC =(TO_DATE('" + objItem.SendToPPIC + "','dd/MM/yyyy')), PPIC_LOCAL_APP =(TO_DATE('" + objItem.PPICLocalApp + "','dd/MM/yyyy')),INST_SAMPLE_CALL =(TO_DATE('" + objItem.InsSampleCall + "','dd/MM/yyyy')),"+
-                            " SAMPLE_RECV_NARC =(TO_DATE('" + objItem.SampleRec + "','dd/MM/yyyy')), RPT_DISPATCH =(TO_DATE('" + objItem.RPTDispatch + "','dd/MM/yyyy')),PPIC_SENT =(TO_DATE('" + objItem.PPICSent + "','dd/MM/yyyy')),"+
-                            " PPIC_APPLY_NARC =(TO_DATE('" + objItem.PPICApplyNarc + "','dd/MM/yyyy')), RPT_FORWARDING_RECV =(TO_DATE('" + objItem.RptForwrdRcv + "','dd/MM/yyyy')),DIV_TO_DNC =(TO_DATE('" + objItem.DivToDnc + "','dd/MM/yyyy')),"+
-                            " FINAL_PERMIT =(TO_DATE('" + objItem.FinalPermit + "','dd/MM/yyyy')), DELIVERED_TO_IMD =(TO_DATE('" + objItem.DeliverToIMD + "','dd/MM/yyyy')),"+
-                            " UPDATE_DATE =(TO_DATE('" + DateTime.Now.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),"+
-                            " UPDATE_BY='" + userId + "'"+
-                            " WHERE ID ="+objItem.DetailID+"";
+                            " IMPORT_PURPOSE='" + objItem.ImportPurpose + "',IMPORT_QTY='" + objItem.ImportQty + "'," +
+                            " PERMIT_APPROVAL_DATE =(TO_DATE('" + objItem.PermitApprovalDate + "','dd/MM/yyyy')), IMPORT_DATE =(TO_DATE('" + objItem.ImportDate + "','dd/MM/yyyy'))," +
+                            " SUB_DGDA =(TO_DATE('" + objItem.SubDGDA + "','dd/MM/yyyy')), APPROVE_DGDA =(TO_DATE('" + objItem.ApproveDGDA + "','dd/MM/yyyy')),SUB_NERCOTIC =(TO_DATE('" + objItem.SubNercotic + "','dd/MM/yyyy'))," +
+                            " RECV_SENT_NARC =(TO_DATE('" + objItem.RecSentNarc + "','dd/MM/yyyy')), INST_RPT_RECV_NARC =(TO_DATE('" + objItem.InsRptRcvNarc + "','dd/MM/yyyy')),SUB_INST_RPT_NHQ =(TO_DATE('" + objItem.SubInsRptNhq + "','dd/MM/yyyy'))," +
+                            " SUB_INST_RPT_NARC =(TO_DATE('" + objItem.SubInsRptNarc + "','dd/MM/yyyy')), FINAL_IMP_PERMIT =(TO_DATE('" + objItem.FinalImpPermit + "','dd/MM/yyyy')),RM_IMPORT_QTY =(TO_DATE('" + objItem.RMImpQty + "','dd/MM/yyyy'))," +
+                            " SEND_TO_PPIC =(TO_DATE('" + objItem.SendToPPIC + "','dd/MM/yyyy')), PPIC_LOCAL_APP =(TO_DATE('" + objItem.PPICLocalApp + "','dd/MM/yyyy')),INST_SAMPLE_CALL =(TO_DATE('" + objItem.InsSampleCall + "','dd/MM/yyyy'))," +
+                            " SAMPLE_RECV_NARC =(TO_DATE('" + objItem.SampleRec + "','dd/MM/yyyy')), RPT_DISPATCH =(TO_DATE('" + objItem.RPTDispatch + "','dd/MM/yyyy')),PPIC_SENT =(TO_DATE('" + objItem.PPICSent + "','dd/MM/yyyy'))," +
+                            " PPIC_APPLY_NARC =(TO_DATE('" + objItem.PPICApplyNarc + "','dd/MM/yyyy')), RPT_FORWARDING_RECV =(TO_DATE('" + objItem.RptForwrdRcv + "','dd/MM/yyyy')),DIV_TO_DNC =(TO_DATE('" + objItem.DivToDnc + "','dd/MM/yyyy'))," +
+                            " FINAL_PERMIT =(TO_DATE('" + objItem.FinalPermit + "','dd/MM/yyyy')), DELIVERED_TO_IMD =(TO_DATE('" + objItem.DeliverToIMD + "','dd/MM/yyyy'))," +
+                            " UPDATE_DATE =(TO_DATE('" + DateTime.Now.ToString("dd/MM/yyyy") + "','dd/MM/yyyy'))," +
+                            " UPDATE_BY='" + userId + "'" +
+                            " WHERE ID =" + objItem.DetailID + "";
 
                             _dbHelper.CmdExecute(_dbConn.SAConnStrReader(), qry1.ToString());
                         }
-                        
+
 
                     }
 
                 }
-                
+
                 return true;
             }
             catch (Exception errorException)
@@ -149,86 +149,75 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                 return false;
             }
         }
-        public IList<NarcoticLicenseBEL> GetReportNarcoticLicense(NarcoticLicenseBEL model)
+
+
+        public IList<NarcoticEntryItemInfo> GetReportNarcoticLicense(NarcoticEntryItemInfo model)
         {
             var query = new StringBuilder();
-            query.Append(" SELECT * FROM VW_IMPORTNARCOTICSSTATUSRPT Where 1=1");
-            if (!string.IsNullOrEmpty(model.CompanyCode) && !model.CompanyCode.Equals("All"))
-            {
-                query.Append(" AND  COMPANY_CODE='" + model.CompanyCode + "'");
-            }
-            if (!string.IsNullOrEmpty(model.GenericCode) && !model.GenericCode.Equals("All"))
-            {
-                query.Append(" AND  GENERIC_CODE='" + model.GenericCode + "'");
-            }
-            if (!string.IsNullOrEmpty(model.Type) && !model.Type.Equals("All"))
-            {
-                query.Append(" AND  LICENSE_TYPE='" + model.Type + "'");
-            }
-            if (!string.IsNullOrEmpty(model.FiscalYear) && !model.FiscalYear.Equals("All"))
-            {
-                query.Append(" AND  SUBMISSION_TYPE='" + model.FiscalYear + "'");
-            }
-            if (!string.IsNullOrEmpty(model.RecordStatus) && !model.RecordStatus.Equals("All"))
-            {
-                query.Append(" AND  SUBMISSION_TYPE='" + model.RecordStatus + "'");
-            }
-        
-                query.Append(" ORDER BY ID DESC");
-            
-            DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), string.Format(query.ToString()));
+            query.Append(@"SELECT ei.*, 
+                                   ci.COMPANY_NAME
+                            FROM SPL_SRMS.NARCOTIC_ENTRY_ITEM_INFO ei
+                            JOIN SPL_SRMS.NARCOTIC_SETUP_INFO si 
+                                 ON ei.GENERIC_BRAND_ID = si.NARCOTIC_SETUP_SL
+                            JOIN SPL_SRMS.COMPANY_INFO ci
+                                 ON ei.COMPANY_CODE = ci.COMPANY_CODE
+                            WHERE 1=1");
 
-            var item = (from DataRow row in dt.Rows
-                        select new NarcoticLicenseBEL
-                        {
-                            ID = Convert.ToInt64(row["ID"]),
-                       
-                            CompanyCode = row["COMPANY_CODE"].ToString(),
-                            CompanyName = row["COMPANY_NAME"].ToString(),
-                           // Address = row["ADDRESS"].ToString(),
-                           // LicenseNo = row["LICENSE_NO"].ToString(),
-                            LicenseType = row["LICENSE_TYPE"].ToString(),
-                            SubmissionType = row["SUBMISSION_TYPE"].ToString(),
-                            SubmissionDate = row["SUBMISSION_DATE"].ToString(),
-                            InspectionDate = row["INSPECTION_DATE"].ToString(),
-                           // ValidUpto = row["VALID_UPTO"].ToString(),
-                            ApprovalDate = row["APPROVAL_DATE"].ToString(),
-                           // AlarmDays = row["NOTIFICATION_DAYS"].ToString(),
-                            //RevisionDate = row["SET_ON"].ToString(),
-                            //RevisionNo = row["REVISION_NO"].ToString(),
+            if (!string.IsNullOrEmpty(model.ItemName) && !model.ItemName.Equals("All", StringComparison.OrdinalIgnoreCase))
+            {
+                query.Append(" AND ITEM_NAME = '" + model.ItemName.Replace("'", "''") + "'");
+            }
+            if (!string.IsNullOrEmpty(model.FiscalYear) && !model.FiscalYear.Equals("All", StringComparison.OrdinalIgnoreCase))
+            {
+                query.Append(" AND FISCAL_YEAR = '" + model.FiscalYear.Replace("'", "''") + "'");
+            }
+            if (!string.IsNullOrEmpty(model.SubmissionType) && !model.SubmissionType.Equals("All", StringComparison.OrdinalIgnoreCase))
+            {
+                query.Append(" AND SUBMISSION_TYPE = '" + model.SubmissionType.Replace("'", "''") + "'");
+            }
+            if (!string.IsNullOrEmpty(model.RecordStatus) && !model.RecordStatus.Equals("All", StringComparison.OrdinalIgnoreCase))
+            {
+                query.Append(" AND RECORD_STATUS = '" + model.RecordStatus.Replace("'", "''") + "'");
+            }
+            if (!string.IsNullOrEmpty(model.CompanyCode) && !model.CompanyCode.Equals("All", StringComparison.OrdinalIgnoreCase))
+            {
+                query.Append(" AND ei.COMPANY_CODE = '" + model.CompanyCode.Replace("'", "''") + "'");
+            }
+            query.Append(" ORDER BY NARCOTIC_ENTRY_SL DESC");
 
-                            GenericName = row["GENERIC_CODE"].ToString(),
-                            //BrandName = row["BRAND_NAME"].ToString(),
-                            //AnnualQuota = row["ANNUAL_QUOTA"].ToString(),
-                            //SubDGDA = row["SUB_DGDA"].ToString(),
-                            //ApproveDGDA = row["APPROVE_DGDA"].ToString(),
-                            //SubNercotic = row["SUB_NERCOTIC"].ToString(),
-                            //ImportQtyPerYr = row["IMPORT_QTY_PRE_YR"].ToString(),
-                            //ImportQtyCurYr = row["IMPORT_QTY_CUR_YR"].ToString(),
-                            //ImportPurpose = row["IMPORT_PURPOSE"].ToString(),
-                            //PermitApprovalDate = row["PERMIT_APPROVAL_DATE"].ToString(),
-                            //ImportDate = row["IMPORT_DATE"].ToString(),
-                            //ImportQty = row["IMPORT_QTY"].ToString(),
-                            //RecSentNarc = row["RECV_SENT_NARC"].ToString(),
-                            //InsRptRcvNarc = row["INST_RPT_RECV_NARC"].ToString(),
-                            //SubInsRptNhq = row["SUB_INST_RPT_NHQ"].ToString(),
-                            //SubInsRptNarc = row["SUB_INST_RPT_NARC"].ToString(),
-                            //FinalImpPermit = row["FINAL_IMP_PERMIT"].ToString(),
-                            //RMImpQty = row["RM_IMPORT_QTY"].ToString(),
-                            //SendToPPIC = row["SEND_TO_PPIC"].ToString(),
-                            //PPICLocalApp = row["PPIC_LOCAL_APP"].ToString(),
-                            //InsSampleCall = row["INST_SAMPLE_CALL"].ToString(),
-                            //SampleRec = row["SAMPLE_RECV_NARC"].ToString(),
-                            //RPTDispatch = row["RPT_DISPATCH"].ToString(),
-                            //PPICSent = row["PPIC_SENT"].ToString(),
-                            //PPICApplyNarc = row["PPIC_APPLY_NARC"].ToString(),
-                            //RptForwrdRcv = row["RPT_FORWARDING_RECV"].ToString(),
-                            //DivToDnc = row["DIV_TO_DNC"].ToString(),
-                            //FinalPermit = row["FINAL_PERMIT"].ToString(),
-                            //DeliverToIMD = row["DELIVERED_TO_IMD"].ToString(),
-                            //ImportQtyPerYr = row["REVISION_NO"].ToString(),
-                        }).ToList();
-            return item;
+            DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), query.ToString());
+
+            var result = (from DataRow row in dt.Rows
+                          select new NarcoticEntryItemInfo
+                          {
+                              NarcoticEntrySl = row["NARCOTIC_ENTRY_SL"] == DBNull.Value ? 0 : Convert.ToDecimal(row["NARCOTIC_ENTRY_SL"]),
+                              GenericBrandId = row["GENERIC_BRAND_ID"] == DBNull.Value ? 0 : Convert.ToDecimal(row["GENERIC_BRAND_ID"]),
+                              ItemName = row["ITEM_NAME"] == DBNull.Value ? null : row["ITEM_NAME"].ToString(),
+                              FiscalYear = row["FISCAL_YEAR"] == DBNull.Value ? null : row["FISCAL_YEAR"].ToString(),
+                              SubmissionType = row["SUBMISSION_TYPE"] == DBNull.Value ? null : row["SUBMISSION_TYPE"].ToString(),
+                              RecordStatus = row["RECORD_STATUS"] == DBNull.Value ? null : row["RECORD_STATUS"].ToString(),
+                              AnnualQuota = row["ANNUAL_QUOTA"] == DBNull.Value ? (decimal?)null : Convert.ToDecimal(row["ANNUAL_QUOTA"]),
+                              SubmissionQuantity = row["SUBMISSION_QUANTITY"] == DBNull.Value ? (decimal?)null : Convert.ToDecimal(row["SUBMISSION_QUANTITY"]),
+                              ApprovedQuantity = row["APPROVED_QUANTITY"] == DBNull.Value ? (decimal?)null : Convert.ToDecimal(row["APPROVED_QUANTITY"]),
+                              CompanyName = row["COMPANY_NAME"] == DBNull.Value ? null : row["COMPANY_NAME"].ToString(),
+
+                              // Oracle DATE columns - keep as DateTime for backend processing
+                              DgdaReceiveDate = row["DGDA_RECEIVE_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["DGDA_RECEIVE_DATE"]),
+                              DgdaSubmissionDate = row["DGDA_SUBMISSION_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["DGDA_SUBMISSION_DATE"]),
+                              DgdaRecommendationDate = row["DGDA_RECOMMENDATION_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["DGDA_RECOMMENDATION_DATE"]),
+                              RecSendDate = row["REC_SEND_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["REC_SEND_DATE"]),
+                              InsReceiveDate = row["INS_RECEIVE_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["INS_RECEIVE_DATE"]),
+                              DivSendDate = row["DIV_SEND_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["DIV_SEND_DATE"]),
+                              DivNarcRecvDate = row["DIV_NARC_RECV_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["DIV_NARC_RECV_DATE"]),
+                              DncSendDate = row["DNC_SEND_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["DNC_SEND_DATE"]),
+                              NarcApvlDate = row["NARC_APVL_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["NARC_APVL_DATE"]),
+                              SetBy = row["SET_BY"] == DBNull.Value ? null : row["SET_BY"].ToString(),
+                              SetOn = row["SET_ON"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["SET_ON"]),
+                              UpdatedDate = row["UPDATED_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["UPDATED_DATE"]),
+                              UpdatedBy = row["UPDATED_BY"] == DBNull.Value ? null : row["UPDATED_BY"].ToString(),
+                          }).ToList();
+
+            return result;
         }
 
 
@@ -250,14 +239,14 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             //query.Append(" LEFT JOIN NARCOTIC_LICENSE_DETAIL B ON A.ID = B.NL_ID");
             //query.Append(" WHERE A.IS_DELETE <> 'Y'");
             //query.Append("");
-                
-            
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
+
+
             if (!string.IsNullOrEmpty(model.CompanyCode))
             {
                 query.Append(" AND  D.COMPANY_CODE='{0}'");
@@ -403,8 +392,8 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             var item = (from DataRow row in dt.Rows
                         select new NarcoticLicenseBEL
                         {
-                             ID = Convert.ToInt64(row["ID"]),
-                             DetailID = Convert.ToInt64(row["Detail_ID"]),
+                            ID = Convert.ToInt64(row["ID"]),
+                            DetailID = Convert.ToInt64(row["Detail_ID"]),
                             //SlNo = row["SLNO"].ToString(),
                             //CompanyCode = row["COMPANY_CODE"].ToString(),
                             //CompanyName = row["COMPANY_NAME"].ToString(),
@@ -419,7 +408,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                             //AlarmDays = row["NOTIFICATION_DAYS"].ToString(),
                             //RevisionDate = row["SET_ON"].ToString(),
                             //RevisionNo = row["REVISION_NO"].ToString(),
-                             NLID = Convert.ToInt64(row["NL_ID"]),
+                            NLID = Convert.ToInt64(row["NL_ID"]),
                             GenericCode = row["GENERIC_CODE"].ToString(),
                             BrandName = row["BRAND_NAME"].ToString(),
                             DtlRemarks = row["DTL_REMARKS"].ToString(),
@@ -571,7 +560,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                 //qry.Append(" WHERE ID='" + objItem.ID + "' ");
 
                 string deleteQuery = "DELETE FROM NARCOTIC_LICENSE_DETAIL WHERE ID = '" + id + "'";
-                if (_dbHelper.CmdExecute(_dbConn.SAConnStrReader(),deleteQuery))
+                if (_dbHelper.CmdExecute(_dbConn.SAConnStrReader(), deleteQuery))
                 {
                     return true;
                 }

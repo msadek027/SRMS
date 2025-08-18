@@ -89,7 +89,7 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
 
         public virtual ICollection<DocumentFileInfoBEL> FileDetail { get; set; }
         public List<NarcoticLicenseDetailBEL> NLDetail { get; set; }
-        
+
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         public string DtlRemarks { get; set; }

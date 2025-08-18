@@ -101,7 +101,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
                 return Json(new { msgType = "FUE", FileList = "" }, JsonRequestBehavior.AllowGet);
             }
         }
-       
+
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult GetAllInfo()
         {
@@ -110,9 +110,9 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult GetDetailGeneric(NarcoticLicenseBEL model )
+        public ActionResult GetDetailGeneric(NarcoticLicenseBEL model)
         {
-            var data = _dalObj.GetDetailGeneric(model,orderBy: "DESC");
+            var data = _dalObj.GetDetailGeneric(model, orderBy: "DESC");
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -122,14 +122,14 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             var data = _dalObj.GetGenericList();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        
+
         [HttpPost]
         public ActionResult DeleteDataItem(string id)
         {
             var isDelete = _dalObj.DeleteDataItem(id);//Convert.ToInt32(Session["UserID"])
-            return Json(new { Mode = isDelete?"D":"E"});
+            return Json(new { Mode = isDelete ? "D" : "E" });
         }
-        
+
         [ActionAuth]
         public ActionResult frmNarcoticLicenseView()
         {
@@ -140,7 +140,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             return Redirect(string.Format("~/Home/frmHome"));
         }
         [HttpPost]
-        public ActionResult GetReportNarcoticLicense(NarcoticLicenseBEL model)
+        public ActionResult GetReportNarcoticLicense(NarcoticEntryItemInfo model)
         {
             var data = _dalObj.GetReportNarcoticLicense(model);
             return Json(data, JsonRequestBehavior.AllowGet);
