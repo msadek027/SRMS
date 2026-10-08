@@ -147,9 +147,9 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetAllInfo(string companyCode)
+        public ActionResult GetAllInfo(string companyCode,string productCode)
         {
-            var data = _dalObj.GetAllInfo(new ProductRegistrationBEL(),companyCode, orderBy: "DESC");
+            var data = _dalObj.GetAllInfo(new ProductRegistrationBEL(),companyCode,productCode, orderBy: "DESC");
             //return Json(data, JsonRequestBehavior.AllowGet);
             return new JsonResult()
             {
@@ -161,9 +161,10 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult GetAllInfoByCompany(string companyCode)
         {
+            string productCode = "";
             var model = new ProductRegistrationBEL();
             model.CompanyCode = companyCode;
-            var data = _dalObj.GetAllInfo(model,companyCode, orderBy: "DESC");
+            var data = _dalObj.GetAllInfo(model,companyCode,productCode, orderBy: "DESC");
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         [ActionAuth]
@@ -178,7 +179,8 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         [HttpPost]
         public ActionResult GetInfoByParams(ProductRegistrationBEL model, string companyCode)
         {
-            var dMaster = _dalObj.GetAllInfo(model,companyCode, orderBy: "DESC");
+            string productCode = "";
+            var dMaster = _dalObj.GetAllInfo(model,companyCode,productCode, orderBy: "DESC");
             if (dMaster.Any())
             {
                 _fileModel = new FileDetailModel();

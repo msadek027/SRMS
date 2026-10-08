@@ -48,7 +48,7 @@ namespace RMS_Square.Areas.SA.Models.DAL.DAO
             query.Append(" LEFT JOIN  Sa_UserInRole ur ON U.USERID=ur.USERID");
             query.Append(" LEFT JOIN Sa_Role r ON r.RoleID=ur.RoleID ");
             query.Append(" LEFT JOIN EMPLOYEE_INFO EI ON EI.ID=UR.EMPID ");
-            query.Append(" WHERE ur.RoleID >='"+ HttpContext.Current.Session["RoleID"].ToString() + "'");
+            query.Append(" WHERE ur.RoleID >='" + HttpContext.Current.Session["RoleID"].ToString() + "'");
 
 
             DataTable dt = saHelper.DataTableFn(dbConn.SAConnStrReader(), query.ToString());

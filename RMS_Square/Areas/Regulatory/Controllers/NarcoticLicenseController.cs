@@ -145,6 +145,43 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             var data = _dalObj.GetReportNarcoticLicense(model);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+        //Add
+        [HttpPost]
+        public ActionResult GetReportLicenseInfo(LicenseEntryItemInfo model)
+        {
+            var data = _dalObj.GetReportLicenseInfo(model);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+       
+        [HttpGet]
+        public JsonResult GetLicenseNames()
+        {
+            try
+            {
+                var licenseNames = _dalObj.GetLicenseNames();
+                var result = licenseNames.Select(x => new { Value = x, Text = x }).ToList();
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        //===
+        [HttpGet]
+        public JsonResult GetItemNames()
+        {
+            try
+            {
+                var itemNames = _dalObj.GetItemNames();
+                var result = itemNames.Select(x => new { Value = x, Text = x }).ToList();
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         [HttpPost]
         public ActionResult GetInfoByParams(NarcoticLicenseBEL model)

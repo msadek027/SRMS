@@ -3352,7 +3352,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/16/2018 11:22:46</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/CompanyLicense/frmCompanyLicenseView.cshtml">
-      <publishTime>07/20/2025 16:13:04</publishTime>
+      <publishTime>09/07/2026 10:28:48</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/CountryInfo/frmCountryInfo.cshtml">
       <publishTime>01/24/2018 11:32:52</publishTime>
@@ -3370,7 +3370,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/24/2018 11:33:50</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/EmployeeInfo/frmEmployeeInfo.cshtml">
-      <publishTime>07/22/2025 16:49:49</publishTime>
+      <publishTime>04/06/2026 09:26:58</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/ExpiryInfo/frmExpiryInfoRpt.cshtml">
       <publishTime>06/19/2018 14:48:02</publishTime>
@@ -3397,7 +3397,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/03/2018 10:49:46</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/GmpCertificate/frmGmpCertificateView.cshtml">
-      <publishTime>07/20/2025 16:14:45</publishTime>
+      <publishTime>09/07/2026 11:39:15</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/ImportProductRegistration/frmImportProductRegistration.cshtml">
       <publishTime>04/02/2018 14:17:52</publishTime>
@@ -3418,22 +3418,22 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/14/2025 16:27:29</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/MeetingInfo/frmMeetingInfoView.cshtml">
-      <publishTime>07/29/2025 16:39:15</publishTime>
+      <publishTime>09/07/2026 10:35:15</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/NarcoticLicense/frmNarcoticItemInfoReport.cshtml">
-      <publishTime>08/12/2025 12:00:16</publishTime>
+      <publishTime>09/07/2026 10:46:43</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/NarcoticLicense/frmNarcoticLicense.cshtml">
       <publishTime>12/09/2020 12:32:50</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/NarcoticLicense/frmNarcoticLicenseInfoReport.cshtml">
-      <publishTime>08/11/2025 14:35:17</publishTime>
+      <publishTime>09/07/2026 10:57:32</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/NarcoticLicense/frmNarcoticLicenseReport.cshtml">
-      <publishTime>07/29/2025 16:50:00</publishTime>
+      <publishTime>09/07/2026 11:39:14</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/NarcoticLicense/frmNarcoticLicenseRpt.cshtml">
-      <publishTime>12/02/2020 13:07:16</publishTime>
+      <publishTime>09/07/2026 11:39:14</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/NocInfo/frmNocInfo.cshtml">
       <publishTime>05/28/2018 12:53:30</publishTime>
@@ -3457,7 +3457,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/07/2021 11:43:32</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/ProductInfo/frmProductInfoView.cshtml">
-      <publishTime>07/20/2025 16:16:48</publishTime>
+      <publishTime>09/07/2026 10:16:50</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/ProductPrice/frmProductPrice.cshtml">
       <publishTime>03/03/2021 09:47:40</publishTime>
@@ -3532,16 +3532,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/24/2018 11:29:28</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/TabCompany/frmTabCompany.cshtml">
-      <publishTime>07/28/2025 14:53:47</publishTime>
+      <publishTime>07/23/2026 14:43:51</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/TabNarcotics/frmNarcotics.cshtml">
       <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/TabNarcotics/frmTabNarcotics.cshtml">
-      <publishTime>07/28/2025 15:53:37</publishTime>
+      <publishTime>09/07/2026 10:25:58</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/TabProduct/frmTabProduct.cshtml">
-      <publishTime>07/28/2025 15:46:30</publishTime>
+      <publishTime>09/10/2026 09:23:00</publishTime>
     </File>
     <File Include="Areas/Regulatory/Views/TabProduct/Popup.cshtml">
       <publishTime>01/01/0001 00:00:00</publishTime>
@@ -3715,7 +3715,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/18/2021 11:56:40</publishTime>
     </File>
     <File Include="bin/RMS_Square.dll">
-      <publishTime>08/17/2025 10:36:31</publishTime>
+      <publishTime>09/08/2026 10:38:42</publishTime>
+    </File>
+    <File Include="bin/System.dll">
+      <publishTime>08/13/2013 00:19:06</publishTime>
     </File>
     <File Include="bin/System.Net.Http.Formatting.dll">
       <publishTime>01/01/0001 00:00:00</publishTime>
@@ -3745,7 +3748,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/20/2017 10:40:48</publishTime>
     </File>
     <File Include="bin/Systems.dll">
-      <publishTime>07/15/2025 09:36:21</publishTime>
+      <publishTime>07/14/2026 12:31:48</publishTime>
     </File>
     <File Include="bin/UserAuthenticator.dll">
       <publishTime>03/09/2018 10:42:33</publishTime>
@@ -4038,6 +4041,12 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Content/Images/bg_img.jpg">
       <publishTime>08/20/2017 11:01:30</publishTime>
     </File>
+    <File Include="Content/Images/bg_img.png">
+      <publishTime>09/01/2026 12:20:50</publishTime>
+    </File>
+    <File Include="Content/Images/bg_img2.jpg">
+      <publishTime>08/20/2017 11:01:30</publishTime>
+    </File>
     <File Include="Content/Images/crossicon.png">
       <publishTime>08/20/2017 10:00:32</publishTime>
     </File>
@@ -4082,6 +4091,12 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="Content/Images/M.png">
       <publishTime>08/20/2017 10:00:32</publishTime>
+    </File>
+    <File Include="Content/Images/SHC100.jpg">
+      <publishTime>04/19/2026 16:06:34</publishTime>
+    </File>
+    <File Include="Content/Images/SPL.jpg">
+      <publishTime>12/30/2025 09:18:19</publishTime>
     </File>
     <File Include="Content/Images/Square_Logo.png">
       <publishTime>01/14/2018 12:51:26</publishTime>
@@ -5527,10 +5542,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/23/2018 10:10:02</publishTime>
     </File>
     <File Include="Views/Home/frmHome.cshtml">
-      <publishTime>07/30/2025 10:34:10</publishTime>
+      <publishTime>09/07/2026 11:36:56</publishTime>
     </File>
     <File Include="Views/Home/frmNewIndex.cshtml">
       <publishTime>07/13/2025 16:35:36</publishTime>
+    </File>
+    <File Include="Views/Home/frmPendingWork.cshtml">
+      <publishTime>07/19/2026 13:01:48</publishTime>
     </File>
     <File Include="Views/Home/frmProductReport.cshtml">
       <publishTime>01/04/2021 10:30:16</publishTime>
@@ -5554,7 +5572,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/23/2018 11:25:46</publishTime>
     </File>
     <File Include="Views/LoginRegistration/Index.cshtml">
-      <publishTime>07/09/2025 10:47:51</publishTime>
+      <publishTime>09/07/2026 08:46:51</publishTime>
     </File>
     <File Include="Views/LoginRegistration/Index3.cshtml">
       <publishTime>08/20/2017 11:03:16</publishTime>
@@ -5563,7 +5581,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/09/2025 10:47:44</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>08/17/2025 10:33:24</publishTime>
+      <publishTime>09/08/2026 10:38:25</publishTime>
     </File>
     <File Include="Views/Test/TestRpt.cshtml">
       <publishTime>08/01/2018 14:31:16</publishTime>
@@ -5572,7 +5590,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/20/2017 10:08:32</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>07/14/2025 12:44:44</publishTime>
+      <publishTime>07/19/2026 13:59:44</publishTime>
     </File>
   </ItemGroup>
 </Project>

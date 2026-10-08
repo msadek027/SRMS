@@ -52,7 +52,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                     }).ToList();
             return item;
         }
-        public List<ProductInfoBEL> GetProductList(string companyCode)
+        public List<ProductInfoBEL> GetProductList(string companyCode,string productCode)
         {
             string Qry = "SELECT C.COMPANY_CODE,C.COMPANY_NAME,C.LICENSE_NO, P.PRODUCT_CODE,P.SAP_PRODUCT_CODE,P.GENERIC_CODE ,P.STRENGTH_CODE,S.STRENGTH_NAME,P.DOSAGE_FORM_CODE,D.DOSAGE_FORM_NAME,P.PACK_SIZE_NAME," +
                         "P.BRAND_NAME, P.PRODUCT_CATEGORY,P.THERAPEUTIC_CLASS_CODE,T.THERAPEUTIC_CLASS_NAME,P.PRODUCT_SPECIFICATION,P.INTRODUCED_BANGLADESH," +
@@ -63,6 +63,10 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             if (!string.IsNullOrEmpty(companyCode))
             {
                 Qry = Qry + " AND C.COMPANY_CODE='" + companyCode + "' ";
+            }
+            if (!string.IsNullOrEmpty(productCode))
+            {
+                Qry = Qry + " AND P.PRODUCT_CODE='" + productCode + "' ";
             }
             Qry = Qry + " ORDER BY P.SET_ON DESC";
             DataTable dt = dbHelper.GetDataTable(dbConn.SAConnStrReader(), Qry);

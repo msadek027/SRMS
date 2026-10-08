@@ -21,9 +21,21 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
         public List<EmployeeInfoBEL> GetEmployeeList()
         {
             var selectQuery = new StringBuilder();
-            selectQuery.Append("SELECT ID,SLNO,EMPLOYEE_CODE,EMPLOYEE_NAME,DESIGNATION_CODE,FN_DESIGNATION_NAME(DESIGNATION_CODE) DESIGNATION_NAME,");
-            selectQuery.Append("LTRIM(RTRIM(DEPARTMENT_CODE)) DEPARTMENT_CODE,FN_DEPARTMENT_NAME(LTRIM(RTRIM(DEPARTMENT_CODE))) DEPARTMENT_NAME,COMPANY_CODE,FN_COMPANY_NAME(COMPANY_CODE) COMPANY_NAME,");
-            selectQuery.Append("LAST_QUALIFICATION,JOB_DESCRIPTION,TO_CHAR(DATE_OF_JOINING,'dd/MM/yyyy') DATE_OF_JOINING,TOTAL_EXPERIENCE_YR,CONTACT_NO,EMAIL_ID,STATUS FROM EMPLOYEE_INFO ORDER BY EMPLOYEE_NAME");
+            selectQuery.Append("SELECT ID, SLNO, EMPLOYEE_CODE, EMPLOYEE_NAME, DESIGNATION_CODE, ");
+            selectQuery.Append("FN_DESIGNATION_NAME(DESIGNATION_CODE) DESIGNATION_NAME, ");
+            selectQuery.Append("LTRIM(RTRIM(DEPARTMENT_CODE)) DEPARTMENT_CODE, ");
+            selectQuery.Append("FN_DEPARTMENT_NAME(LTRIM(RTRIM(DEPARTMENT_CODE))) DEPARTMENT_NAME, ");
+            selectQuery.Append("COMPANY_CODE, FN_COMPANY_NAME(COMPANY_CODE) COMPANY_NAME, ");
+            selectQuery.Append("LAST_QUALIFICATION, JOB_DESCRIPTION, ");
+            selectQuery.Append("TO_CHAR(DATE_OF_JOINING, 'dd/MM/yyyy') DATE_OF_JOINING, ");
+            selectQuery.Append("TOTAL_EXPERIENCE_YR, CONTACT_NO, EMAIL_ID, STATUS ");
+            selectQuery.Append("FROM EMPLOYEE_INFO ");
+
+            // 🔍 Add filtering condition for specific EMPLOYEE_CODE values
+            selectQuery.Append("WHERE UPPER(EMPLOYEE_CODE) IN (");
+            selectQuery.Append("'EMP018', 'EMP019', 'EMP021', 'EMP022', 'EMP027', ");
+            selectQuery.Append("'EMP031', 'EMP033', 'EMP034', 'EMP18895')");
+            selectQuery.Append(" ORDER BY EMPLOYEE_NAME");
 
             DataTable dt = dbHelper.GetDataTable(dbConn.SAConnStrReader(), selectQuery.ToString());
             List<EmployeeInfoBEL> item;
@@ -48,6 +60,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                         EmailId = row["EMAIL_ID"].ToString(),
                         Status = row["STATUS"].ToString()
                     }).ToList();
+
             return item;
         }
 

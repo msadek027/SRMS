@@ -6,6 +6,13 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <link href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" rel="stylesheet" />
 <link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+<style>
+
+    #tabs,
+    #tabs  {
+        font-family: Tahoma, sans-serif !important;
+    }
+</style>
 <script>
     let savedData = {};
     let currentTabId = '';
@@ -91,6 +98,8 @@
 
         // 🔧 Initialize jQuery UI Tabs
         $('#tabs').tabs({
+
+       
             active: activeTabIndex,
             activate: function (event, ui) {
                 // 📦 Get new tab index and ID
@@ -106,8 +115,8 @@
                 // Get the href (e.g., "#tabs-1"), then extract the ID
                 var tabHref = matchingAnchor.attr("href"); // e.g., "#tabs-1"
                 var tabId = tabHref ? tabHref.replace('#', '') : null;
-
-
+               
+                debugger;
                 // 💾 Store updated values in sessionStorage
                 sessionStorage.setItem('activeTabIndex', newActiveTabIndex);
                 sessionStorage.setItem('activeTabId', newActiveTabIndexId);
@@ -585,11 +594,25 @@
             editable: false,
             selectable: "row",
             //selectable: "multiple",
-            toolbar: ["excel", { template: "<input type='text' id='txtPopupInput_LincenseEntryTabGrid'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: ["excel","pdf", { template: "<input type='text' id='txtPopupInput_LincenseEntryTabGrid'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             excel: {
                 fileName: "Export.xlsx",
                 allPages: true,
                 filterable: true
+            },
+            pdf: {
+                fileName: "Export.pdf",
+                allPages: true,
+                paperSize: "A3",      // or "A2" if you have many columns
+                landscape: true,
+                margin: {
+                    top: "1cm",
+                    right: "0.5cm",
+                    bottom: "1cm",
+                    left: "0.5cm"
+                },
+                repeatHeaders: true,
+                scale: 0.5            // Reduce if columns are still cut off
             },
             navigatable: true,
             height: "100%",
@@ -682,10 +705,11 @@
             filterable: true,
             editable: true,
             selectable: "row",
-            toolbar: [{ template: "<input type='text' id='txtInput_Tab1FileGrid1'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: [{ template:"<span style='font-size:16px;font-weight:bold;'>List of Document File:</span>" +
+                "<input type='text' id='txtInput_Tab1FileGrid1'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             navigatable: true,
-            groupable: true,
-            columnMenu: true,
+            //groupable: true,
+            //columnMenu: true,
             reorderable: true,
             //height: 300,
             resizable: true,
@@ -822,10 +846,11 @@
             editable: true,
             height: 300,
             selectable: "row",
-            toolbar: [{ template: "<input type='text' id='txtInputLicense'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: [{ template: "<span style='font-size:16px;font-weight:bold;'>License/Renewal Information:</span>" +
+                "<input type='text' id='txtInputLicense'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             navigatable: true,
-            groupable: true,
-            columnMenu: true,
+            //groupable: true,
+            //columnMenu: true,
             reorderable: true,
             resizable: true,
             columns: [
@@ -842,6 +867,8 @@
             { command: [{ name: "View", text: "View", imageClass: "fa fa-hand-o-right", click: handleView_Tab2LicenseViewGrid2 }], title: "Action", width: "120px", attributes: { "class": "btnSearch" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } }
             ]
         }).data('kendoGrid');
+
+
         var paramModel = { "refLevel1": "", "refLevel2": "" }
 
         function handleView_Tab2LicenseViewGrid2(event) {
@@ -853,11 +880,11 @@
                 type: 'GET',
                 data: { "refLevel1": selectedRow.CLID, "refLevel2": "" },
                 success: function (data) {
-                    $("#Tab1FileGrid1").data("kendoGrid").dataSource.data(data);
+                    $("#Tab2FileGrid1").data("kendoGrid").dataSource.data(data);
                 }
             });
         };
-        $('#Tab2LicenseViewGrid2').click(function () {
+        @*$('#Tab2LicenseViewGrid2').click(function () {
             var grid = $(this).data('kendoGrid');
             var selectRow = grid.dataItem(grid.select());
             paramModel.refLevel1 = selectRow.CLID;
@@ -872,7 +899,7 @@
                     $("#Tab2FileGrid1").data("kendoGrid").dataSource.data(data);
                 }
             });
-        });
+        });*@
         $("#txtInputLicense").keyup(function () {
             var val = $(this).val();
             $("#Tab2LicenseViewGrid2").data("kendoGrid").dataSource.filter({
@@ -922,10 +949,12 @@
             height: 300,
             editable: true,
             selectable: "row",
-            toolbar: [{ template: "<input type='text' id='txtInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: [{ template: 
+                     "<span style='font-size:16px;font-weight:bold;'>Document Information :</span>" +
+                "<input type='text' id='txtInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             navigatable: true,
-            groupable: true,
-            columnMenu: true,
+            //groupable: true,
+            //columnMenu: true,
             reorderable: true,
             resizable: true,
             columns: [
@@ -995,11 +1024,24 @@
             editable: false,
             selectable: "row",
             //selectable: "multiple",
-            toolbar: ["excel", { template: "<input type='text' id='txtPopupInput_Tab3SearchBtn_PopupWindowGrid'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: ["excel","pdf", { template: "<input type='text' id='txtPopupInput_Tab3SearchBtn_PopupWindowGrid'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             excel: {
                 fileName: "Export.xlsx",
                 allPages: true,
                 filterable: true
+            },    pdf: {
+                fileName: "Export.pdf",
+                allPages: true,
+                paperSize: "A3",      // or "A2" if you have many columns
+                landscape: true,
+                margin: {
+                    top: "5cm",
+                    right: "0.5cm",
+                    bottom: "1cm",
+                    left: "0.5cm"
+                },
+                repeatHeaders: true,
+                scale: 0.5            // Reduce if columns are still cut off
             },
             navigatable: true,
             height: "100%",
@@ -1103,10 +1145,11 @@
             filterable: true,
             editable: true,
             selectable: "row",
-            toolbar: [{ template: "<input type='text' id='txtInput_Tab3FileGrid1'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: [{ template: "<span style='font-size:16px;font-weight:bold;'>List of Uploaded Document File:</span>" +
+                "<input type='text' id='txtInput_Tab3FileGrid1'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             navigatable: true,
-            groupable: true,
-            columnMenu: true,
+            //groupable: true,
+            //columnMenu: true,
             reorderable: true,
             resizable: true,
             columns: [
@@ -1204,10 +1247,11 @@
             editable: true,
             height: 300,
             selectable: "row",
-            toolbar: [{ template: "<input type='text' id='txtInput_Tab4GmpCerificateViewGrid2'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: [{ template: "<span style='font-size:16px;font-weight:bold;'>License/Renewal Information :</span>" +
+                "<input type='text' id='txtInput_Tab4GmpCerificateViewGrid2'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             navigatable: true,
-            groupable: true,
-            columnMenu: true,
+            //groupable: true,
+            //columnMenu: true,
             reorderable: true,
             resizable: true,
             columns: [
@@ -1239,7 +1283,7 @@
             });
         };
 
-        $('#Tab4GmpCerificateViewGrid2').click(function () {
+        @*$('#Tab4GmpCerificateViewGrid2').click(function () {
             var grid = $(this).data('kendoGrid');
             var selectRow = grid.dataItem(grid.select());
             paramModel.refLevel1 = selectRow.ID;
@@ -1254,7 +1298,7 @@
                     $("#Tab4FileGrid1").data("kendoGrid").dataSource.data(data);
                 }
             });
-        });
+        });*@
 
         $("#txtInput_Tab4GmpCerificateViewGrid2").keyup(function () {
             var val = $(this).val();
@@ -1304,10 +1348,11 @@
             filterable: true,
             editable: true,
             selectable: "row",
-            toolbar: [{ template: "<input type='text' id='txtInput_Tab4FileGrid1'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: [{ template:"<span style='font-size:16px;font-weight:bold;'>Document Information :</span>" +
+                "<input type='text' id='txtInput_Tab4FileGrid1'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             navigatable: true,
-            groupable: true,
-            columnMenu: true,
+            //groupable: true,
+            //columnMenu: true,
             reorderable: true,
             resizable: true,
             columns: [
@@ -1366,11 +1411,25 @@
             editable: false,
             selectable: "row",
             //selectable: "multiple",
-            toolbar: ["excel", { template: "<input type='text' id='txtPopupInput_ProductBrand'  style='float:right' placeholder='Brand...' class='k-textbox'>" } ,{ template: "<input type='text' id='txtPopupInput_ProductGeneric'  style='float:right' placeholder='Generic...' class='k-textbox'>" }, ],
+            toolbar: [ "excel", "pdf", { template: "<input type='text' id='txtPopupInput_ProductBrand'  style='float:right' placeholder='Brand...' class='k-textbox'>" } ,{ template: "<input type='text' id='txtPopupInput_ProductGeneric'  style='float:right' placeholder='Generic...' class='k-textbox'>" }, ],
             excel: {
                 fileName: "Export.xlsx",
                 allPages: true,
                 filterable: true
+            },
+            pdf: {
+                fileName: "Export.pdf",
+                allPages: true,
+                paperSize: "A3",      // or "A2" if you have many columns
+                landscape: true,
+                margin: {
+                    top: "1cm",
+                    right: "0.5cm",
+                    bottom: "1cm",
+                    left: "0.5cm"
+                },
+                repeatHeaders: true,
+                scale: 0.5            // Reduce if columns are still cut off
             },
             navigatable: true,
             height: 430,
@@ -1598,7 +1657,7 @@
 
     });
 </script>
-<div id="tabs" style="font-family:'Times New Roman' ">
+<div id="tabs">
     <ul id="btnList">
         <li><a href="#tabs-1">Entry License Info</a></li>
         <li><a href="#tabs-2">View License</a></li>
@@ -1619,7 +1678,7 @@
                     <input type="text" id="Address" name="Address" placeholder="Company Addess" readonly="readonly" class="RequiredField form-control input-sm" style="width:150px" />
                 </div>
             </div>
-            <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"></div>
+ 
 
         </div>
         <div class="row">
@@ -1649,25 +1708,29 @@
             <div class="col-md-3">License Type & No<span style="color: red">*</span> :</div>
             <div class="col-md-3"><input type="text" id="Tab1LicenseNo" name="Tab1LicenseNo" class="form-control txtBox" /></div>
             <div class="col-md-3">Submission Type :</div>
+
             <div class="col-md-3">
-                <select id="Tab1SubmissionType" class="txtBox" disabled="disabled">
-                    <option selected="selected" value="License">License</option>
-                    <option value="Renewal">Renewal</option>
-                </select>
-            </div>
-        </div>
-
-
-
-        <div class="row">
-            <div class="col-md-10"></div>
-
-            <div class="col-md-2">
-                <div style="text-align:right;">
-                    <button id="btnRevisionTab1" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew</button>
+                <div style="display: flex; align-items: center; gap: 2px;">
+                    <select id="Tab1SubmissionType" class="txtBox" disabled="disabled">
+                        <option selected="selected" value="License">License</option>
+                        <option value="Renewal">Renewal</option>
+                    </select>
+                    <button id="btnRevisionTab1" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-plus"></i>Renew</button>
                 </div>
             </div>
+            @*<div class="col-md-3">
+                <div class="d-flex align-items-center">
+                    <select id="Tab1SubmissionType" class="form-control" disabled="disabled" style="margin-right:8px;">
+                        <option selected="selected" value="License">License</option>
+                        <option value="Renewal">Renewal</option>
+                    </select>
+                    <button id="btnRevisionTab1" class="btn btn-primary" type="button">
+                        <i class="glyphicon glyphicon-plus"></i> Renew
+                    </button>
+                </div>
+            </div>*@
         </div>
+
 
 
         <fieldset class="panel-border" id="divRenew">
@@ -1749,6 +1812,7 @@
                                 <option value="">--Select Any--</option>
                                 <option value="Inspection Letter">Inspection Letter</option>
                                 <option value="Post Inspection Letter">Post Inspection Letter</option>
+                                <option value="Post Inspection Report">Post Inspection Report</option>
                                 <option value="Inspection Report">Inspection Report</option>
                                 <option value="Original License">Original License</option>
                                 <option value="License Renewal Letter">License Renewal Letter</option>
@@ -1769,7 +1833,7 @@
 
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <label>List of Document File</label>
+                           
                             <div id="Tab1FileGrid1" class=""></div>
                         </div>
                     </div>
@@ -1844,8 +1908,8 @@
 
             </div>
             <div class="form-group">
-                <fieldset class="panel-border" id="divRenew">
-                    <legend class="panel-border">License/Renewal Information :</legend>
+                @*<fieldset class="panel-border" id="divRenew">
+                    <legend class="panel-border">License/Renewal Information :</legend>*@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-md-12">
@@ -1853,18 +1917,18 @@
                             </div>
                         </div>
                     </div>
-                </fieldset>
+                @*</fieldset>*@
                 <div class="row">
                     <div class="col-sm-12">
-                        <fieldset class="panel-border">
-                            <legend class="panel-border">Document Information :</legend>
+                        @*<fieldset class="panel-border">
+                            <legend class="panel-border">Document Information :</legend>*@
 
                             <div class="row">
                                 <div class="col-md-12">
                                     <div id="Tab2FileGrid1" class=""></div>
                                 </div>
                             </div>
-                        </fieldset>
+                        @*</fieldset>*@
                     </div>
                 </div>
             </div>
@@ -1889,20 +1953,16 @@
             <div class="col-md-3"><input type="text" id="Tab3LicenseNo" name="Tab3LicenseNo" class="form-control txtBox" /></div>
             <div class="col-md-3">Submission Type :</div>
             <div class="col-md-3">
-                <select id="Tab3SubmissionType" class="txtBox" disabled="disabled">
-                    <option selected="selected" value="License">License</option>
-                    <option value="Renewal">Renewal</option>
-                </select>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-10"></div>
-            <div class="col-md-2">
-                <div style="text-align:right;">
-                    <button id="btnRevisionTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew</button>
+                <div style="display: flex; align-items: center; gap: 2px;">
+                    <select id="Tab3SubmissionType" class="txtBox" disabled="disabled">
+                        <option selected="selected" value="License">License</option>
+                        <option value="Renewal">Renewal</option>
+                    </select>
+                    <button id="btnRevisionTab3" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-plus"></i>Renew</button>
                 </div>
-            </div>
+                </div>
         </div>
+    
         <fieldset class="panel-border" id="divRenew">
             <legend class="panel-border">Renew Info :</legend>
             <div class="form-group">
@@ -1981,7 +2041,7 @@
 
                     <div class="row">
                         <div class="col-sm-12">
-                            <label>List of Uploaded Document File</label>
+                      
                             <div id="Tab3FileGrid1" class=""></div>
                         </div>
                     </div>
@@ -2044,8 +2104,7 @@
 
         </div>
         <div class="form-group">
-            <fieldset class="panel-border" id="divRenew">
-                <legend class="panel-border">License/Renewal Information :</legend>
+         
                 <div class="form-group">
                     <div class="row">
                         <div class="col-sm-12">
@@ -2053,20 +2112,16 @@
                         </div>
                     </div>
                 </div>
-            </fieldset>
+        
             <div class="row">
                 <div class="col-sm-12">
-                    <fieldset class="panel-border">
-                        <legend class="panel-border">Document Information :</legend>
-                        <div class="row">
-                            <br />
-                        </div>
+                  
                         <div class="row">
                             <div class="col-sm-12">
                                 <div id="Tab4FileGrid1" class=""></div>
                             </div>
                         </div>
-                    </fieldset>
+                    
                 </div>
             </div>
         </div>

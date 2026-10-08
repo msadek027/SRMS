@@ -154,14 +154,37 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
         public IList<NarcoticEntryItemInfo> GetReportNarcoticLicense(NarcoticEntryItemInfo model)
         {
             var query = new StringBuilder();
-            query.Append(@"SELECT ei.*, 
-                                   ci.COMPANY_NAME
-                            FROM SPL_SRMS.NARCOTIC_ENTRY_ITEM_INFO ei
-                            JOIN SPL_SRMS.NARCOTIC_SETUP_INFO si 
-                                 ON ei.GENERIC_BRAND_ID = si.NARCOTIC_SETUP_SL
-                            JOIN SPL_SRMS.COMPANY_INFO ci
-                                 ON ei.COMPANY_CODE = ci.COMPANY_CODE
-                            WHERE 1=1");
+            query.Append(@"SELECT ei.NARCOTIC_ENTRY_SL,
+                                ei.GENERIC_BRAND_ID,
+                                ei.ITEM_NAME,
+                                ei.FISCAL_YEAR,
+                                ei.ANNUAL_QUOTA,
+                                ei.SUBMISSION_TYPE,
+                                ei.SUBMISSION_QUANTITY,
+                                ei.APPROVED_QUANTITY,
+                                ei.RECORD_STATUS,
+                                ei.DGDA_RECEIVE_DATE,
+                                ei.DGDA_SUBMISSION_DATE,
+                                ei.DGDA_RECOMMENDATION_DATE,
+                                ei.REC_SEND_DATE,
+                                ei.INS_RECEIVE_DATE,
+                                ei.DIV_SEND_DATE,
+                                ei.DIV_NARC_RECV_DATE,
+                                ei.DNC_SEND_DATE,
+                                ei.NARC_APVL_DATE,
+                                ei.SET_BY,
+                                ei.SET_ON,
+                                ei.UPDATED_DATE,
+                                ei.UPDATED_BY,
+                                ei.COMPANY_CODE,
+                                ci.COMPANY_NAME
+                        FROM SPL_SRMS.NARCOTIC_ENTRY_ITEM_INFO ei
+                        JOIN SPL_SRMS.NARCOTIC_SETUP_INFO si 
+                                ON ei.GENERIC_BRAND_ID = si.NARCOTIC_SETUP_SL
+                        JOIN SPL_SRMS.COMPANY_INFO ci
+                                ON ei.COMPANY_CODE = ci.COMPANY_CODE
+                        WHERE 1=1");
+
 
             if (!string.IsNullOrEmpty(model.ItemName) && !model.ItemName.Equals("All", StringComparison.OrdinalIgnoreCase))
             {
@@ -196,9 +219,9 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                               FiscalYear = row["FISCAL_YEAR"] == DBNull.Value ? null : row["FISCAL_YEAR"].ToString(),
                               SubmissionType = row["SUBMISSION_TYPE"] == DBNull.Value ? null : row["SUBMISSION_TYPE"].ToString(),
                               RecordStatus = row["RECORD_STATUS"] == DBNull.Value ? null : row["RECORD_STATUS"].ToString(),
-                              AnnualQuota = row["ANNUAL_QUOTA"] == DBNull.Value ? (decimal?)null : Convert.ToDecimal(row["ANNUAL_QUOTA"]),
-                              SubmissionQuantity = row["SUBMISSION_QUANTITY"] == DBNull.Value ? (decimal?)null : Convert.ToDecimal(row["SUBMISSION_QUANTITY"]),
-                              ApprovedQuantity = row["APPROVED_QUANTITY"] == DBNull.Value ? (decimal?)null : Convert.ToDecimal(row["APPROVED_QUANTITY"]),
+                              AnnualQuota = row["ANNUAL_QUOTA"] == DBNull.Value ? null : row["ANNUAL_QUOTA"].ToString(),
+                              SubmissionQuantity = row["SUBMISSION_QUANTITY"] == DBNull.Value ? null : row["SUBMISSION_QUANTITY"].ToString(),
+                              ApprovedQuantity = row["APPROVED_QUANTITY"] == DBNull.Value ? null : row["APPROVED_QUANTITY"].ToString(),
                               CompanyName = row["COMPANY_NAME"] == DBNull.Value ? null : row["COMPANY_NAME"].ToString(),
 
                               // Oracle DATE columns - keep as DateTime for backend processing
@@ -220,6 +243,116 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             return result;
         }
 
+
+
+        public IList<LicenseEntryItemInfo> GetReportLicenseInfo(LicenseEntryItemInfo model)
+        {
+            var query = new StringBuilder();
+            query.Append(@"SELECT ei.LICENSE_ID,
+                            ei.LICENSE_NAME,
+                            ei.RECORD_STATUS,
+                            ei.DGDA_RECEIVE_DATE,
+                            ei.DGDA_SUBMISSION_DATE,
+                            ei.DGDA_RECOMMENDATION_DATE,
+                            ei.REC_SEND_DATE,
+                            ei.INS_RECEIVE_DATE,
+                            ei.DIV_SEND_DATE,
+                            ei.DIV_NARC_RECV_DATE,
+                            ei.DNC_SEND_DATE,
+                            ei.NARC_APVL_DATE,
+                            ei.SET_BY,
+                            ei.SET_ON,
+                            ei.UPDATED_DATE,
+                            ei.UPDATED_BY,
+                            ei.COMPANY_CODE,
+                            ei.NARCOTIC_SETUP_SL,
+                            ci.COMPANY_NAME
+                        FROM SPL_SRMS.LICENSE_ENTRY_ITEM_INFO ei
+                        LEFT JOIN SPL_SRMS.NARCOTIC_SETUP_INFO si 
+                            ON ei.NARCOTIC_SETUP_SL = si.NARCOTIC_SETUP_SL
+                        LEFT JOIN SPL_SRMS.COMPANY_INFO ci
+                            ON ei.COMPANY_CODE = ci.COMPANY_CODE
+                        WHERE 1=1");
+
+            // WHERE clause এও table alias দিন
+            if (!string.IsNullOrEmpty(model.LicenseName) && !model.LicenseName.Equals("All", StringComparison.OrdinalIgnoreCase))
+            {
+                query.Append(" AND ei.LICENSE_NAME = '" + model.LicenseName.Replace("'", "''") + "'");
+            }
+
+            if (!string.IsNullOrEmpty(model.RecordStatus) && !model.RecordStatus.Equals("All", StringComparison.OrdinalIgnoreCase))
+            {
+                query.Append(" AND ei.RECORD_STATUS = '" + model.RecordStatus.Replace("'", "''") + "'");
+            }
+
+            if (!string.IsNullOrEmpty(model.CompanyCode) && !model.CompanyCode.Equals("All", StringComparison.OrdinalIgnoreCase))
+            {
+                query.Append(" AND ei.COMPANY_CODE = '" + model.CompanyCode.Replace("'", "''") + "'");
+            }
+
+            query.Append(" ORDER BY ei.NARCOTIC_SETUP_SL DESC");
+
+            DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), query.ToString());
+
+            var result = (from DataRow row in dt.Rows
+                          select new LicenseEntryItemInfo
+                          {
+                              NarcoticSetupSl = row["NARCOTIC_SETUP_SL"] == DBNull.Value ? 0 : Convert.ToDecimal(row["NARCOTIC_SETUP_SL"]),
+                              LicenseId = row["LICENSE_ID"] == DBNull.Value ? 0 : Convert.ToDecimal(row["LICENSE_ID"]),
+                              LicenseName = row["LICENSE_NAME"] == DBNull.Value ? null : row["LICENSE_NAME"].ToString(),
+                              RecordStatus = row["RECORD_STATUS"] == DBNull.Value ? null : row["RECORD_STATUS"].ToString(),
+                              CompanyName = row["COMPANY_NAME"] == DBNull.Value ? null : row["COMPANY_NAME"].ToString(),
+                              CompanyCode = row["COMPANY_CODE"] == DBNull.Value ? null : row["COMPANY_CODE"].ToString(),
+                              DgdaReceiveDate = row["DGDA_RECEIVE_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["DGDA_RECEIVE_DATE"]),
+                              DgdaSubmissionDate = row["DGDA_SUBMISSION_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["DGDA_SUBMISSION_DATE"]),
+                              DgdaRecommendationDate = row["DGDA_RECOMMENDATION_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["DGDA_RECOMMENDATION_DATE"]),
+                              RecSendDate = row["REC_SEND_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["REC_SEND_DATE"]),
+                              InsReceiveDate = row["INS_RECEIVE_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["INS_RECEIVE_DATE"]),
+                              DivSendDate = row["DIV_SEND_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["DIV_SEND_DATE"]),
+                              DivNarcRecvDate = row["DIV_NARC_RECV_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["DIV_NARC_RECV_DATE"]),
+                              DncSendDate = row["DNC_SEND_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["DNC_SEND_DATE"]),
+                              NarcApvlDate = row["NARC_APVL_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["NARC_APVL_DATE"]),
+                              SetBy = row["SET_BY"] == DBNull.Value ? null : row["SET_BY"].ToString(),
+                              SetOn = row["SET_ON"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["SET_ON"]),
+                              UpdatedDate = row["UPDATED_DATE"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(row["UPDATED_DATE"]),
+                              UpdatedBy = row["UPDATED_BY"] == DBNull.Value ? null : row["UPDATED_BY"].ToString(),
+                          }).ToList();
+
+            return result;
+        }
+
+
+        public IList<string> GetLicenseNames()
+        {
+            var query = new StringBuilder();
+            query.Append(@"SELECT DISTINCT LICENSE_NAME 
+                   FROM SPL_SRMS.NARCOTIC_SETUP_INFO 
+                   WHERE LICENSE_NAME IS NOT NULL
+                   ORDER BY LICENSE_NAME");
+
+            DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), query.ToString());
+
+            var result = (from DataRow row in dt.Rows
+                          select row["LICENSE_NAME"].ToString()).ToList();
+
+            return result;
+        }
+
+        public IList<string> GetItemNames()
+        {
+            var query = new StringBuilder();
+            query.Append(@"SELECT DISTINCT GENERIC_NAME 
+                   FROM SPL_SRMS.NARCOTIC_SETUP_INFO 
+                   WHERE GENERIC_NAME IS NOT NULL
+                   ORDER BY GENERIC_NAME");
+
+            DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), query.ToString());
+
+            var result = (from DataRow row in dt.Rows
+                          select row["GENERIC_NAME"].ToString()).ToList();
+
+            return result;
+        }
 
         public IList<NarcoticLicenseBEL> GetAllInfo(NarcoticLicenseBEL model, string orderBy)
         {
@@ -497,7 +630,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             query.Append(" TO_CHAR(D.APPROVAL_DATE, 'dd/mm/yyyy')APPROVAL_DATE,D.NOTIFICATION_DAYS,TO_CHAR(D.SET_ON, 'dd/mm/yyyy')SET_ON, C.COMPANY_NAME,C.ADDRESS");
             query.Append(" FROM NARCOTIC_LICENSE D LEFT JOIN  COMPANY_INFO C ON C.COMPANY_CODE=D.COMPANY_CODE WHERE IS_DELETE <>'Y' ");
             query.Append(" ) A INNER JOIN ( SELECT COMPANY_CODE,LICENSE_TYPE,MAX(REVISION_NO) AS MaxRvNo ");
-            query.Append(" FROM NARCOTIC_LICENSE GROUP BY COMPANY_CODE) B");
+            query.Append(" FROM NARCOTIC_LICENSE GROUP BY COMPANY_CODE,LICENSE_TYPE) B");
             query.Append(" ON A.COMPANY_CODE=B.COMPANY_CODE AND A.LICENSE_TYPE=B.LICENSE_TYPE AND A.REVISION_NO=B.MaxRvNo");
             query.Append(" WHERE 1=1 ");
 

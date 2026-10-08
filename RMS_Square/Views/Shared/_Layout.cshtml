@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="shortcut icon" href="~/Content/Images/Square_Logo.png" type="image/png">
@@ -39,95 +40,107 @@
 <!--<<body class="hold-transition skin-blue sidebar-mini">-->
 <body class="skin-blue-light sidebar-collapse ">
     <div class="wrapper">
-        <header class="main-header">
-            <!-- Logo -->
-            <a href="/Home/frmHome" class="logo">
-                <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>@Session["SolutionTitlePrefix"] </b>@Session["SolutionTitleSuffix"] </span>
-                <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg"><b>@Session["SolutionPrefix"] </b>@Session["SolutionSuffix"]</span>
+        <header class="main-header" >
+         
+            <a href="/Home/frmHome" class="logo" style="background-color: #34495E !important;">
+                <span class="logo-mini">
+                    <b>@Session["SolutionTitlePrefix"]</b>@Session["SolutionTitleSuffix"]
+                </span>
+                <span class="logo-lg">
+                    <span class="logo-slider">
+                        <img src="~/Content/Images/SPL.jpg" class="slide-img active" />
+                        <img src="~/Content/Images/SHC100.jpg" class="slide-img" />
+                    </span>
+                    <span class="logo-text">SRMS</span>
+                </span>
+
             </a>
+
             <!-- Header Navbar: style can be found in header.less -->
-            <nav class="navbar navbar-static-top">
+            <nav class="navbar navbar-static-top" style="background-color: #34495E !important;">
                 <!-- Sidebar toggle button-->
                 <a href="#" class="sidebar-toggle" id="menuButton" data-toggle="offcanvas" role="button">
                     <span class="sr-only">Toggle navigation</span>
                 </a>
-                <div class="navbar-custom-menu">
-                    <div class="row" style="margin-top: 8px;margin-right:8px">                    
-                            <div class="dropdown" style="margin: 0px; display: inline-block;">
-                                <button class="btn btn-primary btn-md dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                     Company
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                    <li><a href="#" onclick="openCompanyTab('0001')">SPPLC (Pabna Unit)</a></li>
-                                    <li><a href="#" onclick="openCompanyTab('0002')">SPPLC (Dhaka Unit)</a></li>
-                                    <li><a href="#" onclick="openCompanyTab('0004')">SPPLC (CD)</a></li>
-                                    <li><a href="#" onclick="openCompanyTab('0005')">SPPLC (Herbal)</a></li>
-                                    <li><a href="#" onclick="openCompanyTab('0006')">SPPLC (Ayurvedic)</a></li>
-                                    <li><a href="#" onclick="openCompanyTab('0007')">SLL</a></li>
-                                </ul>
-                            </div>
-                            <div class="dropdown" style="margin: 0px; display: inline-block;">
-                                <button class="btn btn-primary btn-md dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                    Products
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                    <li><a href="#" onclick="openProductTab('0001')">SPPLC (Pabna Unit)</a></li>
-                                    <li><a href="#" onclick="openProductTab('0002')">SPPLC (Dhaka Unit)</a></li>
-                                    <li><a href="#" onclick="openProductTab('0004')">SPPLC (CD)</a></li>
-                                    <li><a href="#" onclick="openProductTab('0005')">SPPLC (Herbal)</a></li>
-                                    <li><a href="#" onclick="openProductTab('0006')">SPPLC (Ayurvedic)</a></li>
-                                    <li><a href="#" onclick="openProductTab('0007')">SLL</a></li>
-                                </ul>
-                            </div>
-                            <div class="dropdown" style="margin: 0px; display: inline-block;">
-                                <button class="btn btn-primary btn-md dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                    Narcotics
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                    <li><a href="#" onclick="openNarcoticsTab('0001')">SPPLC (Pabna Unit)</a></li>
-                                    <li><a href="#" onclick="openNarcoticsTab('0002')">SPPLC (Dhaka Unit)</a></li>
-                                    <li><a href="#" onclick="openNarcoticsTab('0004')">SPPLC (CD)</a></li>
-                                    <li><a href="#" onclick="openNarcoticsTab('0005')">SPPLC (Herbal)</a></li>
-                                    <li><a href="#" onclick="openNarcoticsTab('0006')">SPPLC (Ayurvedic)</a></li>
-                                    <li><a href="#" onclick="openNarcoticsTab('0007')">SLL</a></li>
-                                </ul>
-                            </div>
-                            <div class="dropdown" style="margin: 0px; display: inline-block;">
-                                <button class="btn btn-primary btn-md dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                    View Reports
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                    <li><a href="/Regulatory/CompanyLicense/frmCompanyLicenseView">Manufacturing License</a></li>
-                                    <li><a href="/Regulatory/GmpCertificate/frmGmpCertificateView">GMP Certificate</a></li>
-                                    <li><a href="/Regulatory/ProductInfo/frmProductInfoView">Products</a></li>
-                                    <li><a href="/Regulatory/MeetingInfo/frmMeetingInfoView">Meeting Info</a></li>
-                                    <li><a href="/Regulatory/NarcoticLicense/frmNarcoticItemInfoReport">Narcotics Item Info</a></li>
-                                    <li><a href="/Regulatory/NarcoticLicense/frmNarcoticLicenseInfoReport">Narcotics License Info</a></li>
-                                </ul>
-                            </div>
-                      
-                        <div class="dropdown" style="margin: 0px; display: inline-block;">
+                <div class="navbar-custom-menu" >
+                    <div class="row" style="margin:7px 2px 0 0;">
+                        <div class="dropdown" style="display:inline-block; position:relative;">
+                            <button type="button" id="dropdownMenu1" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="min-width: 120px; border: none !important; background-color: #34495E !important;">
+                                Company
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" style="position: absolute; top: 100%; left: 0; z-index: 10000; min-width: 220px;  background-color: #34495E !important; ">
+                                <li><a href="javascript:void(0)" onclick="openCompanyTab('0001')" style="color:white !important;">SPPLC (Pabna Unit)</a></li>
+                                <li><a href="javascript:void(0)" onclick="openCompanyTab('0002')" style="color:white !important;">SPPLC (Dhaka Unit)</a></li>
+                                <li><a href="javascript:void(0)" onclick="openCompanyTab('0004')" style="color:white !important;">SPPLC (CD)</a></li>
+                                <li><a href="javascript:void(0)" onclick="openCompanyTab('0005')" style="color:white !important;">SPPLC (Herbal)</a></li>
+                                <li><a href="javascript:void(0)" onclick="openCompanyTab('0006')" style="color:white !important;">SPPLC (Ayurvedic)</a></li>
+                                <li><a href="javascript:void(0)" onclick="openCompanyTab('0007')" style="color:white !important;">SLL</a></li>
+                                <li><a href="javascript:void(0)" onclick="openCompanyTab('0008')" style="color:white !important;">SPPLC (Patikabari Unit)</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="dropdown" style="display:inline-block; position:relative;">
+                            <button class="btn btn-primary btn-md dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style=" border: none !important;  background-color: #34495E !important;">
+                                Products
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="position: absolute; top: 100%; left: 0; z-index: 10000; min-width: 220px; background-color: #34495E !important;">
+                                <li><a href="javascript:void(0)" onclick="openProductTab('0001')" style="color:white !important;">SPPLC (Pabna Unit)</a></li>
+                                <li><a href="javascript:void(0)" onclick="openProductTab('0002')" style="color:white !important;">SPPLC (Dhaka Unit)</a></li>
+                                <li><a href="javascript:void(0)" onclick="openProductTab('0004')" style="color:white !important;">SPPLC (CD)</a></li>
+                                <li><a href="javascript:void(0)" onclick="openProductTab('0005')" style="color:white !important;">SPPLC (Herbal)</a></li>
+                                <li><a href="javascript:void(0)" onclick="openProductTab('0006')" style="color:white !important;">SPPLC (Ayurvedic)</a></li>
+                                <li><a href="javascript:void(0)" onclick="openProductTab('0007')" style="color:white !important;">SLL</a></li>
+                                <li><a href="javascript:void(0)" onclick="openProductTab('0008')" style="color:white !important;">SPPLC (Patikabari Unit)</a></li>
+                            </ul>
+                        </div>
+                        <div class="dropdown" style="display:inline-block; position:relative;">
+                            <button class="btn btn-primary btn-md dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style=" border: none !important; background-color: #34495E !important;">
+                                Narcotics
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu3" style="position: absolute; top: 100%; left: 0; z-index: 10000; min-width: 220px; background-color: #34495E !important;">
+                                <li><a href="javascript:void(0)" onclick="openNarcoticsTab('0001')" style="color:white !important;">SPPLC (Pabna Unit)</a></li>
+                                <li><a href="javascript:void(0)" onclick="openNarcoticsTab('0002')" style="color:white !important;">SPPLC (Dhaka Unit)</a></li>
+                                <li><a href="javascript:void(0)" onclick="openNarcoticsTab('0004')" style="color:white !important;">SPPLC (CD)</a></li>
+                                <li><a href="javascript:void(0)" onclick="openNarcoticsTab('0005')" style="color:white !important;">SPPLC (Herbal)</a></li>
+                                <li><a href="javascript:void(0)" onclick="openNarcoticsTab('0006')" style="color:white !important;">SPPLC (Ayurvedic)</a></li>
+                                <li><a href="javascript:void(0)" onclick="openNarcoticsTab('0007')" style="color:white !important;">SLL</a></li>
+                                <li><a href="javascript:void(0)" onclick="openNarcoticsTab('0008')" style="color:white !important;">SPPLC (Patikabari Unit)</a></li>
+                            </ul>
+                        </div>
+                        <div class="dropdown" style="display:inline-block; position:relative;">
+                            <button class="btn btn-primary btn-md dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style=" border: none !important;  background-color: #34495E !important;">
+                                View Reports
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="position: absolute; top: 100%; left: 0; z-index: 10000; min-width: 220px; background-color: #34495E !important;">
+                                <li><a href="/Regulatory/CompanyLicense/frmCompanyLicenseView" style="color:white !important;">Manufacturing License</a></li>
+                                <li><a href="/Regulatory/GmpCertificate/frmGmpCertificateView" style="color:white !important;">GMP Certificate</a></li>
+                                <li><a href="/Regulatory/ProductInfo/frmProductInfoView" style="color:white !important;">Products</a></li>
+                                <li><a href="/Regulatory/MeetingInfo/frmMeetingInfoView" style="color:white !important;">Meeting Info</a></li>
+                                <li><a href="/Regulatory/NarcoticLicense/frmNarcoticItemInfoReport " style="color:white !important;">Narcotics Item Info</a></li>
+                                <li><a href="/Regulatory/NarcoticLicense/frmNarcoticLicenseInfoReport" style="color:white !important;">Narcotics License Info</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="dropdown" style="display:inline-block; position:relative;">
                             <button class="btn btn-primary btn-md dropdown-toggle"
                                     type="button"
                                     id="pendingButton"
                                     data-toggle="collapse"
                                     data-target="#collapsePending"
                                     aria-expanded="false"
-                                    aria-haspopup="true">
+                                    aria-haspopup="true" style=" border: none !important; background-color: #34495E !important;">
                                 Pending Work
                             </button>
-                        
+
                         </div>
-                            <div class="dropdown" style="margin: 0px; display: inline-block;">
-                                <button class="btn btn-primary btn-md dropdown-toggle" type="button" id="btnNotification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                    Notification
-                                </button>
-                            </div>
-                      
+                        <div class="dropdown" style="display:inline-block; position:relative;">
+                            <button class="btn btn-primary btn-md dropdown-toggle" type="button" id="btnNotification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style=" border: none !important; background-color: #34495E !important;">
+                                Notification
+                            </button>
+                        </div>
+
                         <div class="dropdown employee-hover-container" style="margin: 0px; display: inline-block; position: relative;">
-                            <button class="btn btn-primary btn-md dropdown-toggle" type="button" id="btnAbout" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <button class="btn btn-primary btn-md dropdown-toggle" type="button" id="btnAbout" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style=" border: none !important; background-color: #34495E !important;">
                                 About Us
                             </button>
                             <div class="employee-tooltip" id="employeeTooltip" style="display: none; position: absolute; background: white; border: 1px solid #ccc; padding: 10px; z-index: 1000; min-width: 200px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
@@ -137,7 +150,7 @@
                             </div>
                         </div>
                         <div class="dropdown" style="margin: 0px; display: inline-block;">
-                            <button class="btn btn-primary btn-md dropdown-toggle dropdown user user-menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:black">
+                            <button class="btn btn-primary btn-md dropdown-toggle dropdown user user-menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:white; border: none !important; background-color: #34495E !important;">
 
                                 <i class="glyphicon glyphicon-user"></i> @Session["EmpName"]
                             </button>
@@ -157,10 +170,10 @@
                         </div>
                         <div id="EmployeeDetailPopup" style="display:none;">
                             <div class="employee-form-container">
-                                <div class="form-group">
-                                    <label>Employee Code:</label>
-                                    <input type="text" id="popupEmployeeCode" class="form-control" readonly />
-                                </div>
+                                @*<div class="form-group">
+                        <label>Employee Code:</label>
+                        <input type="text" id="popupEmployeeCode" class="form-control" readonly />
+                    </div>*@
                                 <div class="form-group">
                                     <label>Employee Name:</label>
                                     <input type="text" id="popupEmployeeName" class="form-control" readonly />
@@ -170,22 +183,24 @@
                                     <input type="text" id="popupDesignationName" class="form-control" readonly />
                                 </div>
                                 <div class="form-group">
-                                    <label>Department:</label>
-                                    <input type="text" id="popupDepartmentName" class="form-control" readonly />
+                                    <label>Job Area(Unit):</label>
+                                    <input type="text" id="popupCompanyName" class="form-control" readonly />
                                 </div>
+
                                 <div class="form-group">
                                     <label>Contact No:</label>
                                     <input type="text" id="popupContactNo" class="form-control" readonly />
                                 </div>
-                                <div class="form-group">
+
+                                <div class="form-group full-width">
                                     <label>Job Description:</label>
-                                    <input type="text" id="popupJobDescription" class="form-control" readonly />
+                                    <textarea id="popupJobDescription" class="form-control" readonly></textarea>
                                 </div>
                             </div>
                         </div>
-                        </div>
                     </div>
-        </nav>
+                </div>
+            </nav>
         </header>
         <div class="main-sidebar">
             <!-- Inner sidebar -->
@@ -201,14 +216,7 @@
                         </a>
                     </div>
                 </div>
-               
-                @*<form action="#" method="get" class="sidebar-form">
-                    <div class="input-group">
-                        <input type="text" name="q" class="form-control" readonly placeholder="" />
-                        <span class="input-group-btn">
-                        </span>
-                    </div>             
-                </form>*@
+
 
                 <ul class="sidebar-menu" style="background-color:#FFFFFF">
                     <li class="active treeview">
@@ -228,7 +236,7 @@
                 <!-- Small boxes (Stat box) -->
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div class="box box-primary">
+                        <div class="box box-default">
                             <div class="box-body">
                                 @RenderBody()
                             </div>
@@ -240,7 +248,7 @@
           
         </div>
         <!-- /.content-wrapper -->
-        <footer class="main-footer">
+        <footer class="main-footer" style=" background-color: #34495E !important;">
             <input type="hidden" id="UserRole" data-value="@Session["RoleName"]" />
             <div class="pull-right hidden-xs">
                 <img src="~/AdminLTE/dist/img/sil_logo.png" class="user-image" alt="User Image">
@@ -278,71 +286,53 @@
 
     <script src="~/AdminLTE/plugins/jQueryUI/jquery-ui.min.js"></script>
 
-    @*<link href="~/Content/MaskedDatePicker/jquery-ui.css" rel="stylesheet" />
-    <script src="~/Content/MaskedDatePicker/jquery-ui.js"></script>*@
 
 
-    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-
-
-    @*<style>
-        .dropdown:hover > .dropdown-menu {
-            display: block;
+   
+    <style>
+        .logo-slider {
+            position: relative;
+            display: inline-block;
+            width: 90px; /* adjust based on image size */
+            height: 50px;
+            overflow: hidden;
         }
 
-        /* Optional – keep the caret pointing up while open on hover */
-        .dropdown:hover > .dropdown-toggle .caret {
-            transform: rotate(180deg);
-        }
-        .custom-btn {
-            height: 20px; /* Adjust the height as needed */
-            font-size: 12px; /* Adjust the font size as needed */
-            line-height: 1; /* Reset line height */
-            padding: 0 5px; /* Adjust padding as needed */          
-            display: inline; /* Change display property to inline */
-        }
-
-        .custom-btn2 {
-            height: 25px; /* Adjust the height as needed */
-            font-size: 16px; /* Adjust the font size as needed */
-            line-height: 1; /* Reset line height */
-            padding: 0 5px; /* Adjust padding as needed */            
-            display: inline; /* Change display property to inline */
-        }
-
-
-
-        .employee-hover-container:hover .employee-tooltip {
-            display: block !important;
-        }
-
-        .employee-tooltip {
-            display: none;
+        .slide-img {
             position: absolute;
-            top: 100%;
-            right: 0; /* Change from left: 0 to right: 0 */
-            background: white;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 15px;
-            z-index: 1000;
-            min-width: 250px;
-            max-width: 350px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            margin-top: 2px;
+            width: 100%;
+            height: 100%;
+            left: 100%;
+            top: 0;
+            opacity: 0;
+            transition: all 0.8s ease-in-out;
         }
 
-        .employee-item {
-            padding: 5px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-            .employee-item:last-child {
-                border-bottom: none;
+            .slide-img.active {
+                left: 0;
+                opacity: 1;
             }
-       
 
-    </style>*@
+        .logo-text {
+            position: relative;
+            top: -15px; /* move more up (increase value if needed) */
+        }
+
+        /*//new add*/
+        #popupJobDescription {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+
+
+          
+        /*//============*/
+    </style>
 
     <style>
         .dropdown:hover > .dropdown-menu {
@@ -420,35 +410,51 @@
             }
     </style>
 
+    <script>
+        setInterval(function () {
+            var $active = $('.logo-slider .active');
+            var $next = $active.next('.slide-img').length ? $active.next('.slide-img') : $('.logo-slider .slide-img').first();
+
+            $active.removeClass('active');
+            $next.addClass('active');
+        }, 2000); // change every 2 seconds
+    </script>
     <script type="text/javascript">
         function openCompanyTab(unitCode) {
             sessionStorage.setItem('keyCompanyCode', unitCode);
             sessionStorage.setItem('keyOption', "Entry License Info");
             sessionStorage.setItem('keyOptionId', 'tabs-1');
 
-            var win = window.open("/Regulatory/TabCompany/frmTabCompany", "_blank");
-            if (!win) {
-                alert("Popup was blocked. Please allow popups for this site.");
-            }
+            window.location.href = "/Regulatory/TabCompany/frmTabCompany";
+
+            //var win = window.open("/Regulatory/TabCompany/frmTabCompany", "_blank");
+            //if (!win) {
+            //    alert("Popup was blocked. Please allow popups for this site.");
+            //}
         }
         function openProductTab(unitCode) {
             sessionStorage.setItem('keyCompanyCode', unitCode);
             sessionStorage.setItem('keyOption', "Product Info");
             sessionStorage.setItem('keyOptionId', 'tabs-1');
 
-            var win = window.open("/Regulatory/TabProduct/frmTabProduct", "_blank");
-            if (!win) {
-                alert("Popup was blocked. Please allow popups for this site.");
-            }
+            window.location.href = "/Regulatory/TabProduct/frmTabProduct";
+
+
+            //var win = window.open("/Regulatory/TabProduct/frmTabProduct", "_blank");
+            //if (!win) {
+            //    alert("Popup was blocked. Please allow popups for this site.");
+            //}
         }
         function openNarcoticsTab(unitCode) {
             sessionStorage.setItem('keyCompanyCode', unitCode);
             sessionStorage.setItem('keyOption', "Product Info");
             sessionStorage.setItem('keyOptionId', 'tabs-1');
-            var win = window.open("/Regulatory/TabNarcotics/frmTabNarcotics", "_blank");
-            if (!win) {
-                alert("Popup was blocked. Please allow popups for this site.");
-            }
+
+            window.location.href = "/Regulatory/TabNarcotics/frmTabNarcotics";
+            //var win = window.open("/Regulatory/TabNarcotics/frmTabNarcotics", "_blank");
+            //if (!win) {
+            //    alert("Popup was blocked. Please allow popups for this site.");
+            //}
         }
 
 
@@ -470,7 +476,7 @@
                 var win = window.open("/Home/frmNewIndex", "_blank");
             });
             $('#pendingButton').click(function () {
-                var win = window.open("/Home/frmHome", "_blank");
+                var win = window.open("/Home/frmPendingWork", "_blank");
             });
         });
     </script>
@@ -592,6 +598,7 @@
             $('#popupEmployeeCode').val(emp.EmployeeCode || '');
             $('#popupEmployeeName').val(emp.EmployeeName || '');
             $('#popupDesignationName').val(emp.DesignationName || '');
+            $('#popupCompanyName').val(emp.CompanyName || '');
             $('#popupDepartmentName').val(emp.DepartmentName || '');
             $('#popupContactNo').val(emp.ContactNo || '');
             $('#popupJobDescription').val(emp.JobDescription || '');

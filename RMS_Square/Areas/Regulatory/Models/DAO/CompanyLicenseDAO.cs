@@ -262,7 +262,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             var query = new StringBuilder();
             query.Append(" SELECT A.CLID, A.COMP_LICENSE_SLNO,A.REVISION_NO,A.COMPANY_CODE,A.LICENSE_NO,A.SUBMISSION_TYPE,A.SUBMISSION_DATE ,");
             query.Append(" ROUND(((NVL(A.VALID_UPTO, TO_DATE('12/31/2099', 'mm/dd/yyyy')))-(SELECT  SYSDATE FROM DUAL)),0)DateDiff,");
-            query.Append(" A.POST_INSPECTION_DATE,A.INSPECTION_DATE,TO_CHAR(A.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO,A.APPROVAL_DATE,A.NOTIFICATION_DAYS,A.SET_ON, A.COMPANY_NAME,A.ADDRESS FROM");
+            query.Append(" A.INSPECTION_DATE,TO_CHAR(A.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO,A.APPROVAL_DATE,A.NOTIFICATION_DAYS,A.SET_ON, A.COMPANY_NAME,A.ADDRESS FROM");
             query.Append(" ( SELECT CL.CLID, CL.COMP_LICENSE_SLNO,CL.REVISION_NO,CL.COMPANY_CODE,CL.LICENSE_NO,CL.SUBMISSION_TYPE,");
             query.Append(" TO_CHAR(CL.SUBMISSION_DATE, 'dd/mm/yyyy')SUBMISSION_DATE , TO_CHAR(CL.INSPECTION_DATE, 'dd/mm/yyyy')INSPECTION_DATE,CL.VALID_UPTO,");
             query.Append(" TO_CHAR(CL.APPROVAL_DATE, 'dd/mm/yyyy')APPROVAL_DATE,CL.NOTIFICATION_DAYS,TO_CHAR(CL.SET_ON, 'dd/mm/yyyy')SET_ON, C.COMPANY_NAME,C.ADDRESS");
@@ -312,7 +312,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                             LicenseNo = row["LICENSE_NO"].ToString(),
                             SubmissionType = row["SUBMISSION_TYPE"].ToString(),
                             SubmissionDate = row["SUBMISSION_DATE"].ToString(),
-                            PostInspectionDate = row["POST_INSPECTION_DATE"].ToString(),
+                           // PostInspectionDate = row["POST_INSPECTION_DATE"].ToString(),
                             InspectionDate = row["INSPECTION_DATE"].ToString(),
                             ValidUpto = row["VALID_UPTO"].ToString(),
                             ApprovalDate = row["APPROVAL_DATE"].ToString(),

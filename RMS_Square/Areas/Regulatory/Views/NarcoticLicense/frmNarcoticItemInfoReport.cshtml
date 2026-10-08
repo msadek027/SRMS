@@ -16,11 +16,15 @@
     </div>
 </div>
 <div class="box-body">
+
     <div class="row">
-        <div class="col-md-2">
-            <div class="form-group">
-                <label class="control-label required">Company:</label>
-                <select id="CompanyCode" name="CompanyCode" class="form-control input-sm">
+        <div class="col-md-12">
+            <div class="input-group">
+
+                <span class="input-group-addon">
+                    <label class="control-label required">Company:</label>
+                </span>
+                <select id="CompanyCode" name="CompanyCode" class="form-control input-lg">
                     <option selected value="All">All</option>
                     <option value="0001">SPPLC (Pabna Unit)</option>
                     <option value="0002">SPPLC (Dhaka Unit)</option>
@@ -28,23 +32,19 @@
                     <option value="0005">SPPLC (Herbal)</option>
                     <option value="0006">SPPLC (Ayurvedic)</option>
                     <option value="0007">SLL</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label class="control-label required">Item Name:</label>
-                <select id="GenericCode" name="GenericCode" class="form-control input-sm">
-                    <option selected value="All">All</option>
-                    <option value="Recipe Approval">Individual</option>
-                </select>
+                    <option value="0008">SPPLC (Patikabari Unit)</option>
 
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label class="control-label required">Type:</label>
-                <select id="SubmissionType" name="SubmissionType" class="form-control input-sm">
+                </select>
+                <span class="input-group-addon">
+                    <label class="control-label required">Item Name:</label>
+                </span>
+                <select id="GenericCode" name="GenericCode" class="form-control input-lg">
+                    <option selected value="All">All</option>
+                </select>
+                <span class="input-group-addon">
+                    <label class="control-label required"> Type:</label>
+                </span>
+                <select id="SubmissionType" name="SubmissionType" class="form-control input-lg">
                     <option selected value="All">All</option>
                     <option value="Import Permit">Import Permission</option>
                     <option value="Export">Export</option>
@@ -56,26 +56,23 @@
                     <option value="Others">Others</option>
                 </select>
 
-            </div>
-        </div>
-
-        <div class="col-md-2">
-            <div class="form-group">
-                <label class="control-label required">Fiscal Year:</label>
-                <select id="FiscalYear" name="FiscalYear" class="form-control input-sm">
+                <span class="input-group-addon">
+                    <label class="control-label required"> Fiscal:</label>
+                </span>
+                <select id="FiscalYear" name="FiscalYear" class="form-control input-lg">
                     <option selected value="All">All</option>
+                    <option value="2025-2026">2025-2026</option>
                     <option value="2024-2025">2024-2025</option>
                     <option value="2023-2024">2023-2024</option>
                     <option value="2022-2023">2022-2023</option>
                     <option value="2021-2022">2021-2022</option>
                     <option value="2020-2021">2020-2021</option>
                 </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label class="control-label required">Record Status:</label>
-                <select id="RecordStatus" name="RecordStatus" class="form-control input-sm">
+
+                <span class="input-group-addon">
+                    <label class="control-label required">Record Status:</label>
+                </span>
+                <select id="RecordStatus" name="RecordStatus" class="form-control input-lg">
                     <option selected value="All">All</option>
                     <option value="License">License</option>
                     <option value="Renew">Renew</option>
@@ -85,18 +82,21 @@
         </div>
     </div>
 
-
-
-
-</div>
+    <br />
 
 <div class="row">
     <div class="col-md-12">
         <div id="MainGrid" class="PopUpGrid"></div>
     </div>
 </div>
-
-
+    <br />
+<div class="row">
+    <div class="col-md-12">
+        <fieldset>       
+            <div id="FileGrid"></div>
+        </fieldset>
+    </div>
+</div>
 
 <div class="box-footer">@*Form Footer*@</div>
 
@@ -104,6 +104,34 @@
 
 
     $(document).ready(function () {
+
+
+
+        // Load License Names on page load
+        LoadItemNames();
+
+        function LoadItemNames() {
+            $.ajax({
+                url: '@Url.Action("GetItemNames", "NarcoticLicense")',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var dropdown = $('#GenericCode');
+                    dropdown.empty();
+                    dropdown.append('<option value="All">All</option>');
+
+                    $.each(data, function (index, item) {
+                        dropdown.append($('<option></option>')
+                            .val(item.Value)
+                            .text(item.Text));
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading license names:', error);
+                }
+            });
+        }
+
 
         function ResetData() {
             // Reset all your dropdowns to "All"
@@ -173,7 +201,9 @@
             editable: false,
             selectable: "row",
             //selectable: "multiple",
-            toolbar: ["excel", { template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: [{
+                template: "<label style='float:left; margin:5px 10px 0 0;'>Narcotics Information:</label>"
+            },'excel', { template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             excel: {
                 fileName: "Export.xlsx",
                 allPages: true,
@@ -182,7 +212,7 @@
             navigatable: true,
             height: "400",
             // groupable: true,
-            groupable: { messages: { empty: "Custom message text" } },
+            //groupable: { messages: { empty: "Custom message text" } },
             columnMenu: true,
             reorderable: true,
             resizable: true,
@@ -247,10 +277,78 @@
 
 
                  { field: "REMARKS", title: "REMARKS", width: 120 },
-
+                { command: [{ name: "View", text: "View", imageClass: "fa fa-hand-o-right", click: handleView }], title: "Action", width: "120px", attributes: { "class": "btnView" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } }
             ]
 
         }).data('kendoGrid');
+        var paramModel = { "refLevel1": "", "refLevel2": "" }
+
+
+        var fileGrid = $('#FileGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                schema: {
+                    model: {
+                        id: "FileID",
+                        fields: {
+                            FileID: { editable: false },
+                            FileCode: { editable: false },
+                            Extention: { editable: false },
+                            FileName: { editable: false },
+                            RefNo: { editable: false },
+                            FileSize: { editable: false }
+                        }
+                    }
+                },
+                pageSize: 10
+            }),
+            pageable: true,
+            scrollable: true,
+            toolbar: [{
+                template: "<label style='float:left; margin:5px 10px 0 0;'>Document Information:</label>"
+            }, ],
+          
+            sortable: true,
+            filterable: true,
+            height: 250,
+            columns: [
+                { field: "RefNo", title: "Document Name" },
+                { field: "FileName", title: "File Name" },
+                { field: "FileSize", title: "Size(MB)" },
+                {
+                    command: [{
+                        name: "Download",
+                        text: "Download",
+                        click: function (e) {
+                            e.preventDefault();
+                            var dataItem = fileGrid.dataItem($(e.currentTarget).closest("tr"));
+
+                            window.location.href =
+                                '/General/Download?path=' + dataItem.FileCode + dataItem.Extention +
+                                '&fileName=' + dataItem.FileName +
+                                '&fileId=' + dataItem.FileID;
+                        }
+                    }],
+                    title: "Action",
+                    width: 120
+                }
+            ]
+        }).data("kendoGrid");
+
+        function handleView(event) {debugger
+            event.preventDefault();
+            var selectRow = MainGrid.dataItem($(event.currentTarget).closest("tr"));
+            console.log(selectRow); // debug
+            $.ajax({
+                url: '@Url.Action("GetFileByRefId", "TabNarcotics")',
+                type: 'GET',
+                data: { "refLevel1": selectRow.GenericBrandId, "refLevel2": selectRow.NarcoticEntrySl },//Take This
+                success: function (data) {
+
+
+                    $("#FileGrid").data("kendoGrid").dataSource.data(data);
+                }
+            });
+        };
 
         function parseNetDate(dateString) {
             if (!dateString) return null;
@@ -258,11 +356,12 @@
             return match ? new Date(parseInt(match[1])) : null;
         }
 
+
+
         $('#btnView').click(function () {
-            debugger
             var model = {};
             model.CompanyCode = $('#CompanyCode').val();
-            model.GenericCode = $('#GenericCode').val();
+            model.ItemName = $('#GenericCode').val();
             model.SubmissionType = $('#SubmissionType').val();
             model.FiscalYear = $('#FiscalYear').val();
             model.RecordStatus = $('#RecordStatus').val();
@@ -272,10 +371,10 @@
                 type: 'POST',
                 contentType: 'application/json;',
                 dataType: 'json',
-                success: function (data) {debugger
+                success: function (data) {
                     if (data && data.length > 0) {
                         // Map each item and convert date fields
-                        var processedData = data.map(function(item) {debugger
+                        var processedData = data.map(function(item) {
                             return {
                                 ...item,
                                     DgdaSubmissionDate: parseNetDate(item.DgdaSubmissionDate),
@@ -292,7 +391,6 @@
                             // Add other date fields if you want
                         };
                     });
-
                     $('#MainGrid').data('kendoGrid').dataSource.data(processedData);
                 } else {
                   $('#MainGrid').data('kendoGrid').dataSource.data([]);
@@ -302,12 +400,6 @@
             });
 
         });
-
-
     });
 
 </script>
-
-
-
-

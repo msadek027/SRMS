@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewBag.Title = "frmNarcoticLicenseRpt";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -17,10 +18,13 @@
 </div>
 <div class="box-body">
     <div class="row">
-        <div class="col-md-2">
-            <div class="form-group">
-                <label class="control-label required">Company:</label>
-                <select id="CompanyCode" name="CompanyCode" class="form-control input-sm">
+        <div class="col-md-8">
+            <div class="input-group">
+
+                <span class="input-group-addon">
+                    <label class="control-label required">Company:</label>
+                </span>
+                <select id="CompanyCode" name="CompanyCode" class="form-control input-lg">
                     <option selected value="All">All</option>
                     <option value="0001">SPPLC (Pabna Unit)</option>
                     <option value="0002">SPPLC (Dhaka Unit)</option>
@@ -28,85 +32,98 @@
                     <option value="0005">SPPLC (Herbal)</option>
                     <option value="0006">SPPLC (Ayurvedic)</option>
                     <option value="0007">SLL</option>
+                    <option value="0008">SPPLC (Patikabari Unit)</option>
+
                 </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label class="control-label required">Item Name:</label>
-                <select id="GenericCode" name="GenericCode" class="form-control input-sm">
+                <span class="input-group-addon">
+                    <label class="control-label required">License Name:</label>
+                </span>
+                <select id="LicenseId" name="LicenseId" class="form-control input-lg">
                     <option selected value="All">All</option>
-                    <option value="Recipe Approval">Individual</option>
                 </select>
 
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label class="control-label required">Type:</label>
-                <select id="Type" name="Type" class="form-control input-sm">
-                    <option selected value="All">All</option>                
-                    <option value="Import">Narcotic Import Lincense</option>
-                    <option value="Export">Narcotic Export Lincense</option>
-                    <option value="Production">Narcotic Production & Promissing license</option>
-                    <option value="Usage">Narcotic Usage License</option>                 
-                    <option value="Others">Others</option>
-                </select>
 
-            </div>
-        </div>
-
-        <div class="col-md-2">
-            <div class="form-group">
-                <label class="control-label required">Fiscal Year:</label>
-                <select id="Year" name="Year" class="form-control input-sm">
+                <span class="input-group-addon">
+                    <label class="control-label required">Record Status:</label>
+                </span>
+                <select id="RecordStatus" name="RecordStatus" class="form-control input-lg">
                     <option selected value="All">All</option>
-                    <option value="2024-2025">2024-2025</option>
-                    <option value="2023-2024">2023-2024</option>
-                    <option value="2022-2023">2022-2023</option>
-                    <option value="2021-2022">2021-2022</option>
-                    <option value="2020-2021">2020-2021</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-group">
-                <label class="control-label required">Record Status:</label>
-                <select id="RecordStatus" name="RecordStatus" class="form-control input-sm">
-                    <option selected value="All">All</option>
-                    <option value="License">License</option>
-                    <option value="Renewal">Renew</option>
-
+                    <option value="New">New</option>
+                    <option value="Renew">Renew</option>
                 </select>
             </div>
         </div>
     </div>
 
+    <br />
 
-
-
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <div id="MainGrid" class="PopUpGrid"></div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="MainGrid" class="PopUpGrid"></div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-12">        
+           <div id="FileGrid"></div>           
+        </div>
     </div>
 </div>
-
-
-
 <div class="box-footer">@*Form Footer*@</div>
 
 <script type="text/javascript">
 
-
     $(document).ready(function () {
+
+        LoadLicenseNames();
+
+        function LoadLicenseNames() {
+            $.ajax({
+                url: '@Url.Action("GetLicenseNames", "NarcoticLicense")',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var dropdown = $('#LicenseId');
+                    dropdown.empty();
+                    dropdown.append('<option value="All">All</option>');
+                    $.each(data, function (index, item) {
+                        dropdown.append($('<option></option>')
+                            .val(item.Value)
+                            .text(item.Text));
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading license names:', error);
+                }
+            });
+        }
+
+        function ResetData() {
+            $('#CompanyCode').val('All');
+            $('#LicenseId').val('All');
+            $('#RecordStatus').val('All');
+
+            var grid = $("#MainGrid").data("kendoGrid");
+            if (grid) {
+                grid.dataSource.data([]);
+            }
+
+            var fileGrid = $("#FileGrid").data("kendoGrid");
+            if (fileGrid) {
+                fileGrid.dataSource.data([]);
+            }
+        }
+
+        $('#btnReset').click(function () {
+            ResetData();
+        });
+
         $('.input-group.date').datepicker({
-            format: "d/mm/yyyy",//dd M yyyy
+            format: "d/mm/yyyy",
             autoclose: true,
             todayHighlight: true
-            //,todayBtn: true,
         });
+
         var MainGrid = $('#MainGrid').kendoGrid({
             dataSource: new kendo.data.DataSource({
                 batch: true,
@@ -115,22 +132,32 @@
                         id: "ID",
                         fields: {
                             ID: { type: "string" },
+                            DgdaSubmissionDate: { type: "date" },
+                            DgdaRecommendationDate: { type: "date" },
+                            InsReceiveDate: { type: "date" },
+                            DivNarcRecvDate: { type: "date" },
+                            DncSendDate: { type: "date" },
+                            NarcApvlDate: { type: "date" },
+                            DgdaReceiveDate: { type: "date" },
+                            RecSendDate: { type: "date" },
+                            DivSendDate: { type: "date" },
+                            SetOn: { type: "date" },
+                            UpdatedDate: { type: "date" }
                         }
                     }
                 },
                 pageSize: 20,
             }),
-            pageable: {
-                //refresh: true,
-                pageSizes: true, buttonCount: 5
-            },
+            pageable: { pageSizes: true, buttonCount: 5 },
             scrollable: true,
             sortable: true,
             filterable: true,
             editable: false,
             selectable: "row",
-            //selectable: "multiple",
-            toolbar: ["excel", { template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: [{
+                template: "<label style='float:left; margin:5px 10px 0 0;'>Narcotics Information:</label>"
+            }, 'excel',{ template: "<input type='text' id='txtPopupInput' style='float:right' placeholder='Search...' class='k-textbox'>" }],
+
             excel: {
                 fileName: "Export.xlsx",
                 allPages: true,
@@ -138,96 +165,155 @@
             },
             navigatable: true,
             height: "400",
-            // groupable: true,
-            groupable: { messages: { empty: "Custom message text" } },
+        
             columnMenu: true,
             reorderable: true,
             resizable: true,
             columns: [
-                 { field: "ID", hidden: true },
-
-                 { field: "CompanyCode", title: "Code", width: 70, hidden: true },
-                 { field: "CompanyName", title: "CompanyName", width: 140 },
-                 { field: "RevisionNo", title: "RevisionNo", width: 100 },
-                 { field: "SubmissionType", title: "SubmissionType", width: 120 },
-                 { field: "LicenseNo", title: "LicenseType & No", width: 120 },
-                 { field: "LicenseType", title: "LicenseType", width: 100 },
-                 { field: "SubmissionDate", title: "SubmissionDate", width: 120 },
-                 { field: "InspectionDate", title: "InspectionDate", width: 120 },
-                 { field: "ValidUpto", title: "ValidUpto", width: 120 },
-                 { field: "ApprovalDate", title: "ApprovalDate", width: 120 },
-                // { field: "GenericName", title: "GenericName", width: 100, hidden: true },
-                //{ field: "BrandName", title: "BrandName", width: 100, hidden: true },
-                //{ field: "AnnualQuota", title: "AnnualQuota", width: 100, hidden: true },
-                //{ field: "SubQty", title: "SubQty", width: 100, hidden: true },
-                //{ field: "SubDGDA", title: "SubDGDA", width: 100, hidden: true },
-                //{ field: "ApproveDGDA", title: "ApproveDGDA", width: 100, hidden: true },
-                //{ field: "SubNercotic", title: "SubNercotic", width: 100, hidden: true },
-                //{ field: "ImportQtyPerYr", title: "ImportQtyPerYr", width: 100, hidden: true },
-                //{ field: "ImportQtyCurYr", title: "ImportQtyCurYr", width: 100, hidden: true },
-                //{ field: "ImportPurpose", title: "ImportPurpose", width: 100, hidden: true },
-                //{ field: "PermitApprovalDate", title: "PermitApprovalDate", width: 100, hidden: true },
-                //{ field: "ImportDate", title: "ImportDate", width: 100, hidden: true },
-                //{ field: "ImportQty", title: "ImportQty", width: 100, hidden: true },
-                //{ field: "RecSentNarc", title: "RecSentNarc", width: 100, hidden: true },
-                //{ field: "InsRptRcvNarc", title: "InsRptRcvNarc", width: 100, hidden: true },
-                //{ field: "SubInsRptNhq", title: "SubInsRptNhq", width: 100, hidden: true },
-                //{ field: "SubInsRptNarc", title: "SubInsRptNarc", width: 100, hidden: true },
-                //{ field: "FinalImpPermit", title: "FinalImpPermit", width: 100, hidden: true },
-                //{ field: "RMImpQty", title: "RMImpQty", width: 100, hidden: true },
-                //{ field: "SendToPPIC", title: "SendToPPIC", width: 100, hidden: true },
-                //{ field: "PPICLocalApp", title: "PPICLocalApp", width: 100, hidden: true },
-                //{ field: "InsSampleCall", title: "InsSampleCall", width: 100, hidden: true },
-                //{ field: "SampleRec", title: "SampleRec", width: 100, hidden: true },
-                //{ field: "RPTDispatch", title: "RPTDispatch", width: 100, hidden: true },
-                //{ field: "PPICSent", title: "PPICSent", width: 100, hidden: true },
-                //{ field: "PPICApplyNarc", title: "PPICApplyNarc", width: 100, hidden: true },
-                //{ field: "RptForwrdRcv", title: "RptForwrdRcv", width: 100, hidden: true },
-                //{ field: "DivToDnc", title: "DivToDnc", width: 100, hidden: true },
-                //{ field: "FinalPermit", title: "FinalPermit", width: 100, hidden: true },
-                //{ field: "DeliverToIMD", title: "DeliverToIMD", width: 100, hidden: true },
-                //{ field: "DivToDnc", title: "DivToDnc", width: 100 },
-
-
+                { field: "ID", hidden: true },
+                { field: "CompanyCode", title: "Code", width: 70, hidden: true },
+                { field: "CompanyName", title: "CompanyName", width: 140 },
+                { field: "LicenseName", title: "LicenseName", width: 140 },
+                {
+                    field: "DgdaSubmissionDate",
+                    title: "Date of Submission to DGDA",
+                    width: 120,
+                    template: "#= DgdaSubmissionDate ? kendo.toString(kendo.parseDate(DgdaSubmissionDate), 'dd.MM.yyyy') : '' #"
+                },
+                {
+                    field: "DgdaRecommendationDate",
+                    title: "DGDA recommendation approval Date",
+                    width: 100,
+                    template: "#= DgdaRecommendationDate ? kendo.toString(kendo.parseDate(DgdaRecommendationDate), 'dd.MM.yyyy') : '' #"
+                },
+                {
+                    field: "InsReceiveDate",
+                    title: "Inspection report received from DNC Local office",
+                    width: 100,
+                    template: "#= InsReceiveDate ? kendo.toString(kendo.parseDate(InsReceiveDate), 'dd.MM.yyyy') : '' #"
+                },
+                {
+                    field: "DivNarcRecvDate",
+                    title: "Inspection report received from DNC Divisional office",
+                    width: 120,
+                    template: "#= DivNarcRecvDate ? kendo.toString(kendo.parseDate(DivNarcRecvDate), 'dd.MM.yyyy') : '' #"
+                },
+                {
+                    field: "DncSendDate",
+                    title: "Date of Submission to DNC Head Office",
+                    width: 100,
+                    hidden: true,
+                    template: "#= DncSendDate ? kendo.toString(kendo.parseDate(DncSendDate), 'dd.MM.yyyy') : '' #"
+                },
+                {
+                    field: "NarcApvlDate",
+                    title: "DNC Approval Date",
+                    width: 120,
+                    template: "#= NarcApvlDate ? kendo.toString(kendo.parseDate(NarcApvlDate), 'dd.MM.yyyy') : '' #"
+                },
+                { field: "REMARKS", title: "REMARKS", width: 120 },
+                { command: [{ name: "View", text: "View", imageClass: "fa fa-hand-o-right", click: handleView }], title: "Action", width: "120px", attributes: { "class": "btnView" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } }
             ]
-
         }).data('kendoGrid');
 
+        var fileGrid = $('#FileGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                schema: {
+                    model: {
+                        id: "FileID",
+                        fields: {
+                            FileID: { editable: false },
+                            FileCode: { editable: false },
+                            Extention: { editable: false },
+                            FileName: { editable: false },
+                            RefNo: { editable: false },
+                            FileSize: { editable: false }
+                        }
+                    }
+                },
+                pageSize: 10
+            }),
+            pageable: true,
+            scrollable: true,
+            toolbar: [{
+                template: "<label style='float:left; margin:5px 10px 0 0;'>Documents Information:</label>"
+            },],
+
+            sortable: true,
+            filterable: true,
+            height: 250,
+            columns: [
+                { field: "RefNo", title: "Document Name" },
+                { field: "FileName", title: "File Name" },
+                { field: "FileSize", title: "Size(MB)" },
+                {
+                    command: [{
+                        name: "Download",
+                        text: "Download",
+                        click: function (e) {
+                            e.preventDefault();
+                            var dataItem = fileGrid.dataItem($(e.currentTarget).closest("tr"));
+                            window.location.href =
+                                '/General/Download?path=' + dataItem.FileCode + dataItem.Extention +
+                                '&fileName=' + dataItem.FileName +
+                                '&fileId=' + dataItem.FileID;
+                        }
+                    }],
+                    title: "Action",
+                    width: 120
+                }
+            ]
+        }).data("kendoGrid");
+
+        function handleView(event) {
+            event.preventDefault();
+            var selectRow = MainGrid.dataItem($(event.currentTarget).closest("tr"));
+            console.log("Selected row:", selectRow);
+
+            var refLevel1 = selectRow.NarcoticSetupSl;
+            if (!refLevel1) {
+                console.error("Cannot find NarcoticSetupSl on selected row. Keys:", Object.keys(selectRow));
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("GetUploadedLicense", "TabNarcotics")',
+                type: 'GET',
+                data: { refLevel1: refLevel1, refLevel2: "" },
+                success: function (result) {
+                    console.log("Files returned:", result);
+                    var files = Array.isArray(result) ? result : [];
+                    $("#FileGrid").data("kendoGrid").dataSource.data(files);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching files:", error);
+                }
+            });
+        }
 
         $('#btnView').click(function () {
-
             var model = {};
             model.CompanyCode = $('#CompanyCode').val();
-            model.GenericCode = $('#GenericCode').val();
-            model.Type = $('#Type').val();
-            model.FiscalYear = $('#FiscalYear').val();
+            model.LicenseName = $('#LicenseId').val();
             model.RecordStatus = $('#RecordStatus').val();
+
             $.ajax({
-                url: '@Url.Action("GetReportNarcoticLicense", "NarcoticLicense")',
+                url: '@Url.Action("GetReportLicenseInfo", "NarcoticLicense")',
                 data: JSON.stringify(model),
                 type: 'POST',
                 contentType: 'application/json;',
                 dataType: 'json',
                 success: function (data) {
-                    if (data != "") {
+                    if (data && data.length > 0) {
                         $('#MainGrid').data('kendoGrid').dataSource.data(data);
-                    }
-                    else {
-
+                    } else {
+                        $('#MainGrid').data('kendoGrid').dataSource.data([]);
                         AcknowledgeMsg();
                     }
                 }
             });
-
-        });
-        $('#btnReset').click(function () {
-            ResetData();
         });
 
     });
 
 </script>
-
-
-
-

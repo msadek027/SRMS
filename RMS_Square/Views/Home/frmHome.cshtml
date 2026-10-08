@@ -59,10 +59,10 @@
     .BoxStyle {
         border: double;
         background-color: #e0faff;
-        padding-bottom: 20px;
-        margin: 35px;
-        border-radius: 25px;
-        height: 210px;
+        padding-bottom: 5px;
+        margin: 25px;
+        border-radius: 20px;
+        height: 170px;
     }
 
     .divGap {
@@ -119,6 +119,12 @@
             margin-top: 0px !important;
         }
 
+        /* Add New */
+        .select2-container .select2-selection--single .select2-selection__rendered {
+            white-space: normal !important;
+            word-break: break-word;
+        }
+
         /* Arrow adjustment */
         .select2-container--default .select2-selection--single .select2-selection__arrow {
             height: 40px !important;          
@@ -145,6 +151,43 @@
         .select2-search--dropdown .select2-search__field {
             padding-right: 20px !important;
         }
+
+
+
+
+    .filter-select {
+        height: 40px !important;
+        width: 150px;
+        font-size: 14px;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+        /* When focused/clicked */
+        .filter-select:focus {
+            color: white;
+            border-color: green;
+            box-shadow: 0 0 0 2px rgba(0, 128, 0, 0.15);
+            outline: none;
+        }
+
+        /* Dropdown options */
+        .filter-select option {
+            /*color: #333;
+            background: #fff;*/
+            background-color: #009688 !important;
+            color: white !important;
+            border-color: green;
+        }
+
+            .filter-select option:checked {
+                background: green;
+                color: white;
+            }
 </style>
 
 <div class="box-body" id="divFirst">
@@ -152,20 +195,21 @@
     <div class="row">
         <div class="col-md-7">
 
-            <div class="btn-group" style="display: flex; align-items: center; gap: 4px; width: 100%;">
-                <!-- Company Selector (Fixed Width) -->
-                <select id="CompanyCode" name="CompanyCode" class="form-control input-sm"  style="height: 40px; font-size: 14px; width: 90px;">
-                    <option value="All">&#x1F50D;</option>
+            <div class="btn-group" style="display: flex; align-items: center; gap: 0px; width: 100%;">
+           
+                <select id="CompanyCode" name="CompanyCode" class="form-control input-sm filter-select" style="height: 40px; font-size: 14px; width: 150px; background-color: #009688; color: white; ">
+                    <option value="All" selected>FILTER </option>
                     <option value="0001">SPPLC (Pabna Unit)</option>
                     <option value="0002">SPPLC (Dhaka Unit)</option>
                     <option value="0004">SPPLC (CD)</option>
                     <option value="0005">SPPLC (Herbal)</option>
                     <option value="0006">SPPLC (Ayurvedic)</option>
                     <option value="0007">SLL</option>
+                    <option value="0008">SPPLC (Patikabari Unit)</option>
                 </select>
+            
                 <!-- Product Dropdown (Flexible) -->
-                <select id="ProductCode" name="ProductCode" class="form-control input-sm"
-                        style="height: 40px; font-size: 14px; flex-grow: 1;">
+                <select id="ProductCode" name="ProductCode" class="form-control input-sm" style="height: 40px; font-size: 14px; flex-grow: 1;">
                     <option></option>
                 </select>
                 <!-- Search Button (Fixed Width) -->
@@ -246,7 +290,7 @@
         <div id="divPending">
             <div class="row">
                 <div class="col-md-3"></div>
-                <div class="col-md-6">
+                <div class="col-md-6" hidden>
                     <button class="btn btn-lg btn-primary" id="btnPendingSummary" style="width:100%;" type="button" data-toggle="collapse" data-target="#collapsePending">
                         Pending Summary
                     </button>
@@ -288,12 +332,6 @@
         </div>
 
 
-
-
-        @*<div id="ProductWindow" class="PopupWindowLayout" style="display: none;">
-            <div id="ProductWindowGrid" class="PopUpGrid"></div>
-        </div>*@
-
         <div id="FileWindow" class="PopupWindowLayout" style="display: none;">
             <div id="FileGrid" class="PopUpGrid"></div>
         </div>
@@ -321,12 +359,9 @@
         </div>
 
 
-        <div id="ProductSummaryWindow" class="PopupWindowLayout" style="display: none;">
-            <h1 style="text-align:center;"><u><b>Product Summary</b></u></h1>
-            <br />
+        <div id="ProductSummaryWindow" class="PopupWindowLayout" style="display: none;">       
             <div class="row">
-                <div class="form-group">
-                    <div class="col-md-1"></div>
+                <div class="form-group">                
                     <div class="col-md-1"><b>Brand Name</b></div>
                     <div class="col-md-2"><input type="text" id="BrandNameModal" name="BrandNameModal" maxlength="50" style="width:100%" readonly /></div>
                     <div class="col-md-1"><b>Generic Name</b></div>
@@ -335,7 +370,7 @@
                     <div class="col-md-2"><input type="text" id="CompanyNameModal" name="CompanyNameModal" maxlength="50" style="width:100%" readonly /></div>
                 </div>
             </div>
-            <br />
+  
             <div class="row">
                 <div class="col-md-3 BoxStyle">
                     <h3 style="text-align:center">Recipe</h3>
@@ -410,7 +445,7 @@
                     <div class="col-lg-5"><button class="btn btn-md btn-flat" id="btnREGDownload"> Download </button></div>
                 </div>
             </div>
-            <br />
+      
             <div class="row">
 
                 <div class="col-md-3 BoxStyle">
@@ -545,19 +580,35 @@
             });
         }
        
+        function toggleProductFilter() {
+            var companyCode = $('#CompanyCode').val();
+
+            if (companyCode === 'All') {
+                $('#ProductCode').val(null).trigger('change');
+                $('#ProductCode').prop('disabled', true);
+            } else {
+                $('#ProductCode').prop('disabled', false);
+            }
+        }
+        
         $('#ProductCode').select2({
-            placeholder: "Search by Brand or Generic",
+            placeholder: "Search by brand name or generic name",
             allowClear: true,
             width: '100%',
             templateResult: formatProduct,
             templateSelection: formatProductSelection,
             escapeMarkup: function (markup) { return markup; }
         });
+     
+
+   
+
         $('#CompanyCode').on('change', function () {
             var CompanyCode = $(this).val();
+            toggleProductFilter();
             GetProduct(CompanyCode);
         });
-
+        toggleProductFilter();
         // Initial call if needed
         GetProduct($('#CompanyCode').val());
 
@@ -586,6 +637,8 @@
                             })
                         );
                     });
+
+                    $('#ProductCode').val(null).trigger('change.select2');
                 },
                 error: function () {
                     alert("Failed to load...");
@@ -609,14 +662,21 @@
             `;
         }
 
-    //    function formatProductSelection(option) {
-    //        if (!option.id) return option.text;
+        function formatProductSelection(option) {
+            if (!option.id) {
+                return option.text || "Search by brand name or generic name"; 
+            }
 
-    //        const brand = $(option.element).data('brand') || '';
-    //        const generic = $(option.element).data('generic') || '';
-    //        return `${brand} (${generic})`;
-    //}
-    function formatProductSelection(option) {
+            const brand = $(option.element).data('brand') || '';
+            const generic = $(option.element).data('generic') || '';
+
+            if (!brand && !generic) {
+                return option.text;
+            }
+
+            return `${brand} (${generic})`;
+    }  
+    function formatProductSelection2(option) {
         if (!option.id) {
             return ''; // or return 'Select a product';
         }
@@ -647,7 +707,8 @@
                             Prod_Reg: { editable: false,  type: "number"},
                             Price: { editable: false,  type: "number"},
                             MA: { editable: false, type: "number" },
-                            Amendment: { editable: false , type: "number"}
+                            Amendment: { editable: false , type: "number"},
+                            Narcotics: { editable: false , type: "number"}
                         }
                     }
                 },
@@ -657,7 +718,8 @@
         { field: "Prod_Reg", aggregate: "sum" },
         { field: "Price", aggregate: "sum" },
         { field: "MA", aggregate: "sum" },
-        { field: "Amendment", aggregate: "sum" }
+        { field: "Amendment", aggregate: "sum" },
+        { field: "Narcotics", aggregate: "sum" }
                 ],
                 pageSize: 50
             }),
@@ -705,7 +767,7 @@
                   { field: "Price", title: "Price", width: "100px", filterable: false, sortable: false,  headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>"},
                   { field: "MA", title: "MA Certificate", width: "110px", filterable: false, sortable: false, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>"},
                   { field: "Amendment", title: "Amendment", width: "110px", filterable: false, sortable: false, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>"},
-                
+                  { field: "Narcotics", title: "Narcotics", width: "110px", filterable: false, sortable: false, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>"},
             ]
         }).data('kendoGrid');
 
@@ -844,7 +906,7 @@
             });
         });
 
-        /*****************************  Company End  *************************************/
+
 
         /*****************************  Pending Grid Start  *************************************/
 
@@ -888,7 +950,8 @@
                             Prod_Reg: { editable: false,  type: "number"},
                             Price: { editable: false,  type: "number"},
                             MA: { editable: false, type: "number" },
-                            Amendment: { editable: false , type: "number"}
+                            Amendment: { editable: false , type: "number"},
+                            Narcotics: { editable: false , type: "number"}
                         }
                     }
                 },
@@ -898,7 +961,8 @@
                 { field: "Prod_Reg", aggregate: "sum" },
                 { field: "Price", aggregate: "sum" },
                 { field: "MA", aggregate: "sum" },
-                { field: "Amendment", aggregate: "sum" }
+                { field: "Amendment", aggregate: "sum" },
+                { field: "Narcotics", aggregate: "sum" }
                 ],
                 pageSize: 50
             }),
@@ -946,6 +1010,7 @@
                  { field: "Price", title: "Price", width: "100px", filterable: false, sortable: false,  headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>"},
                  { field: "MA", title: "MA Certificate", width: "110px", filterable: false, sortable: false, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>"},
                  { field: "Amendment", title: "Amendment", width: "110px", filterable: false, sortable: false, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>"},
+                 { field: "Narcotics", title: "Narcotics", width: "110px", filterable: false, sortable: false, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px; text-align: center;" }, footerTemplate: "<span class='footer-clickable'>#= kendo.toString(sum, 'n0') #</span>"},
                 
             ]
         }).data('kendoGrid');
@@ -1085,11 +1150,15 @@
         });
 
         function ShowSummary() {
-            if ($('#ProductCode').val() == "") {
+     
+            if ($('#ProductCode').val() == "" || $('#ProductCode').val() == "All") {
                 alert("Please Select Product First!");
                 return false;
             }
-            
+            if ($('#CompanyCode').val() == "" || $('#CompanyCode').val() == "All") {
+                alert("Please Select Company First!");
+                return false;
+            }
             $.ajax({
                 url: '/Home/ShowProductSummary',
                 method: 'post',
@@ -1098,10 +1167,13 @@
                 dataType: 'json',
                 success: function (data) {
                     if (data != "") {
+                        debugger;
+          
 
-                        $('#BrandName').val(data.BrandName);
-                        $('#GenericCode').val(data.GenericCode);
-                        //$('#CompanyCode').val(data.CompanyCode);
+                        $('#BrandNameModal').val(data.BrandName);
+                        $('#GenericNameModal').val(data.GenericCode);
+                        $('#CompanyNameModal').val(data.CompanyCode);
+
                         $('#ProductSpecification').val(data.ProductSpecification);
                         $('#RCPID').val(data.RCPID);
                         $('#RCPSubmissionDate').val(data.RCPSubmissionDate);

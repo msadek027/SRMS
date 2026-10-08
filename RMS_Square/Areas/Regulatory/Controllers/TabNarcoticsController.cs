@@ -81,26 +81,67 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         }
 
         [HttpPost]
+        public ActionResult SaveLicenseEntry(LicenseEntryItemInfo model)
+        {
+            try
+            {
+                string userId = Session["UserID"] as string;
+                if (primaryDAO.SaveLicenseEntry(model, userId))
+                {
+                    return Json(new { ID = primaryDAO.MaxID, Mode = primaryDAO.IUMode, Status = "Yes", LicenseId = model.LicenseId });
+                }
+                else
+                {
+                    return Json(new { Status = "Failed to save entry item!" });
+                }
+            }
+            catch (Exception e)
+            {
+                if (e.Message.StartsWith("ORA-00001"))
+                    return Json(new { Status = "Error:ORA-00001, Data already exists!" });
+                else if (e.Message.StartsWith("ORA-02292"))
+                    return Json(new { Status = "Error:ORA-02292, Child record found!" });
+                else if (e.Message.StartsWith("ORA-12899"))
+                    return Json(new { Status = "Error:ORA-12899, Data value too large!" });
+                else
+                    return Json(new { Status = "! Error : " + e.Message });
+            }
+        }
+
+        [HttpPost]
         public ActionResult GetNarcoticItems(string CompanyCode, string ButtonEvent)
         {
-            var data = primaryDAO.GetNarcoticLists();
+            var data = primaryDAO.GetNarcoticLists(CompanyCode);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult GetLicenseItems(string CompanyCode, string ButtonEvent)
+        {
+            var data = primaryDAO.GetLicenseLists(CompanyCode);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         [AcceptVerbs(HttpVerbs.Get)]
-        public ActionResult GetAllItems()
+        public ActionResult GetAllItems(string companyCode)
         {
-            var data = new NarcoticInfoDAO().GetItemList();
+            var data = new NarcoticInfoDAO().GetItemList(companyCode);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult GetAllLicense(string companyCode)
+        {
+            var data = new NarcoticInfoDAO().GetLicenseList(companyCode);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
 
-        [HttpGet] // Explicitly specify this is a GET endpoint
-        public ActionResult GetViewItems()
+        [HttpGet]
+        public ActionResult GetViewItems(string companyCode)
         {
             try
             {
-                var data = primaryDAO.GetViewLists();
+                var data = primaryDAO.GetViewLists(companyCode);
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -109,13 +150,12 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             }
         }
 
-
-        [HttpGet] // Explicitly specify this is a GET endpoint
-        public ActionResult GetEntryInfoItems()
+        [HttpGet]
+        public ActionResult GetEntryInfoItems(string companyCode)
         {
             try
             {
-                var data = primaryDAO.GetEntryInfoLists();
+                var data = primaryDAO.GetEntryInfoLists(companyCode);
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -123,6 +163,22 @@ namespace RMS_Square.Areas.Regulatory.Controllers
                 return Json(new { error = "An error occurred while fetching narcotic items" }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpGet]
+        public ActionResult GetEntryInfoLicense(string companyCode)
+        {
+            try
+            {
+                // Replace with an existing method from NarcoticInfoDAO, e.g., GetLicenseList
+                var data = primaryDAO.GetEntryInfoLicense(companyCode);
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = "An error occurred while fetching licenses" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
 
         public ActionResult UploadFile(string refLevel1, string refLevel2, string fileSize, string refNo)
         {
@@ -169,7 +225,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         public ActionResult GetFileByRefId(string refLevel1, string refLevel2)
         {
             _fileModel = new FileDetailModel();
-            _fileModel.FileType = (int)Enums.E_FormFileType.MeetingInfo;
+            _fileModel.FileType = (int)Enums.E_FormFileType.NarcoticsEntryInfo;
             _fileModel.RefLevel1 = refLevel1;
             _fileModel.RefLevel2 = refLevel2;
             return Json(GetFileByParameters(_fileModel).OrderBy(o => o.FileID), JsonRequestBehavior.AllowGet);
@@ -180,13 +236,21 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         {
             try
             {
-                var fileList = GetFileByParameters(new FileDetailModel
+                // Call existing function (cannot change)
+                var allFiles = GetFileByParameters(new FileDetailModel
                 {
                     RefLevel1 = genericBrandId.ToString(),
                     RefNo = documentName
                 }).OrderByDescending(o => o.FileID).ToList();
 
-                return Json(fileList, JsonRequestBehavior.AllowGet);
+                // Filter manually in C# to make sure only correct brand/document remain
+                var filteredFiles = allFiles
+                    .Where(f => f.RefLevel1 == genericBrandId.ToString()
+                             && f.RefNo == documentName)
+                    .OrderByDescending(f => f.FileID)
+                    .ToList();
+
+                return Json(filteredFiles, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -194,5 +258,15 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult GetUploadedLicense(string refLevel1, string refLevel2)
+        {
+            _fileModel = new FileDetailModel();
+            _fileModel.FileType = (int)Enums.E_FormFileType.NarcoticsEntryInfo;
+            _fileModel.RefLevel1 = refLevel1;
+            _fileModel.RefLevel2 = refLevel2;
+            return Json(GetFileByParameters(_fileModel).OrderBy(o => o.FileID), JsonRequestBehavior.AllowGet);
+
+        }
     }
 }

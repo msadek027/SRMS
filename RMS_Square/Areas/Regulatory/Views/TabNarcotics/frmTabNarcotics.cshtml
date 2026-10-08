@@ -5,9 +5,163 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <link href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" rel="stylesheet" />
 <link href="~/Content/CSS/InputText.css" rel="stylesheet" />
-
+<style>
+    #tabs,
+    #tabs * {
+        font-family: Tahoma, sans-serif !important;
+    }
+</style>
 <script type="text/javascript">
     $(document).ready(function () {
+
+
+        $('#SubmissionType').change(function () {
+            var subType = $(this).val();
+            if (subType === "Export") {
+                $('#divCountryName').show();
+            } else {
+                $('#divCountryName').hide();
+                $('#CountryName').val(''); // Export না হলে ফিল্ড ক্লিয়ার করে দিবে
+            }
+        });
+        // ==========================================
+        // Auto File Upload for Tab 3 (Entry Info)
+        // ==========================================
+        $('#UploadFile').on('change', function (e) {
+            var refLevel1 = $("#GenericBrandId").val();
+            var refLevel2 = $("#NarcoticEntrySl").val(); // Primary Key
+            var refNo = $("#DocumentName").val();
+
+            if (!refNo) {
+                toastr.warning("Please select a Document Name first.");
+                $(this).val(''); // Clear file selection
+                return;
+            }
+            if (!refLevel1 || !refLevel2) {
+                toastr.warning("Please save the Entry Info first before uploading documents.");
+                $(this).val('');
+                return;
+            }
+
+            var files = e.target.files;
+            if (files.length > 0) {
+                var fileExtension = files[0].name.split('.').pop().toLowerCase();
+                if (fileExtension !== 'pdf') {
+                    toastr.warning("Only PDF files are allowed.");
+                    $(this).val('');
+                    return;
+                }
+
+                var iSize = (files[0].size / 1024);
+                var fileSize = (Math.round((iSize / 1024) * 100) / 100);
+
+                if (fileSize > 25) {
+                    toastr.warning('File size is ' + fileSize + ' MB. Maximum allowed size is 25 MB.');
+                    $(this).val('');
+                    return;
+                }
+
+                var formData = new FormData();
+                formData.append("file0", files[0]);
+
+                $("#divLoading").show();
+                $.ajax({
+                    url: '/Regulatory/TabNarcotics/UploadFile?refLevel1=' + refLevel1 + '&refLevel2=' + refLevel2 + '&fileSize=' + fileSize + '&refNo=' + refNo,
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (result) {
+                        $("#divLoading").hide();
+                        if (result.Status == "Yes" && result.msgType == "FUS") {
+                            toastr.success("File uploaded successfully!");
+                            $("#Tab3FileGrid1").data("kendoGrid").dataSource.data(result.FileList);
+                            $("#DocumentName").val(''); // Reset dropdown
+                        } else if (result.msgType == "FLI") {
+                            toastr.warning("File upload limit exceeded.");
+                        } else {
+                            toastr.error(result.Status || "Error uploading file.");
+                        }
+                        $('#UploadFile').val(''); // Clear input for next upload
+                    },
+                    error: function () {
+                        $("#divLoading").hide();
+                        toastr.error("Error occurred while uploading file.");
+                        $('#UploadFile').val('');
+                    }
+                });
+            }
+        });
+
+        // ==========================================
+        // Auto File Upload for Tab 5 (License Info)
+        // ==========================================
+        $('#UploadFileTab5').on('change', function (e) {
+            var refLevel1 = $("#NarcoticSetupSl").val();
+            var refLevel2 = $("#LicenseId").val(); // Primary Key
+            var refNo = $("#DocumentNameTab5").val();
+
+            if (!refNo) {
+                toastr.warning("Please select a Document Name first.");
+                $(this).val('');
+                return;
+            }
+            if (!refLevel1 || !refLevel2) {
+                toastr.warning("Please save the License Info first before uploading documents.");
+                $(this).val('');
+                return;
+            }
+
+            var files = e.target.files;
+            if (files.length > 0) {
+                var fileExtension = files[0].name.split('.').pop().toLowerCase();
+                if (fileExtension !== 'pdf') {
+                    toastr.warning("Only PDF files are allowed.");
+                    $(this).val('');
+                    return;
+                }
+
+                var iSize = (files[0].size / 1024);
+                var fileSize = (Math.round((iSize / 1024) * 100) / 100);
+
+                if (fileSize > 25) {
+                    toastr.warning('File size is ' + fileSize + ' MB. Maximum allowed size is 25 MB.');
+                    $(this).val('');
+                    return;
+                }
+
+                var formData = new FormData();
+                formData.append("file0", files[0]);
+
+                $("#divLoading").show();
+                $.ajax({
+                    url: '/Regulatory/TabNarcotics/UploadFile?refLevel1=' + refLevel1 + '&refLevel2=' + refLevel2 + '&fileSize=' + fileSize + '&refNo=' + refNo,
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (result) {
+                        $("#divLoading").hide();
+                        if (result.Status == "Yes" && result.msgType == "FUS") {
+                            toastr.success("File uploaded successfully!");
+                            $("#Tab5FileGrid1").data("kendoGrid").dataSource.data(result.FileList);
+                            $("#DocumentNameTab5").val(''); // Reset dropdown
+                        } else if (result.msgType == "FLI") {
+                            toastr.warning("File upload limit exceeded.");
+                        } else {
+                            toastr.error(result.Status || "Error uploading file.");
+                        }
+                        $('#UploadFileTab5').val('');
+                    },
+                    error: function () {
+                        $("#divLoading").hide();
+                        toastr.error("Error occurred while uploading file.");
+                        $('#UploadFileTab5').val('');
+                    }
+                });
+            }
+        });
+
         $('#btnReset').click(function () {
             var companyCode = $("#CompanyCode").val();
             var companyName = $("#CompanyName").val();
@@ -17,9 +171,11 @@
             $("#CompanyName").val(companyName);
             $("#Address").val(companyAddress);
             $("#ItemWindowGrid").data("kendoGrid").dataSource.data([]);
+            $("#LicenseWindowGrid").data("kendoGrid").dataSource.data([]);
             $("#frameID").attr("height", 0);
             $("#frameID").attr("src", "");
             $("#Tab3FileGrid1").data("kendoGrid").dataSource.data([]);
+            $("#Tab5FileGrid1").data("kendoGrid").dataSource.data([]);
         });
 
         $("#btnRevisionTab3").click(function () {
@@ -32,7 +188,28 @@
             options.push('<option value="Packaging Amendment">Packaging Amendment</option>');
             $("#RecordStatus").html(options.join(''));
             $("#Tab3FileGrid1").data("kendoGrid").dataSource.data([]);
+            $("#Tab5FileGrid1").data("kendoGrid").dataSource.data([]);
         });
+        //Add
+        $("#btnRevisionTab5").click(function () {
+            $('#Tab5AnnexId').val('');
+            $('#Tab5AnnexRevisionNo').val('');
+            var options = new Array();
+            options.push('<option value="">--Select Any--</option>');
+            options.push('<option value="New">New</option>');
+            options.push('<option value="Renew">Renew</option>');
+            $("#RecordStatusTab5").html(options.join(''));
+            $("#Tab5FileGrid1").data("kendoGrid").dataSource.data([]);
+        });
+
+        $('#RecordStatusTab5').change(function () {
+            var status = $('#RecordStatusTab5').val();
+            if (status == "Renew") {
+                $("#divRenew").find('input, textarea, select').val('');
+            }
+            CheckPagePartAccessPrivilegeTab($('#CompanyCode').val(), ButtonEvent, status);
+        });
+        //=====
 
         $('#RecordStatus').change(function () {
             var status = $('#RecordStatus').val();
@@ -92,13 +269,20 @@
             $(this).addClass('active-tab');
         });
 
-        function GetView(CompanyCode, ButtonEvent) {debugger
+        function GetView(CompanyCode, ButtonEvent) {
             switch (ButtonEvent) {
                 case "View Item":
                     $('#btnReset').prop('disabled', true);
                     $('#btnSave').prop('disabled', true);
                     $('#btnView').prop('disabled', true);
-                    GetNarcoticsDetails('/Regulatory/TabNarcotics/GetNarcoticItems');
+                    GetNarcoticsDetails('/Regulatory/TabNarcotics/GetNarcoticItems', CompanyCode, ButtonEvent);
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
+                    break;
+                case "View License":
+                    $('#btnReset').prop('disabled', true);
+                    $('#btnSave').prop('disabled', true);
+                    $('#btnView').prop('disabled', true);
+                    GetLicenseDetails('/Regulatory/TabNarcotics/GetLicenseItems', CompanyCode, ButtonEvent);
                     GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
                     break;
                 case "Setup Info":
@@ -108,6 +292,12 @@
                     GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
                     break;
                 case "Entry Item Info":
+                    $('#btnReset').prop('disabled', false);
+                    $('#btnSave').prop('disabled', false);
+                    $('#btnView').prop('disabled', false);
+                    GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
+                    break;
+                case "Entry License Info":
                     $('#btnReset').prop('disabled', false);
                     $('#btnSave').prop('disabled', false);
                     $('#btnView').prop('disabled', false);
@@ -151,9 +341,10 @@
             });
         }
 
-        function GetNarcoticsDetails(URL) {
+        function GetNarcoticsDetails(URL, CompanyCode, ButtonEvent) {
             $.ajax({
                 url: URL,
+                data: JSON.stringify({ CompanyCode: CompanyCode, ButtonEvent: ButtonEvent }),
                 type: 'POST',
                 contentType: 'application/json;',
                 dataType: 'json',
@@ -163,6 +354,30 @@
                     } else {
                         toastr.info("No data found!");
                         var grid = $("#narcoticsGrid").data("kendoGrid");
+                        if (grid) {
+                            grid.dataSource.data([]);
+                        }
+                    }
+                },
+                error: function () {
+                    alert('Error occurred while fetching items.');
+                }
+            });
+        }
+
+        function GetLicenseDetails(URL, CompanyCode, ButtonEvent) {
+            $.ajax({
+                url: URL,
+                data: JSON.stringify({ CompanyCode: CompanyCode, ButtonEvent: ButtonEvent }),
+                type: 'POST',
+                contentType: 'application/json;',
+                dataType: 'json',
+                success: function (data) {
+                    if (data && data.length > 0) {
+                        InitializeLicenseGrid(data);
+                    } else {
+                        toastr.info("No data found!");
+                        var grid = $("#licenseGrid").data("kendoGrid");
                         if (grid) {
                             grid.dataSource.data([]);
                         }
@@ -244,6 +459,76 @@
             }
         }
 
+        function InitializeLicenseGrid(data) {
+            var originalData = data.slice();
+            var grid = $("#licenseGrid").data("kendoGrid");
+
+            if (!grid) {
+                grid = $("#licenseGrid").kendoGrid({
+                    dataSource: {
+                        data: originalData,
+                        pageSize: 10,
+                        schema: {
+                            model: {
+                                fields: {
+                                    NarcoticSetupSl: { type: "number" },
+                                    LicenseName: { type: "string" }
+                                }
+                            }
+                        }
+                    },
+                    height: 400,
+                    scrollable: true,
+                    sortable: true,
+                    pageable: {
+                        refresh: true,
+                        pageSizes: true,
+                        buttonCount: 5
+                    },
+                    columns: [
+                        { field: "NarcoticSetupSl", title: "ID", width: 100 },
+                        { field: "LicenseName", title: "License Name" }
+                    ],
+                    toolbar: [
+                        "excel",
+                        {
+                            template: '<input id="licenseSearchBox" type="text" placeholder="Search..." style="float:right; margin: 0 10px; width: 200px;" />'
+                        }
+                    ],
+                    excel: {
+                        fileName: "License_Export.xlsx",
+                        allPages: true
+                    }
+                }).data("kendoGrid");
+
+                grid.element.data("originalData", originalData);
+
+                $("#licenseSearchBox").on("keyup", function () {
+                    var searchValue = this.value.toLowerCase();
+                    var grid = $("#licenseGrid").data("kendoGrid");
+                    var originalData = grid.element.data("originalData");
+
+                    if (!searchValue) {
+                        grid.dataSource.data(originalData);
+                        return;
+                    }
+
+                    var filteredData = $.grep(originalData, function (item) {
+                        return (
+                            (item.NarcoticSetupSl && item.NarcoticSetupSl.toString().toLowerCase().includes(searchValue)) ||
+                            (item.LicenseName && item.LicenseName.toLowerCase().includes(searchValue))
+                        );
+                    });
+
+                    grid.dataSource.data(filteredData);
+                });
+            } else {
+                grid.dataSource.data(data);
+                grid.element.data("originalData", data.slice());
+                $("#licenseSearchBox").val("");
+            }
+        }
+
         function SetDetailData(data) {
             if (!data || !Array.isArray(data) || data.length === 0) {
                 toastr.error("No data found!");
@@ -266,21 +551,24 @@
             title: "List of Narcotics"
         }).data("kendoWindow").center();
 
-        $('#btnView').click(function () {debugger
+        $('#btnView').click(function () {
             var activeTabIndex = $("#tabs").tabs("option", "active");
 
             if (activeTabIndex === 0) {
+                var companyCode = $('#CompanyCode').val();
                 ViewPopupWindow.open();
                 $.ajax({
                     url: '/Regulatory/TabNarcotics/GetViewItems',
                     method: 'GET',
+                    data: { companyCode: companyCode },
                     dataType: 'json',
-                    success: function (data) {debugger
+                    success: function (data) {
                         if (data && data.length > 0) {
                             originalGridData = data.slice();
                             PopupGrid.setOptions({
                                 columns: [
                                     { field: "GenericName", title: "Generic Name", width: 200 },
+                                    { field: "LicenseName", title: "License Name", width: 200 },
                                     { field: "NarcoticSetupSl", title: "Setup ID", width: 100 }
                                 ]
                             });
@@ -296,11 +584,14 @@
                         ViewPopupWindow.close();
                     }
                 });
-            } else if (activeTabIndex === 2) {
+            } else if (activeTabIndex === 2)
+            {
+                var companyCode = $('#CompanyCode').val();
                 ViewPopupWindow.open();
                 $.ajax({
                     url: '/Regulatory/TabNarcotics/GetEntryInfoItems',
                     method: 'GET',
+                    data: { companyCode: companyCode },
                     dataType: 'json',
                     success: function (data) {
                         if (data && data.length > 0) {
@@ -311,7 +602,41 @@
                                     { field: "FiscalYear", title: "Fiscal Year", width: 100 },
                                     { field: "AnnualQuota", title: "Annual Quota", width: 100 },
                                     { field: "SubmissionType", title: "Submission Type", width: 120 },
+                                    { field: "SubmissionQuantity", title: "Submission Qty", width: 120 },//New Add
                                     { field: "ApprovedQuantity", title: "Approved Qty", width: 100 }
+                                ]
+                            });
+                            PopupGrid.dataSource.data(data);
+                            $('#txtPopupInput').val('');
+                        } else {
+                            ViewPopupWindow.close();
+                            AcknowledgeMsg();
+                        }
+                    },
+                    error: function () {
+                        alert('Error occurred while loading entry items');
+                        ViewPopupWindow.close();
+                    }
+                });
+            } else if (activeTabIndex === 4) {
+
+                var companyCode = $('#CompanyCode').val();
+                ViewPopupWindow.open();
+                $.ajax({
+                    url: '/Regulatory/TabNarcotics/GetEntryInfoLicense',
+                    method: 'GET',
+                    data: { companyCode: companyCode },
+                    dataType: 'json',
+                    success: function (data) {
+
+                        if (data && data.length > 0) {
+                            originalGridData = data.slice();
+                            PopupGrid.setOptions({
+                                columns: [
+                                    { field: "LicenseId", title: "License ID", width: 100 },
+                                    { field: "LicenseName", title: "License Name", width: 200 },
+                                    { field: "RecordStatus", title: "Record Status", width: 120 },
+                                    { field: "NarcoticSetupSl", title: "Setup SL", width: 100 }
                                 ]
                             });
                             PopupGrid.dataSource.data(data);
@@ -332,7 +657,7 @@
         });
 
 
-        function loadUploadedFiles(genericBrandId, documentName) {
+      /*  function loadUploadedFiles(genericBrandId, documentName) {
             $.ajax({
                 url: '/Regulatory/TabNarcotics/GetUploadedFiles',
                 method: 'GET',
@@ -351,16 +676,62 @@
                     toastr.error("Error loading uploaded files.");
                 }
             });
+        }*/
+
+        function loadUploadedFiles(refLevel1, refLevel2) {
+            debugger
+            $.ajax({
+                url: '/Regulatory/TabNarcotics/GetFileByRefId',
+                method: 'GET',
+                data: {
+                    refLevel1: refLevel1,
+                    refLevel2: refLevel2
+                },
+                success: function (result) {
+                    if (result && Array.isArray(result)) {
+                        // Bind the file list to your Kendo grid
+                        $("#Tab3FileGrid1").data("kendoGrid").dataSource.data(result);
+                    } else {
+                        toastr.warning("No uploaded files found.");
+                    }
+                },
+                error: function () {
+                    toastr.error("Error loading uploaded files.");
+                }
+            });
         }
 
 
+        //==============
+        function loadUploadedLicense(refLevel1, refLevel2) {
+            $.ajax({
+                url: '/Regulatory/TabNarcotics/GetUploadedLicense',
+                method: 'GET',
+                data: {
+                    refLevel1: refLevel1,
+                    refLevel2: refLevel2
+                },
+                success: function (result) {
+                    if (result && Array.isArray(result)) {
+                        $("#Tab5FileGrid1").data("kendoGrid").dataSource.data(result);
+                    } else {
+                        toastr.warning("No uploaded files found.");
+                    }
+                },
+                error: function () {
+                    toastr.error("Error loading uploaded files.");
+                }
+            });
+        }
+        //==============
 
         var PopupGrid = $('#PopupWindowGrid').kendoGrid({
             dataSource: new kendo.data.DataSource({
                 batch: true,
                 pageSize: 10,
             }),
-            pageable: {
+            pageable:
+ {
                 pageSizes: true,
                 buttonCount: 5
             },
@@ -424,7 +795,10 @@
                 SetMasterData(selectRow);
             } else if (activeTabIndex === 2) {
                 SetEntryItemData(selectRow);
-            }
+            }//ADD
+            else if (activeTabIndex === 4) {
+                SetEntryLicenseData(selectRow);
+            }//
         });
 
         function SetEntryItemData(data) {debugger
@@ -434,10 +808,13 @@
             $('#FiscalYear').val(data.FiscalYear);
             $('#AnnualQuota').val(data.AnnualQuota);
             $('#SubmissionType').val(data.SubmissionType);
+            $('#CountryName').val(data.CountryName);
             $('#SubmissionQuantity').val(data.SubmissionQuantity);
             $('#ApprovedQuantity').val(data.ApprovedQuantity);
             $('#RecordStatus').val(data.RecordStatus);
-
+            //Add
+            $('#LicenseName').val(data.LicenseName);
+            //-----
             $('#DgdaReceiveDate').val(formatDate(data.DgdaReceiveDate));
             $('#DgdaSubmissionDate').val(formatDate(data.DgdaSubmissionDate));
             $('#DgdaRecommendationDate').val(formatDate(data.DgdaRecommendationDate));
@@ -448,10 +825,34 @@
             $('#DncSendDate').val(formatDate(data.DncSendDate));
             $('#NarcApvlDate').val(formatDate(data.NarcApvlDate));
 
-            if (data.GenericBrandId && data.ItemName) {
-                loadUploadedFiles(data.GenericBrandId, data.ItemName);
+             // Load uploaded files — refLevel2 should be null/empty
+            if (data.GenericBrandId) {debugger
+                loadUploadedFiles(data.GenericBrandId, data.NarcoticEntrySl);
             }
         }
+
+        //Add
+        function SetEntryLicenseData(data) {
+
+            $('#NarcoticSetupSl').val(data.NarcoticSetupSl);
+            $('#RecordStatusTab5').val(data.RecordStatus);
+            $('#LicenseNameEntry').val(data.LicenseName);
+            $('#LicenseId').val(data.LicenseId);
+            $('#DgdaReceiveDateTab5').val(formatDate(data.DgdaReceiveDate));
+            $('#DgdaSubmissionDateTab5').val(formatDate(data.DgdaSubmissionDate));
+            $('#DgdaRecommendationDateTab5').val(formatDate(data.DgdaRecommendationDate));
+            $('#RecSendDateTab5').val(formatDate(data.RecSendDate));
+            $('#InsReceiveDateTab5').val(formatDate(data.InsReceiveDate));
+            $('#DivSendDateTab5').val(formatDate(data.DivSendDate));
+            $('#DivNarcRecvDateTab5').val(formatDate(data.DivNarcRecvDate));
+            $('#DncSendDateTab5').val(formatDate(data.DncSendDate));
+            $('#NarcApvlDateTab5').val(formatDate(data.NarcApvlDate));
+
+            if (data.NarcoticSetupSl) {
+                loadUploadedLicense(data.NarcoticSetupSl, data.LicenseId);
+            }
+        }
+        //
 
         function formatDate(date) {
             if (!date) return '';
@@ -467,141 +868,20 @@
             }
             return dateString;
         }
-        //============SAVE==============================
-        @*$('#btnSave').click(function () {debugger
-            var activeTabIndex = $("#tabs").tabs("option", "active");
-            var userId = $('#UserId').val();
 
-            if (activeTabIndex === 0) {debugger
-                var Input = InputValidation('GenericName');
-                if (Input == 0) {
-                    var master = {};
-                    master.GenericName = $('#GenericName').val();
-                    master.NarcoticSetupSl = $('#NarcoticSetupSl').val();
-                    master.SetOn = $('#SetOn').val();
-                    master.SetBy = $('#SetBy').val();
-                    $.ajax({
-                        url: '/Regulatory/TabNarcotics/frmTabNarcotics',
-                        data: JSON.stringify(master),
-                        type: 'POST',
-                        contentType: 'application/json;',
-                        dataType: 'json',
-                        success: function (data) {
-                            if (data.Status == "Yes") {
-                                OperationMsg(data.Mode);
-                            } else {
-                                ErrorFrmServerMsg(data.Status);
-                            }
-                        }
-                    });
-                } else {
-                    ValidationMsg();
-                }
-            } else if (activeTabIndex === 2) {debugger
-                var checkInput = InputValidation('DocumentName');
-                if (checkInput != 0) {
-                    toastr.error(OperationMsg("SDN"));
-                    return;
-                }
-                debugger
-                var entryItem = {
-                    NarcoticEntrySl: $('#NarcoticEntrySl').val(),
-                    GenericBrandId: $('#GenericBrandId').val(),
-                    ItemName: $('#GENERIC_BRAND_ID').val(),
-                    FiscalYear: $('#FiscalYear').val(),
-                    AnnualQuota: $('#AnnualQuota').val(),
-                    SubmissionType: $('#SubmissionType').val(),
-                    SubmissionQuantity: $('#SubmissionQuantity').val(),
-                    ApprovedQuantity: $('#ApprovedQuantity').val(),
-                    RecordStatus: $('#RecordStatus').val(),
-                    DgdaReceiveDate: formatDateForBackend($('#DgdaReceiveDate').val()),
-                    DgdaSubmissionDate: formatDateForBackend($('#DgdaSubmissionDate').val()),
-                    DgdaRecommendationDate: formatDateForBackend($('#DgdaRecommendationDate').val()),
-                    RecSendDate: formatDateForBackend($('#RecSendDate').val()),
-                    InsReceiveDate: formatDateForBackend($('#InsReceiveDate').val()),
-                    DivSendDate: formatDateForBackend($('#DivSendDate').val()),
-                    DivNarcRecvDate: formatDateForBackend($('#DivNarcRecvDate').val()),
-                    DncSendDate: formatDateForBackend($('#DncSendDate').val()),
-                    NarcApvlDate: formatDateForBackend($('#NarcApvlDate').val())
-                };
-                debugger
-                var files = $('#UploadFile')[0].files;
-                var refLevel1 = $("#GenericBrandId").val();
-                var refNo = $("#DocumentName").val();
-
-                if (!refLevel1) {
-                    toastr.warning(OperationMsg("FI"));
-                    return;
-                }
-
-                var formData = new FormData();
-                formData.append("entryItem", JSON.stringify(entryItem));
-
-                var fileSize = 0;
-                var fSizeStrg = "";
-                if (files.length > 0) {
-                    for (var f = 0; f < files.length; f++) {
-                        var fileExtension = files[f].name.split('.').pop().toLowerCase();
-                        if (fileExtension !== 'pdf') {
-                            toastr.warning("Only PDF files are allowed.");
-                            return;
-                        }
-                        var iSize = (files[f].size / 1024);
-                        fileSize = (Math.round((iSize / 1024) * 100) / 100);
-                        if (fSizeStrg != "") {
-                            fSizeStrg += ',' + fileSize;
-                        } else {
-                            fSizeStrg = fileSize;
-                        }
-                        if (iSize / 1024 > 25) {
-                            iSize = (Math.round((iSize / 1024) * 100) / 100);
-                            toastr.warning('File size is ' + iSize + ' MB. Maximum allowed size is 25 MB.');
-                            return;
-                        }
-                        formData.append("file" + f, files[f]);
-                    }
-                }
-
-                $("#divLoading").show();debugger
-                $.ajax({
-                    url: '@Url.Action("UploadFile", "TabNarcotics")' + '?refLevel1=' + refLevel1 + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + refNo,
-                    type: 'POST',
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function (result) {debugger
-                        $("#divLoading").hide();
-                        if (result.Status == "Yes" && result.msgType == "FUS") {debugger
-                            toastr.success("Entry item and file saved successfully!");
-                            $("#Tab3FileGrid1").data("kendoGrid").dataSource.data(result.FileList);
-                            $('#tab3Form input').val('');
-                        } else if (result.msgType == "FLI") {
-                            toastr.warning(OperationMsg("FLI"));
-                        } else {
-                            toastr.error(result.Status || "Error saving data or uploading file.");
-                        }
-                    },
-                    error: function () {
-                        $("#divLoading").hide();
-                        toastr.error("Error occurred while saving data or uploading file.");
-                    }
-                });
-            } else {
-                toastr.warning("Save operation is not configured for this tab.");
-            }
-        });*@
 
         $('#btnSave').click(function () {
             var activeTabIndex = $("#tabs").tabs("option", "active");
             var userId = $('#UserId').val();
 
-            if (activeTabIndex === 0) {
-                var Input = InputValidation('GenericName');
-                if (Input == 0) {
+            if (activeTabIndex === 0) {debugger
+               // var Input = InputValidation('GenericName');
+                //if (Input == 0) {
                     var master = {};
                     master.GenericName = $('#GenericName').val();
-                    master.NarcoticSetupSl = $('#NarcoticSetupSl').val();
                     master.CompanyCode = $('#CompanyCode').val();
+                    master.LicenseName = $('#LicenseName').val();
+                    master.NarcoticSetupSl = $('#NarcoticSetupSl').val();
                     master.SetOn = $('#SetOn').val();
                     master.SetBy = $('#SetBy').val();
                     $.ajax({
@@ -618,24 +898,21 @@
                             }
                         }
                     });
-                } else {
-                    ValidationMsg();
-                }
-            } else if (activeTabIndex === 2) {
-                var checkInput = InputValidation('DocumentName');
-                if (checkInput != 0) {
-                    toastr.error(OperationMsg("SDN"));
-                    return;
-                }
-
+                //} else {
+               //     ValidationMsg();
+               // }
+            }
+            else if (activeTabIndex === 2) {
+                debugger
                 var entryItem = {
-                    CompanyCode : $('#CompanyCode').val(),
                     NarcoticEntrySl: $('#NarcoticEntrySl').val(),
                     GenericBrandId: $('#GenericBrandId').val(),
                     ItemName: $('#GENERIC_BRAND_ID').val(),
                     FiscalYear: $('#FiscalYear').val(),
+                    CompanyCode : $('#CompanyCode').val(),
                     AnnualQuota: $('#AnnualQuota').val(),
                     SubmissionType: $('#SubmissionType').val(),
+                    CountryName: $('#SubmissionType').val() === 'Export' ? $('#CountryName').val() : null,
                     SubmissionQuantity: $('#SubmissionQuantity').val(),
                     ApprovedQuantity: $('#ApprovedQuantity').val(),
                     RecordStatus: $('#RecordStatus').val(),
@@ -649,104 +926,95 @@
                     DncSendDate: formatDateForBackend($('#DncSendDate').val()),
                     NarcApvlDate: formatDateForBackend($('#NarcApvlDate').val())
                 };
-
-                var files = $('#UploadFile')[0].files;
-                var refLevel1 = $("#GenericBrandId").val();
-                var refNo = $("#DocumentName").val();
-
-                if (!refLevel1) {
-                    toastr.warning(OperationMsg("FI"));
+                if (entryItem.SubmissionType === 'Export' && !entryItem.CountryName) {
+                    toastr.warning("Please enter Country Name for Export submission.");
                     return;
                 }
+                //var files = $('#UploadFile')[0].files;
+                //var refLevel1 = $("#GenericBrandId").val();
+                //var refLevel2 = $("#NarcoticEntrySl").val();
+                //var refNo = $("#DocumentName").val();
+
+                //if (!refLevel1) {
+                //    debugger
+                //    toastr.warning(OperationMsg("FI"));
+                //    return;
+                //}
 
                 // First, save the entry item
-                $("#divLoading").show();
-
-                $.ajax({
-                    url: '/Regulatory/TabNarcotics/SaveTab3EntryItem', // Make sure this matches your controller action
-                    data: JSON.stringify(entryItem),
-                    type: 'POST',
-                    contentType: 'application/json;',
-                    dataType: 'json',
-                    success: function (entryResult) {
-                        if (entryResult.Status == "Yes") {
-                            // Entry item saved successfully, now handle file upload if there are files
-                            if (files.length > 0) {
-                                // Validate files
-                                var formData = new FormData();
-                                formData.append("entryItem", JSON.stringify(entryItem));
-
-                                var fileSize = 0;
-                                var fSizeStrg = "";
-                                var isValidFiles = true;
-
-                                for (var f = 0; f < files.length; f++) {
-                                    var fileExtension = files[f].name.split('.').pop().toLowerCase();
-                                    if (fileExtension !== 'pdf') {
-                                        toastr.warning("Only PDF files are allowed.");
-                                        $("#divLoading").hide();
-                                        return;
-                                    }
-                                    var iSize = (files[f].size / 1024);
-                                    fileSize = (Math.round((iSize / 1024) * 100) / 100);
-                                    if (fSizeStrg != "") {
-                                        fSizeStrg += ',' + fileSize;
-                                    } else {
-                                        fSizeStrg = fileSize;
-                                    }
-                                    if (iSize / 1024 > 25) {
-                                        iSize = (Math.round((iSize / 1024) * 100) / 100);
-                                        toastr.warning('File size is ' + iSize + ' MB. Maximum allowed size is 25 MB.');
-                                        $("#divLoading").hide();
-                                        return;
-                                    }
-                                    formData.append("file" + f, files[f]);
-                                }
-
-                                // Upload files
-                                $.ajax({
-                                    url: '@Url.Action("UploadFile", "TabNarcotics")' + '?refLevel1=' + refLevel1 + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + refNo,
-                                    type: 'POST',
-                                    data: formData,
-                                    contentType: false,
-                                    processData: false,
-                                    success: function (result) {
-                                        $("#divLoading").hide();
-                                        if (result.Status == "Yes" && result.msgType == "FUS") {
-                                            toastr.success("Entry item and file saved successfully!");
-                                            $("#Tab3FileGrid1").data("kendoGrid").dataSource.data(result.FileList);
-                                            $('#tab3Form input').val('');
-                                        } else if (result.msgType == "FLI") {
-                                            toastr.warning(OperationMsg("FLI"));
-                                        } else {
-                                            toastr.error(result.Status || "Error uploading file.");
-                                        }
-                                    },
-                                    error: function () {
-                                        $("#divLoading").hide();
-                                        toastr.error("Error occurred while uploading file.");
-                                    }
-                                });
-                            } else {
-                                // No files to upload, just show success message
-                                $("#divLoading").hide();
-                                toastr.success("Entry item saved successfully!");
-                                $('#tab3Form input').val('');
-                            }
-                        } else {
-                            $("#divLoading").hide();
-                            toastr.error(entryResult.Status || "Error saving entry item.");
-                        }
-                    },
-                    error: function () {
-                        $("#divLoading").hide();
-                        toastr.error("Error occurred while saving entry item.");
-                    }
-                });
-            } else {
-                toastr.warning("Save operation is not configured for this tab.");
+               $("#divLoading").show();
+        $.ajax({
+            url: '/Regulatory/TabNarcotics/SaveTab3EntryItem',
+            data: JSON.stringify(entryItem),
+            type: 'POST',
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (entryResult) {
+                $("#divLoading").hide();
+                if (entryResult.Status == "Yes") {
+                    $("#NarcoticEntrySl").val(entryResult.ID || $("#NarcoticEntrySl").val());
+                    toastr.success("Entry item saved successfully!");
+                } else if (entryResult.Status == "RecordStatusRequired") {
+                    toastr.warning("This item already exists for this fiscal year. Please change the Record Status to update.");
+                } else {
+                    toastr.error(entryResult.Status || "Error saving entry item.");
+                }
+            },
+            error: function () {
+                $("#divLoading").hide();
+                toastr.error("Error occurred while saving entry item.");
             }
         });
+            }
+                //==Add
+            else if (activeTabIndex === 4) {
+        if (!$('#NarcoticSetupSl').val()) {
+            toastr.warning("Please select a License first.");
+            return;
+        }
+        var entryLicenseItem = {
+            CompanyCode: $('#CompanyCode').val(),
+            NarcoticEntrySl: $('#NarcoticEntrySl').val(),
+            NarcoticSetupSl: Number($('#NarcoticSetupSl').val() || 0),
+            LicenseId: $('#LicenseId').val(),
+            LicenseName: $('#LicenseNameEntry').val(),
+            RecordStatus: $('#RecordStatusTab5').val(),
+            DgdaReceiveDate: formatDateForBackend($('#DgdaReceiveDateTab5').val()),
+            DgdaSubmissionDate: formatDateForBackend($('#DgdaSubmissionDateTab5').val()),
+            DgdaRecommendationDate: formatDateForBackend($('#DgdaRecommendationDateTab5').val()),
+            RecSendDate: formatDateForBackend($('#RecSendDateTab5').val()),
+            InsReceiveDate: formatDateForBackend($('#InsReceiveDateTab5').val()),
+            DivSendDate: formatDateForBackend($('#DivSendDateTab5').val()),
+            DivNarcRecvDate: formatDateForBackend($('#DivNarcRecvDateTab5').val()),
+            DncSendDate: formatDateForBackend($('#DncSendDateTab5').val()),
+            NarcApvlDate: formatDateForBackend($('#NarcApvlDateTab5').val())
+        };
+
+        $("#divLoading").show();
+        $.ajax({
+            url: '/Regulatory/TabNarcotics/SaveLicenseEntry',
+            data: JSON.stringify(entryLicenseItem),
+            type: 'POST',
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (entryResult) {
+                $("#divLoading").hide();
+                if (entryResult.Status == "Yes") {
+                    $("#LicenseId").val(entryResult.ID || $("#LicenseId").val());
+                    toastr.success("Entry license saved successfully!");
+                } else {
+                    toastr.error(entryResult.Status || "Error saving entry license.");
+                }
+            },
+            error: function () {
+                $("#divLoading").hide();
+                toastr.error("Error occurred while saving entry license.");
+            }
+        });
+    } else {
+        toastr.warning("Save operation is not configured for this tab.");
+    }
+});
 
         var ItemWindow = $("#ItemWindow").kendoWindow({
             actions: ["Minimize", "Maximize", "Close"],
@@ -757,11 +1025,26 @@
             title: "List of Item."
         }).data("kendoWindow").center();
 
+        var LicenseWindow = $("#LicenseWindow").kendoWindow({
+            actions: ["Minimize", "Maximize", "Close"],
+            width: "90%",
+            height: "80%",
+            draggable: true,
+            modal: true,
+            title: "List of License."
+        }).data("kendoWindow").center();
+
         $('#btnFind').click(function () {
+            var companyCode = $('#CompanyCode').val();
+            if (!companyCode) {
+                toastr.warning("Please select a company first.");
+                return;
+            }
             ItemWindow.open();
             $.ajax({
                 url: '@Url.Action("GetAllItems", "TabNarcotics")',
                 method: 'get',
+                data: { companyCode: companyCode },
                 dataType: 'json',
                 success: function (data) {
                     if (data != "") {
@@ -774,7 +1057,66 @@
             });
         });
 
+        $('#btnFindLicense').click(function () {
+            var companyCode = $('#CompanyCode').val();
+            if (!companyCode) {
+                toastr.warning("Please select a company first.");
+                return;
+            }
+            LicenseWindow.open();
+            $.ajax({
+                url: '@Url.Action("GetAllLicense", "TabNarcotics")',
+                method: 'get',
+                data: { companyCode: companyCode },
+                dataType: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#LicenseWindowGrid').data('kendoGrid').dataSource.data(data);
+                    } else {
+                        LicenseWindow.close();
+                        AcknowledgeMsg();
+                    }
+                }
+            });
+        });
+
         var itemGrid = $('#ItemWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "GenericBrandId",
+                        fields: {
+                            CompanyCode: { type: "decimal" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable:
+ {
+     pageSizes: true,
+     buttonCount: 10
+ },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            toolbar: [{ template: "<input type='text' id='txtItemKeyword' style='float:right' placeholder='Search...' class='k-textbox'>" }],
+            navigatable: true,
+            height: 430,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                { field: "NarcoticSetupSl", title: "ItemCode", width: 80 },
+                { field: "GenericName", title: "ItemName", width: 100, filterable: { multi: true } }
+            ]
+        }).data('kendoGrid');
+
+        var LicenseGrid = $('#LicenseWindowGrid').kendoGrid({
             dataSource: new kendo.data.DataSource({
                 batch: true,
                 schema: {
@@ -796,7 +1138,7 @@
             filterable: true,
             editable: false,
             selectable: "row",
-            toolbar: [{ template: "<input type='text' id='txtItemKeyword' style='float:right' placeholder='Search...' class='k-textbox'>" }],
+            toolbar: [{ template: "<input type='text' id='txtLicenseKeyword' style='float:right' placeholder='Search...' class='k-textbox'>" }],
             navigatable: true,
             height: 430,
             groupable: { messages: { empty: "Custom message text" } },
@@ -805,19 +1147,50 @@
             resizable: true,
             columns: [
                 { field: "NarcoticSetupSl", title: "ItemCode", width: 80 },
-                { field: "GenericName", title: "ItemName", width: 100, filterable: { multi: true } }
+                { field: "LicenseName", title: "LicenseName", width: 100, filterable: { multi: true } }
             ]
         }).data('kendoGrid');
 
         $('#ItemWindowGrid').dblclick(function () {
+            debugger
             var grid = $(this).data('kendoGrid');
             var selectRow = grid.dataItem(grid.select());
             $('#NarcoticSetupSl').val(selectRow.NarcoticSetupSl);
             $('#GenericBrandId').val(selectRow.NarcoticSetupSl);
             $('#GENERIC_BRAND_ID').val(selectRow.GenericName);
+            $('#NarcoticEntrySl').val('');
             ItemWindow.close();
             changeAny = 1;
         });
+
+        $('#LicenseWindowGrid tbody').on('dblclick', 'tr', function () {
+            debugger
+            var grid = $('#LicenseWindowGrid').data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+            var dataItem = grid.dataItem($(this));
+            $('#NarcoticSetupSl').val(dataItem.NarcoticSetupSl);
+            $('#LicenseId').val('');
+            $('#LicenseNameEntry').val(dataItem.LicenseName);
+            LicenseWindow.close();
+            changeAny = 1;
+            /* if (dataItem) {
+                 LicenseWindow.close();
+
+                 setTimeout(function () {
+                     $('#tabs').tabs('option', 'active', 4); // Activate tab 5
+
+                     setTimeout(function () {
+                         // Set values in tab 5
+                         $('#NarcoticSetupSl').val(dataItem.NarcoticSetupSl);
+                         $('#LicenseId').val('');
+                         $('#LicenseNameEntry').val(dataItem.LicenseName); // Changed
+                         changeAny = 1;
+
+                     }, 600);
+                 }, 200);
+             }*/
+        });
+
 
         $("#txtItemKeyword").keyup(function () {
             var val = $(this).val();
@@ -825,6 +1198,16 @@
                 logic: "or",
                 filters: [
                     { field: "GenericName", operator: "contains", value: val }
+                ]
+            });
+        });
+
+        $("#txtLicenseKeyword").keyup(function () {
+            var val = $(this).val();
+            $("#LicenseWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                    { field: "LicenseName", operator: "contains", value: val }
                 ]
             });
         });
@@ -866,7 +1249,8 @@
             columnMenu: true,
             reorderable: true,
             resizable: true,
-            columns: [
+            columns:
+            [
                 { field: "FileID", hidden: true },
                 { field: "FileCode", hidden: true },
                 { field: "Extention", hidden: true },
@@ -916,6 +1300,76 @@
             var dataItemInfo = fileGrid.dataItem($(event.currentTarget).closest("tr"));
             window.location.href = '@Url.Action("Download", "General")' + '?path=' + dataItemInfo.FileCode + dataItemInfo.Extention + '&fileName=' + dataItemInfo.FileName + '&fileId=' + dataItemInfo.FileID;
         }
+
+
+        var Tab5fileGrid = $('#Tab5FileGrid1').kendoGrid({
+            dataSource: fileDataSource,
+            pageable: {
+                pageSizes: true,
+                buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: true,
+            selectable: "row",
+            toolbar: [{ template: "<input type='text' id='txtFileInput' style='float:right' placeholder='Search...' class='k-textbox'>" }],
+            navigatable: true,
+            groupable: true,
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns:
+            [
+                { field: "FileID", hidden: true },
+                { field: "FileCode", hidden: true },
+                { field: "Extention", hidden: true },
+                { field: "RefNo", title: "Document Name", width: 200, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+                { field: "FileName", title: "File Name", width: 300, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+                { field: "FileSize", filterable: false, title: "Size(MB)", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+                { command: [{ name: "Download", text: "Download", imageClass: "glyphicon glyphicon-download", click: handleDownload }], title: "Download Action", width: "120px", attributes: { "class": "btnDownload" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+                { command: [{ name: "Delete", text: "Delete", imageClass: "glyphicon glyphicon-trash", click: handleFileDelete }], title: "Delete Action", width: "120px", attributes: { "class": "btnDelete" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } }
+            ]
+        }).data('kendoGrid');
+
+        $("#txtFileInput").keyup(function () {
+            var val = $(this).val();
+            $("#Tab5FileGrid1").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                    { field: "RefNo", operator: "contains", value: val },
+                    { field: "FileName", operator: "contains", value: val },
+                    { field: "FileSize", operator: "contains", value: val }
+                ]
+            });
+        });
+
+        function handleFileDelete(event) {
+            var dataItemInfo = Tab5fileGrid.dataItem($(event.currentTarget).closest("tr"));
+            if (confirm('Do you really want to delete this file?')) {
+                $.ajax({
+                    url: '@Url.Action("DeleteFile", "General")',
+                    type: 'POST',
+                    data: JSON.stringify({ "fileId": dataItemInfo.FileID, "fileCode": dataItemInfo.FileCode, "extention": dataItemInfo.Extention }),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    cache: false,
+                    success: function (response) {
+                        if (response.Status == "Yes") {
+                            toastr.success(OperationMsg("FD"));
+                            $("#Tab5FileGrid1").data("kendoGrid").dataSource.remove(dataItemInfo);
+                        } else {
+                            toastr.error(OperationMsg("FND"));
+                        }
+                    }
+                });
+            }
+        }
+
+        function handleDownload(event) {
+            var dataItemInfo = Tab5fileGrid.dataItem($(event.currentTarget).closest("tr"));
+            window.location.href = '@Url.Action("Download", "General")' + '?path=' + dataItemInfo.FileCode + dataItemInfo.Extention + '&fileName=' + dataItemInfo.FileName + '&fileId=' + dataItemInfo.FileID;
+        }
     });
 </script>
 
@@ -924,6 +1378,8 @@
         <li><a href="#tabs-1">Setup Info</a></li>
         <li><a href="#tabs-2">View Item</a></li>
         <li><a href="#tabs-3">Entry Item Info</a></li>
+        <li><a href="#tabs-4">View License</a></li>
+        <li><a href="#tabs-5">Entry License Info</a></li>
     </ul>
 
     <div class="box-header with-border">
@@ -962,8 +1418,17 @@
                 </div>
             </div>
         </div>
+        @*ADD*@
+        <div class="form-group">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">License Name :</div>
+                <div class="col-xs-0 col-sm-6 col-md-3 col-lg-3">
+                    <input type="text" id="LicenseName" name="LicenseName" maxlength="300" placeholder="Enter License Name" class="form-control" />
+                </div>
+            </div>
+        </div>
     </div>
-
+    @*ADD*@
     <div id="tabs-2">
         <div id="tab2Content">
             <div id="narcoticsGrid"></div>
@@ -1009,6 +1474,7 @@
                                     <option value="Quota allocation & Endorsement">Quota allocation & Endorsement</option>
                                     <option value="Endorsement">Endorsement</option>
                                     <option value="Quota Increase">Quota Increase</option>
+                                    <option value="NOC">NOC</option>
                                     <option value="Others">Others</option>
                                 </select>
                             </div>
@@ -1019,21 +1485,38 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        @*<div class="row">
+                                <div class="col-sm-2">Approved Quantity :</div>
+                                <div class="col-sm-2">
+                                    <input type="text" id="ApprovedQuantity" name="ApprovedQuantity" class="form-control" placeholder="Approved Quantity" />
+                                </div>
+                                <div class="col-sm-2">Record Status :</div>
+                                <div class="col-sm-2">
+                                    <select id="RecordStatus" class="form-control txtBox" tabindex="" name="RecordStatus"></select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <button id="btnRevisionTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew/Amendment</button>
+                                </div>
+                                <div class="col-sm-1"></div>
+                            </div>*@
                         <div class="row">
                             <div class="col-sm-2">Approved Quantity :</div>
                             <div class="col-sm-2">
                                 <input type="text" id="ApprovedQuantity" name="ApprovedQuantity" class="form-control" placeholder="Approved Quantity" />
                             </div>
+
+                            <div id="divCountryName" style="display:none;">
+                                <div class="col-sm-2">Country Name<span style="color: red">*</span> :</div>
+                                <div class="col-sm-2">
+                                    <input type="text" id="CountryName" name="CountryName" class="form-control" placeholder="Enter Country Name" />
+                                </div>
+                            </div>
+
                             <div class="col-sm-2">Record Status :</div>
                             <div class="col-sm-2">
                                 <select id="RecordStatus" class="form-control txtBox" tabindex="" name="RecordStatus"></select>
                             </div>
-                            <div class="col-sm-2">
-                                <button id="btnRevisionTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew/Amendment</button>
-                            </div>
-                            <div class="col-sm-1"></div>
                         </div>
-                    </div>
                 </fieldset>
             </div>
             <div class="form-group" id="divDGDA">
@@ -1179,6 +1662,198 @@
             </div>
         </div>
     </div>
+
+    <div id="tabs-4">
+        <div id="tab2Content">
+            <div id="licenseGrid"></div>
+        </div>
+    </div>
+
+    <div id="tabs-5">
+        <div class="box-body">
+            <div class="form-group">
+                <fieldset class="panel-border">
+                    <legend class="panel-border">Entry License Info :</legend>
+                    <div class="form-group">
+                        <div class="row">
+                            <input type="hidden" id="LicenseId" name="LicenseId" />
+                            <input type="hidden" id="NarcoticSetupSl" name="NarcoticSetupSl" />
+                            <div class="col-sm-2">License Name<span style="color: red">*</span> : </div>
+                            <div class="col-xs-12 col-sm-2 col-md-3 col-lg-3">
+                                <input type="text" id="LicenseNameEntry" name="LicenseNameEntry" class="form-control txtBox" readonly />
+                            </div>
+                            <div class="col-sm-1"><button id="btnFindLicense" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+                            <div class="col-sm-2" hidden>Item Code<span style="color: red">*</span> : </div>
+                            <div class="col-sm-1" hidden>
+                                <input type="text" id="NarcoticSetupSl" name="NarcoticSetupSl" class="form-control txtBox" />
+                            </div>
+                            <div class="col-sm-2">Record Status :</div>
+                            <div class="col-sm-2">
+                                <select id="RecordStatusTab5" class="form-control txtBox" tabindex="" name="RecordStatus"></select>
+                            </div>
+                            <div class="col-sm-2">
+                                <button id="btnRevisionTab5" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>New/Renew</button>
+                            </div>
+                            <div class="col-sm-1"></div>
+                        </div>
+                    </div>
+                    @*<div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-2">Record Status :</div>
+                                <div class="col-sm-2">
+                                    <select id="RecordStatus" class="form-control txtBox" tabindex="" name="RecordStatus"></select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <button id="btnRevisionTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew/Amendment</button>
+                                </div>
+                                <div class="col-sm-1"></div>
+                            </div>
+                        </div>*@
+                </fieldset>
+            </div>
+            <div class="form-group" id="divDGDA">
+                <fieldset class="panel-border">
+                    <legend class="panel-border">DGDA:</legend>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6 col-md-2 col-lg-3">Received Date : </div>
+                            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                <div class="input-group date">
+                                    <input type="text" class="form-control" id="DgdaReceiveDateTab5" name="DgdaReceiveDate" placeholder="dd/mm/yyyy">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-2 col-lg-3">Submission Date : </div>
+                            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                <div class="input-group date">
+                                    <input type="text" class="form-control" id="DgdaSubmissionDateTab5" name="DgdaSubmissionDate" placeholder="dd/mm/yyyy">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6 col-md-2 col-lg-3">Recommendation Approval Date : </div>
+                            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                <div class="input-group date">
+                                    <input type="text" class="form-control" id="DgdaRecommendationDateTab5" name="DgdaRecommendationDate" placeholder="dd/mm/yyyy">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="form-group" id="divDNCLoc">
+                <fieldset class="panel-border">
+                    <legend class="panel-border">DNC Local Office : </legend>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6 col-md-2 col-lg-3">Date of Recommendation sent to Local License office : </div>
+                            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                <div class="input-group date">
+                                    <input type="text" class="form-control" id="RecSendDateTab5" name="RecSendDate" placeholder="dd/mm/yyyy">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-10 col-md-2 col-lg-3">Date of Inspection Report Received from local License office : </div>
+                            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                <div class="input-group date">
+                                    <input type="text" class="form-control" id="InsReceiveDateTab5" name="InsReceiveDate" placeholder="dd/mm/yyyy">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="form-group" id="divDNCDiv">
+                <fieldset class="panel-border">
+                    <legend class="panel-border">DNC Divisional Office : </legend>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6 col-md-2 col-lg-3">Date of Inspection Report Submission to DNC Divisional office : </div>
+                            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                <div class="input-group date">
+                                    <input type="text" class="form-control" id="DivSendDateTab5" name="DivSendDate" placeholder="dd/mm/yyyy">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-10 col-md-2 col-lg-3">Date of Inspection Report Received from Divisional License office: </div>
+                            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                <div class="input-group date">
+                                    <input type="text" class="form-control" id="DivNarcRecvDateTab5" name="DivNarcRecvDate" placeholder="dd/mm/yyyy">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="form-group" id="divDNCHead">
+                <fieldset class="panel-border">
+                    <legend class="panel-border">DNC Head Office : </legend>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6 col-md-2 col-lg-3">Date of Inspection Report Submission to DNC Head office : </div>
+                            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                <div class="input-group date">
+                                    <input type="text" class="form-control" id="DncSendDateTab5" name="DncSendDate" placeholder="dd/mm/yyyy">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-10 col-md-2 col-lg-3">Date of approval from License Head office : </div>
+                            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                                <div class="input-group date">
+                                    <input type="text" class="form-control" id="NarcApvlDateTab5" name="NarcApvlDate" placeholder="dd/mm/yyyy">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <fieldset class="panel-border">
+                        <legend class="panel-border">Upload Documents :</legend>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                Document Name<span style="color: red">*</span>:
+                            </div>
+                            <div class="col-sm-3">
+                                <select id="DocumentNameTab5" name="DocumentName" class="form-control">
+                                    <option value="">Select Any</option>
+                                    <option value="DGDA Recommendation Letter">DGDA Recommendation Letter</option>
+                                    <option value="District Office Letter">District Office Letter</option>
+                                    <option value="Divisional Office Letter">Divisional Office Letter</option>
+                                    <option value="DNC Head Office Approval Letter">DNC Head Office Approval Letter</option>
+                                    <option value="Justification">Justification</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <input type="file" class="txtBox" id="UploadFileTab5" name="UploadFile" accept="application/pdf" />
+                                <i class="fa fa-cloud-upload form-control-feedback"></i>
+                            </div>
+                            <div class="col-sm-3">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <br />
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label>List of Document File</label>
+                                <div id="Tab5FileGrid1" class=""></div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="row">
@@ -1199,6 +1874,9 @@
     </div>
     <div id="ItemWindow" class="PopupWindowLayout" style="display: none;">
         <div id="ItemWindowGrid" class="PopUpGrid"></div>
+    </div>
+    <div id="LicenseWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="LicenseWindowGrid" class="PopUpGrid"></div>
     </div>
 </div>
 

@@ -170,7 +170,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
         //        throw errorException;
         //    }
         //}
-        public IList<ProductRegistrationBEL> GetAllInfo(ProductRegistrationBEL model,string companyCode, string orderBy)
+        public IList<ProductRegistrationBEL> GetAllInfo(ProductRegistrationBEL model,string companyCode,string productCode, string orderBy)
         {
             var query = new StringBuilder();
             query.Append(" SELECT D.ANNEX_ID,D.ANNEXURE_NO,D.REVISION_NO,D.RECIPE_ID,D.DAR_NO,D.DTL_REMARKS,D.STATE_STATUS,");
@@ -191,6 +191,10 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             if (!string.IsNullOrEmpty(companyCode))
             {
                 query.Append(" AND  C.COMPANY_CODE='" + companyCode + "'");
+            }
+            if (!string.IsNullOrEmpty(productCode))
+            {
+                query.Append(" AND  P.PRODUCT_CODE='" + productCode + "'");
             }
             if (!string.IsNullOrEmpty(model.CompanyCode))
             {
@@ -288,7 +292,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             query.Append(" SELECT A.ANNEX_ID,A.ANNEXURE_NO,A.REVISION_NO,A.RECIPE_ID,A.DAR_NO,A.SUBMISSION_DATE,A.PROPOSAL_DATE,A.RECEIVE_DATE,A.ANNEXURE_STATUS,");
             query.Append(" A.NOTIFICATION_DAYS,A.PRODUCT_CODE,A.BRAND_NAME,A.PRODUCT_CATEGORY,A.COMPANY_CODE,A.COMPANY_NAME,A.SAP_PRODUCT_CODE,A.GENERIC_CODE,A.PACK_SIZE_NAME,A.LICENSE_NO,A.SLNO,");
             query.Append(" A.DOSAGE_FORM_NAME,ROUND(((NVL(A.VALID_UPTO, TO_DATE('12/31/2099', 'mm/dd/yyyy')))-(SELECT  SYSDATE FROM DUAL)),0)DateDiff,TO_CHAR(A.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO FROM");
-            query.Append(" ( SELECT D.ANNEX_ID,D.ANNEXURE_NO,D.REVISION_NO,D.RECIPE_ID,D.DAR_NO,D.DTL_REMARKS, TO_CHAR(D.DTL_RECEIVE_DATE, 'dd/mm/yyyy')DTL_RECEIVE_DATE,TO_CHAR(D.DTL_SUBMISSION_DATE, 'dd/mm/yyyy')DTL_SUBMISSION_DATE,");
+            query.Append(" ( SELECT P.STATUS,D.ANNEX_ID,D.ANNEXURE_NO,D.REVISION_NO,D.RECIPE_ID,D.DAR_NO,D.DTL_REMARKS, TO_CHAR(D.DTL_RECEIVE_DATE, 'dd/mm/yyyy')DTL_RECEIVE_DATE,TO_CHAR(D.DTL_SUBMISSION_DATE, 'dd/mm/yyyy')DTL_SUBMISSION_DATE,");
             query.Append(" TO_CHAR(D.DTL_APPROVAL_DATE, 'dd/mm/yyyy')DTL_APPROVAL_DATE,TO_CHAR(D.PROPOSAL_DATE, 'dd/mm/yyyy')PROPOSAL_DATE, TO_CHAR(D.RECEIVE_DATE, 'dd/mm/yyyy')RECEIVE_DATE,");
             query.Append(" TO_CHAR(D.SUBMISSION_DATE, 'dd/mm/yyyy')SUBMISSION_DATE, TO_CHAR(D.INCLUSION_DATE, 'dd/mm/yyyy')INCLUSION_DATE,TO_CHAR(D.RENEWAL_DATE, 'dd/mm/yyyy')RENEWAL_DATE,");
             query.Append(" D.VALID_UPTO,D.REMARKS,D.PROPOSED_BY,D.ANNEXURE_STATUS, D.NOTIFICATION_DAYS, ");
@@ -300,7 +304,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             query.Append(" WHERE D.IS_DELETE <>'Y' ) A INNER JOIN ( SELECT RECIPE_ID,MAX(REVISION_NO) AS MaxRvNo FROM PRODUCT_REGISTRATION_INFO GROUP BY RECIPE_ID) B  ");
             query.Append(" ON B.RECIPE_ID=A.RECIPE_ID AND B.MaxRvNo=A.REVISION_NO ");
             query.Append(" WHERE 1=1 ");
-            query.Append(" AND P.STATUS = 'Active' ");
+            query.Append(" AND A.STATUS = 'Active' ");
             
             if (!string.IsNullOrEmpty(model.CompanyCode))
             {

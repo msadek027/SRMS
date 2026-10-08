@@ -17,14 +17,14 @@
     </div>
 </div>
 <div class="box-body">
-  
     <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label required">Company:</label>
+        <div class="col-md-9">
+            <div class="input-group">
 
-
-                <select id="CompanyCode" name="CompanyCode" class="form-control input-sm">
+                <span class="input-group-addon">
+                    <label class="control-label required">Company:</label>
+                </span>
+                <select id="CompanyCode" name="CompanyCode" class="form-control input-lg">
                     <option selected value="All">All</option>
                     <option value="0001">SPPLC (Pabna Unit)</option>
                     <option value="0002">SPPLC (Dhaka Unit)</option>
@@ -35,34 +35,20 @@
 
 
                 </select>
-            </div>
-
-            </div>
-
-    
-
-
-
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label required">Typw:</label>
-
-                <select id="Type" name="Type" class="form-control input-sm">
+                <span class="input-group-addon">
+                    <label class="control-label required">Type:</label>
+                </span>
+                <select id="Type" name="Type" class="form-control input-lg">
                     <option selected value="All">All</option>
                     <option value="Recipe Approval">Recipe Approval</option>
                     <option value="Inclusion">Inclusion</option>
                     <option value="Price Approval">Price Approval</option>
                     <option value="MA Certificate Approval">MA Certificate Approval</option>
                 </select>
-
-            </div>
-        </div>
-
-          
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label required">Year:</label>
-                <select id="Year" name="Year" class="form-control input-sm">
+                <span class="input-group-addon">
+                    <label class="control-label required">Year:</label>
+                </span>
+                <select id="Year" name="Year" class="form-control input-lg">
                     <option selected value="2025">2025</option>
                     <option value="2024">2024</option>
                     <option value="2023">2023</option>
@@ -72,21 +58,22 @@
                 </select>
             </div>
         </div>
-                </div>
 
 
-                <div class="form-group">
-                    <fieldset class="panel-border">
-                        <legend class="panel-border">Product Information :</legend>
-                        <div class="form-group">
+    </div>
+
+
+
+
+
+
+        
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div id="ProductInfoGrid" class=""></div>
                                 </div>
                             </div>
-                        </div>
-                    </fieldset>
-                </div>
+                   
             </div>
 <div class="box-footer">@*Form Footer*@</div>
 <div class="row">
@@ -141,7 +128,9 @@
             editable: false,
             selectable: "row",
             //selectable: "multiple",
-            toolbar: ["excel", { template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: [{
+                template: "<label style='float:left; margin:5px 10px 0 0;'>Product Information:</label>"
+            }, "excel", { template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             excel: {
                 fileName: "Export.xlsx",
                 allPages: true,
@@ -151,7 +140,7 @@
             navigatable: true,
             //height: 100,
             // groupable: true,
-            groupable: { messages: { empty: "Custom message text" } },
+            //groupable: { messages: { empty: "Custom message text" } },
             columnMenu: true,
             reorderable: true,
             resizable: true,

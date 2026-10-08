@@ -5,6 +5,12 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <link href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" rel="stylesheet" />
 <link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+<style>
+    #tabs,
+    #tabs  {
+        font-family: Tahoma, sans-serif !important;
+    }
+</style>
 
 <script>
     // 🔐 Store saved data per tab
@@ -22,6 +28,13 @@
         });
         return data;
     }
+    //NLD
+    $('#Tab4UnitPriceDateInput').datepicker({
+        format: "dd/mm/yyyy",
+        autoclose: true,
+        todayHighlight: true
+    }).datepicker("setDate", new Date()); // Default Current Date
+
     function enableViewMode() {
         $('#modalBody').find('input, select, textarea, button, checkbox').attr('disabled', true);
     }
@@ -61,10 +74,14 @@
 
     var roleId = '@Session["ROLEID"]';
 
+  
+    
+ 
     function CheckPagePartAccessPrivilegeTab(companyCode, ButtonEvent,Status) {
         debugger;
         var accessValue = null;
 
+     
         if(ButtonEvent=="Recipe")
         {
             GetPageAccess('/Regulatory/TabCompany/AccessPrivilege/', companyCode, ButtonEvent, roleId, 154, function (result) {
@@ -76,11 +93,12 @@
                         options.push('<option  value="">--Select Any--</option>');
                         options.push('<option  value="Local Document">Local Document</option>');
                         options.push('<option  value="DCC Document">DCC Document</option>');
-                        options.push('<option  value="BCC Reference Document"">BCC Reference Document</option>');
+                        options.push('<option  value="DCC Reference Document"">DCC Reference Document</option>');
                         options.push('<option  value="Technical Document">Technical Document</option>');             
                         options.push('<option  value="Import Document">Import Document</option>');
                         options.push('<option  value="Approval Document">Approval Document</option>');
                         options.push('<option  value="Inspection Document">Inspection Document</option>');
+                  
                         $("#Tab2RefNo").html(options.join(''));
                         break;
                     case "P":
@@ -88,9 +106,10 @@
                         options.push('<option  value="">--Select Any--</option>');
                         options.push('<option  value="Local Document">Local Document</option>');
                         options.push('<option  value="DCC Document">DCC Document</option>');
-                        options.push('<option  value="BCC Reference Document"">BCC Reference Document</option>');
+                        options.push('<option  value="DCC Reference Document"">DCC Reference Document</option>');
                         options.push('<option  value="Technical Document">Technical Document</option>');
                         options.push('<option  value="Import Document">Import Document</option>');
+                 
                         $("#Tab2RefNo").html(options.join(''));
                         break;
                 }
@@ -107,7 +126,6 @@
              accessValue = result;
              debugger;
 
-
             if (state == "New" )
             {
                 switch (accessValue) {
@@ -121,6 +139,7 @@
                         options.push('<option  value="Approved Annexure">Approved Annexure</option>');
                         options.push('<option  value="Approved Packaging Material">Approved Packaging Material</option>');
                         options.push('<option  value="Approval Letter">Approval Letter</option>');
+                        options.push('<option  value="DTL Report">DTL Report</option>');
                         $("#Tab3RefNo").html(options.join(''));
                         debugger;
                         break;
@@ -130,6 +149,7 @@
                         options.push('<option  value="Proposed Annexure">Proposed Annexure</option>');
                         options.push('<option  value="Proposed Packaging Material">Proposed Packaging Material</option>');
                         options.push('<option  value="Stability Data">Stability Data</option>');
+                        options.push('<option  value="DTL Report">DTL Report</option>');
                         $("#Tab3RefNo").html(options.join(''));
                         break;
                 }
@@ -281,8 +301,12 @@
         });
     }
    
-
-
+    function SetMasterDataTab1(data) {
+        $.each(data, function (key, value) {
+            $('#'+ key).val(value);
+        });
+    }
+    
 
 
     function SetMasterDataTab(data,TabPrefix) {
@@ -291,7 +315,90 @@
         });
     }
 
+    // ====== Unit Price Management Functions ======NLD
+    var unitPriceList = [];
 
+    function parseUnitPriceString(str) {
+        unitPriceList = [];
+        if (!str || str.trim() === '') return;
+        var pairs = str.split(';');
+        for (var i = 0; i < pairs.length; i++) {
+            var pair = pairs[i].trim();
+            if (pair === '') continue;
+            var parts = pair.split(':');
+            if (parts.length >= 2) {
+                unitPriceList.push({
+                    unit: parts[0].trim(),
+                    price: parts[1].trim(),
+                    date: parts.length > 2 ? parts[2].trim() : '' // Old data compatibility
+                });
+            }
+        }
+    }
+
+    function serializeUnitPriceList() {
+        var result = [];
+        for (var i = 0; i < unitPriceList.length; i++) {
+            result.push(unitPriceList[i].unit + ':' + unitPriceList[i].price + ':' + (unitPriceList[i].date || ''));
+        }
+        return result.join(';');
+    }
+
+    function renderUnitPriceTable() {
+        var html = '';
+        if (unitPriceList.length === 0) {
+            html = '<tr><td colspan="5" style="text-align:center; color:#999; padding:8px;">No unit-price added yet</td></tr>';
+        } else {
+            for (var i = 0; i < unitPriceList.length; i++) {
+                html += '<tr>';
+                html += '<td style="padding:4px 8px; text-align:center;">' + (i + 1) + '</td>';
+                html += '<td style="padding:4px 8px;text-align:center;">' + unitPriceList[i].unit + '</td>';
+                html += '<td style="padding:4px 8px; text-align:center;">' + unitPriceList[i].price + '</td>';
+                html += '<td style="padding:4px 8px; text-align:center;">' + (unitPriceList[i].date || '') + '</td>';
+                html += '<td style="padding:4px 8px; text-align:center;"><button type="button" class="btn btn-danger btn-xs" onclick="removeUnitPrice(' + i + ')"><i class="glyphicon glyphicon-trash"></i></button></td>';
+                html += '</tr>';
+            }
+        }
+        $('#unitPriceTableBody').html(html);
+        $('#Tab4UnitPrice').val(serializeUnitPriceList());
+    }
+
+    function addUnitPrice() {
+        var unit = $('#Tab4UnitNameInput').val().trim();
+        var price = $('#Tab4PriceValueInput').val().trim();
+        var uDate = $('#Tab4UnitPriceDateInput').val().trim();
+
+        if (unit === '') { toastr.warning('Please enter Unit name!'); $('#Tab4UnitNameInput').focus(); return; }
+        if (price === '' || isNaN(price)) { toastr.warning('Please enter a valid Price!'); $('#Tab4PriceValueInput').focus(); return; }
+        if (uDate === '') { toastr.warning('Please select a Date!'); $('#Tab4UnitPriceDateInput').focus(); return; }
+
+        for (var i = 0; i < unitPriceList.length; i++) {
+            if (unitPriceList[i].unit.toLowerCase() === unit.toLowerCase()) { 
+                toastr.warning('Unit "' + unit + '" already exists!'); return; 
+            }
+        }
+        unitPriceList.push({ unit: unit, price: price, date: uDate });
+        renderUnitPriceTable();
+    
+        $('#Tab4UnitNameInput').val('');
+        $('#Tab4PriceValueInput').val('');
+        $('#Tab4UnitPriceDateInput').datepicker('setDate', new Date()); // Reset to current date
+        $('#Tab4UnitNameInput').focus();
+    }
+
+    function removeUnitPrice(index) {
+        unitPriceList.splice(index, 1);
+        renderUnitPriceTable();
+    }
+
+    function clearUnitPriceTable() {
+        unitPriceList = [];
+        renderUnitPriceTable();
+        $('#Tab4UnitNameInput').val('');
+        $('#Tab4PriceValueInput').val('');
+        $('#Tab4UnitPriceDateInput').datepicker('setDate', new Date());
+    }
+    // ====== End Unit Price Management Functions ======
 </script>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -395,14 +502,52 @@
                     $('#btnReset').prop('disabled', false);
                     $('#btnSave').prop('disabled', false);
                     $('#btnSearch').prop('disabled', false);
+
+               
+                
+
+                    debugger;
+                    if(CompanyCode=="0005")        {
+                        var options = new Array();    
+                        options.push('<option  value="INN/Herbal">INN/Herbal</option>');      
+                        $("#ProductSpecification").html(options.join(''));
+                        var options2 = new Array();  
+                        options2.push('<option  value="Herbal">Herbal</option>');     
+                        $("#ProductCategory").html(options2.join(''));
+                    }
+                   else if(CompanyCode=="0006")
+                    {
+                        var options = new Array();    
+                        options.push('<option  value="INN/Ayurvedic">INN/Ayurvedic</option>');      
+                        $("#ProductSpecification").html(options.join(''));
+
+                        var options2 = new Array();  
+                        options2.push('<option  value="Ayurvedic">Ayurvedic</option>');     
+                        $("#ProductCategory").html(options2.join(''));
+                   }
+                   else
+                   {
+                       var options = new Array();    
+                       options.push('<option  value="INN">INN</option>');    
+                       options.push('<option  value="Compendial">Compendial</option>');     
+                       $("#ProductSpecification").html(options.join(''));
+
+                       var options2 = new Array();  
+                       options2.push('<option  value="Biological">Biological</option>');    
+                       options2.push('<option  value="Non-Biological">Non-Biological</option>'); 
+                       $("#ProductCategory").html(options2.join(''));                     
+
+                   }
+
                     GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
+                    GetProductDetails('/ProductInfo/GetProduct',CompanyCode, $('#ProductCode').val(),ButtonEvent);
                     break;
                 case "Recipe":
                     $('#btnReset').prop('disabled', false);
                     $('#btnSave').prop('disabled', false);
                     $('#btnSearch').prop('disabled', false);
                     GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
-
+                    GetProductDetails('/RecipeInfo/GetAllInfo',CompanyCode, $('#ProductCode').val(),ButtonEvent);
 
                     $('#tabs-2 #Tab2ProductCode').val( $('#tabs-1 #ProductCode').val());
                     $('#tabs-2 #Tab2PackSizeName').val( $('#tabs-1 #PackSizeName').val());
@@ -413,12 +558,15 @@
                     $('#tabs-2 #Tab2DosageFormName').val( $('#tabs-1 #DosageFormName').val());
                     DisplayPageViewTab2();
 
+              
+           
                     break;
                 case "Registration":
                     $('#btnReset').prop('disabled', false);
                     $('#btnSave').prop('disabled', false);
                     $('#btnSearch').prop('disabled', false);
                     GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
+                    GetProductDetails('/ProductReg/GetAllInfo',CompanyCode, $('#ProductCode').val(),ButtonEvent);
 
                     $('#tabs-3 #Tab3ProductCode').val( $('#tabs-1 #ProductCode').val());
                     $('#tabs-3 #Tab3PackSizeName').val( $('#tabs-1 #PackSizeName').val());
@@ -427,13 +575,15 @@
                     $('#tabs-3 #Tab3SAPProductCode').val( $('#tabs-1 #SAPProductCode').val());
                     $('#tabs-3 #Tab3GenAndStrength').val( $('#tabs-1 #GenericCode').val());
                     $('#tabs-3 #Tab3DosageFormName').val( $('#tabs-1 #DosageFormName').val());
-
+            
                     break;
                 case "Price":
                     $('#btnReset').prop('disabled', false);
                     $('#btnSave').prop('disabled', false);
                     $('#btnSearch').prop('disabled', false);
                     GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent);
+                    GetProductDetails('/ProductPrice/GetAllInfo',CompanyCode, $('#ProductCode').val(),ButtonEvent);
+
                     $('#tabs-4 #Tab4ProductCode').val( $('#tabs-1 #ProductCode').val());
                     $('#tabs-4 #Tab4PackSizeName').val( $('#tabs-1 #PackSizeName').val());
                     $('#tabs-4 #Tab4ProductSpecification').val( $('#tabs-1 #ProductSpecification').val());
@@ -474,6 +624,78 @@
                     debugger;
                     if (data.length > 0) {
                         SetDetailData(data);
+                    }
+                    else {
+                        toastr.success("Data not found!");
+                    }
+
+                },
+                error: function () {
+                    alert('Error occured!');
+                },
+            });
+        }
+        function GetProductDetails(URL, CompanyCode,ProductCode, ButtonEvent) {
+            $.ajax({
+                url: URL,
+                data: JSON.stringify({ CompanyCode: CompanyCode, ProductCode: ProductCode,ButtonEvent: ButtonEvent }),
+                type: 'POST',
+                contentType: 'application/json;',
+                dataType: 'json',
+                success: function (data) {
+                    debugger;
+                    if (data.length > 0) {
+                        debugger;
+                        if(ButtonEvent=="Recipe")
+                        {
+                            var selectRow=data[0];                           
+                            SetRecipeDetails(selectRow);
+                        }
+                        if(ButtonEvent=="Registration")
+                        {
+                            var selectRow=data[0];                           
+                            SetMasterDataTab(selectRow,'Tab3');
+        
+                            $('#btnFind').attr('disabled', 'disabled');
+                            CheckPagePartAccessPrivilegeTab( $('#CompanyCode').val(),ButtonEvent, selectRow.StateStatus);
+                            var options = new Array();
+                            options.push('<option selected value="' + selectRow.StateStatus + '">' + selectRow.StateStatus + '</option>');
+                            $("#Tab3StateStatus").html(options.join(''));           
+                            $.ajax({
+                                url: '@Url.Action("GetFileByRefId", "ProductReg")',
+                                type: 'GET',
+                                data: { refLevel1: selectRow.AnnexId },
+                                success: function (data) {
+                                    $("#Tab3FileGrid1").data("kendoGrid").dataSource.data(data);
+                                }
+                            });
+                        }
+                        if(ButtonEvent=="Price")
+                        {
+                            var selectRow=data[0];                           
+                            SetMasterDataTab(selectRow,'Tab4');
+        
+                            parseUnitPriceString(selectRow.UnitPrice || '');
+                            renderUnitPriceTable();
+
+                            $('#btnFind').attr('disabled', 'disabled');
+                            if (selectRow.PriceCategory == "MRP") {
+                                $("#divHighestPrice").show();
+                            }
+                            else {
+                                $("#divHighestPrice").hide();
+                            }
+                            $.ajax({
+                                url: '@Url.Action("GetFileByRefId", "ProductPrice")',
+                                type: 'GET',
+                                data: { refLevel1: selectRow.ID },
+                                success: function (data) {
+                                    debugger;
+                                    $("#Tab4FileGrid1").data("kendoGrid").dataSource.data(data);
+                                }
+                            });
+                        }
+                   
                     }
                     else {
                         toastr.success("Data not found!");
@@ -672,6 +894,7 @@
                     $('#btnFindAnnexureTab4').removeAttr('disabled');
                     $("#Tab4FileGrid1").data("kendoGrid").dataSource.data([]);
                     $("#Tab4PriceType").val('New');
+                    clearUnitPriceTable();//New Add
                     GetCompanyDetails('/Regulatory/TabCompany/ViewModeCompany', CompanyCode, ButtonEvent)
                     break;
                 case "MA Certificate":
@@ -805,7 +1028,7 @@
                 case "Registration":
                     model = {};
                 
-                        var checkInput = InputValidation('Tab3SlNo') + InputValidation('Tab3StateStatus');//RecipeNo Check
+                    var checkInput = InputValidation('Tab3SlNo') ;//RecipeNo Check + InputValidation('Tab3StateStatus')
                         if (checkInput == 0) {
                             model.AnnexId = $('#Tab3AnnexId').val();
                             model.RecipeId = $('#Tab3RecipeId').val();
@@ -871,7 +1094,9 @@
                             model.PriceType = $('#Tab4PriceType').val();
                             model.PriceCategory = $('#Tab4PriceCategory').val();
                             model.PriceChangeType = $('#Tab4PriceChangeType').val();
-                            model.UnitPrice = $('#Tab4UnitPrice').val();
+                            //model.UnitPrice = $('#Tab4UnitPrice').val();
+                            // model.UnitPrice = $('#Tab4UnitPrice').val();
+                            model.UnitPrice = serializeUnitPriceList();//New Add
                             model.HighestPrice = $('#Tab4HighestPrice').val();
                             model.PriceProposedBy = $('#Tab4PriceProposedBy').val();
                             model.PriceRemarks = $('#Tab4PriceRemarks').val();
@@ -990,7 +1215,7 @@
             editable: false,
             selectable: "row",
             //selectable: "multiple",
-            toolbar: ["excel", { template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: ["excel", { template: "<input type='text' id='txtPopupInputTab1'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             excel: {
                 fileName: "Export.xlsx",
                 allPages: true,
@@ -1007,7 +1232,7 @@
                  { field: "CompanyCode", title: "CompanyCode",  hidden: true, width: 80 },
                  { field: "CompanyName", title: "CompanyName", hidden: true, width: 150 },
                  { field: "ProductCode", title: "Product Code", width: 80 },
-                 { field: "SAPProductCode", title: "SAP Product Code", hidden: true,  width: 80 },
+                 { field: "SAPProductCode", title: "SAP ProductCode", hidden: false,  width: 80 },
                  { field: "BrandName", title: "Brand Name", width: 100 },
                  { field: "YearMonth", title: "SetYearMonth", width: 100 },
                  { field: "GenericCode", title: "Generic & Strength", width: 180 },
@@ -1019,12 +1244,30 @@
         }).data('kendoGrid');
 
         $('#Tab1SearchBtn_PopupWindowGrid').dblclick(function () {
+            debugger
             var grid = $(this).data('kendoGrid');
             var selectRow = grid.dataItem(grid.select());
             Tab1SearchBtn_PopupWindow.close();
-            SetMasterDataTab(selectRow,'Tab1');
+            SetMasterDataTab1(selectRow);
         });
-
+        //Produc Name wise Filter table row
+        $("#txtPopupInputTab1").keyup(function () {
+            var val = $(this).val();
+            $("#Tab1SearchBtn_PopupWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                   
+                     { field: "SAPProductCode", operator: "contains", value: val },
+                     { field: "ProductCode", operator: "contains", value: val },
+                     { field: "BrandName", operator: "startswith", value: val },
+                     { field: "GenericCode", operator: "contains", value: val },
+                     { field: "PackSizeName", operator: "contains", value: val },
+           
+                     { field: "ProductCategory", operator: "contains", value: val },
+                
+                ]
+            });
+        });
         var PopupWindowDosageForm = $("#PopupWindowDosageForm").kendoWindow({
             width: "50%",
             height: "70%",
@@ -1406,8 +1649,12 @@
      
 
             Tab2SearchBtn_PopupWindow.close();
+            SetRecipeDetails(selectRow);
+        });
+        function SetRecipeDetails(selectRow)
+        {
             SetMasterDataTab(selectRow,'Tab2')
-           // SetMasterData(selectRow);
+       
             if (selectRow.MeetingType == "Local") {
                 document.getElementById("lgMeetingType").innerHTML = "Local :";
                 $("#divLocal").show();
@@ -1442,8 +1689,7 @@
                     $("#Tab2FileGrid1").data("kendoGrid").dataSource.data(data);
                 }
             });
-        });
-
+        }
         //Produc Name wise Filter table row
         $("#txtPopupInputTab2").keyup(function () {
             var val = $(this).val();
@@ -1548,10 +1794,11 @@
             filterable: true,
             editable: true,
             selectable: "row",
-            toolbar: [{ template: "<input type='text' id='txtInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: [{ template: "<span style='font-size:16px;font-weight:bold;'>List of Document File:</span>" +
+                "<input type='text' id='txtInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             navigatable: true,
-            groupable: true,
-            columnMenu: true,
+            //groupable: true,
+            //columnMenu: true,
             reorderable: true,
             resizable: true,
             columns: [
@@ -1656,11 +1903,25 @@
             editable: false,
             selectable: "row",
             //selectable: "multiple",
-            toolbar: ["excel",{ template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: ["excel","pdf",{ template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             excel: {
                 fileName: "Export.xlsx",
                 allPages: true,
                 filterable: true
+            },      
+            pdf: {
+                fileName: "Export.pdf",
+                allPages: true,
+                paperSize: "A3",      // or "A2" if you have many columns
+                landscape: true,
+                margin: {
+                    top: "5cm",
+                    right: "0.5cm",
+                    bottom: "1cm",
+                    left: "0.5cm"
+                },
+                repeatHeaders: true,
+                scale: 0.5            // Reduce if columns are still cut off
             },
             navigatable: true,
             height: "100%",
@@ -1889,10 +2150,11 @@
             filterable: true,
             editable: true,
             selectable: "row",
-            toolbar: [{ template: "<input type='text' id='txtInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: [{ template:"<span style='font-size:16px;font-weight:bold;'>List of Document File:</span>" +
+                "<input type='text' id='txtInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             navigatable: true,
-            groupable: true,
-            columnMenu: true,
+            //groupable: true,
+            //columnMenu: true,
             reorderable: true,
             resizable: true,
             columns: [
@@ -2103,11 +2365,24 @@
             editable: false,
             selectable: "row",
             //selectable: "multiple",
-            toolbar: ["excel",{ template: "<input type='text' id='txtPopupInputTab4'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: ["excel","pdf",{ template: "<input type='text' id='txtPopupInputTab4'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             excel: {
                 fileName: "Export.xlsx",
                 allPages: true,
                 filterable: true
+            },       pdf: {
+                fileName: "Export.pdf",
+                allPages: true,
+                paperSize: "A3",      // or "A2" if you have many columns
+                landscape: true,
+                margin: {
+                    top: "5cm",
+                    right: "0.5cm",
+                    bottom: "1cm",
+                    left: "0.5cm"
+                },
+                repeatHeaders: true,
+                scale: 0.5            // Reduce if columns are still cut off
             },
             navigatable: true,
             height: "100%",
@@ -2140,7 +2415,10 @@
             var selectRow = grid.dataItem(grid.select());
             Tab4SearchBtn_PopupWindow.close();
             SetMasterDataTab(selectRow,'Tab4');
-        
+            //New Add
+            parseUnitPriceString(selectRow.UnitPrice || '');
+            renderUnitPriceTable();
+            //
             $('#btnFind').attr('disabled', 'disabled');
             if (selectRow.PriceCategory == "MRP") {
                 $("#divHighestPrice").show();
@@ -2225,10 +2503,11 @@
             editable: true,
             width: "95%",
             selectable: "row",
-            toolbar: [{ template: "<input type='text' id='txtInput_Tab4'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: [{ template:"<span style='font-size:16px;font-weight:bold;'>List of Document File:</span>" +
+                "<input type='text' id='txtInput_Tab4'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             navigatable: true,
-            groupable: true,
-            columnMenu: true,
+            //groupable: true,
+            //columnMenu: true,
             reorderable: true,
             resizable: true,
             columns: [
@@ -2331,11 +2610,25 @@
             filterable: true,
             editable: false,
             selectable: "row",
-            toolbar: ["excel",{ template: "<input type='text' id='txtPopupInputTab5'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: ["excel","pdf",{ template: "<input type='text' id='txtPopupInputTab5'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             excel: {
                 fileName: "Export.xlsx",
                 allPages: true,
                 filterable: true
+            },
+            pdf: {
+                fileName: "Export.pdf",
+                allPages: true,
+                paperSize: "A3",      // or "A2" if you have many columns
+                landscape: true,
+                margin: {
+                    top: "5cm",
+                    right: "0.5cm",
+                    bottom: "1cm",
+                    left: "0.5cm"
+                },
+                repeatHeaders: true,
+                scale: 0.5            // Reduce if columns are still cut off
             },
             navigatable: true,
             height: 430,
@@ -2539,10 +2832,11 @@
             filterable: true,
             editable: true,
             selectable: "row",
-            toolbar: [{ template: "<input type='text' id='txtInputTab5'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: [{ template: "<span style='font-size:16px;font-weight:bold;'>List of Document File:</span>" +
+                "<input type='text' id='txtInputTab5'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             navigatable: true,
-            groupable: true,
-            columnMenu: true,
+            //groupable: true,
+            //columnMenu: true,
             reorderable: true,
             resizable: true,
             columns: [
@@ -2914,7 +3208,7 @@
 
 
 
-                <div id="tabs" style="font-family:'Times New Roman' ">
+<div id="tabs">
     <ul id="btnList">
         <li><a href="#tabs-1">Product Info</a></li>
         <li><a href="#tabs-2">Recipe</a></li>
@@ -2993,10 +3287,7 @@
             <div class="col-md-1">
                 <button id="btnDosageForm" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
             </div>
-
         </div>
-
-
         <div class="row">
             <div class="col-md-2"> Introduced In Bangladesh:</div>
             <div class="col-md-3">
@@ -3010,21 +3301,15 @@
             <div class="col-md-3">
                 <input type="text" id="BrandName" name="BrandName" placeholder="Brand Name" class="form-control" />
             </div>
-
-
-
-
         </div>
-
-
-
         <div class="row">
-
             <div class="col-md-2">Product Specification :</div>
             <div class="col-md-3">
                 <select class="form-control text" id="ProductSpecification">
-                    <option value="INN">INN</option>
-                    <option selected="selected" value="Compendial">Compendial</option>
+                    @*<option value="INN/Herbal">INN/Herbal</option>
+    <option value="INN/Ayurvedic">INN/Ayurvedic</option>
+    <option value="INN">INN</option>
+    <option value="Compendial">Compendial</option>*@
                 </select>
 
             </div>
@@ -3048,8 +3333,10 @@
             <div class="col-md-2">Product Category :</div>
             <div class="col-md-3">
                 <select class="form-control text" id="ProductCategory">
-                    <option selected="selected" value="Biological">Biological</option>
-                    <option value="Non-Biological">Non-Biological</option>
+                    @*<option  value="Herbal">Herbal</option>
+                    <option value="Ayurvedic">Ayurvedic</option>
+                    <option value="Biological">Biological</option>
+                    <option value="Non-Biological">Non-Biological</option>*@
                 </select>
             </div>
             <div class="col-md-1"></div>
@@ -3122,10 +3409,14 @@
                 <input type="hidden" id="Tab2ID" name="Tab2ID" class="txtBox" />
                 <div class="col-md-1"></div>
                 <div class="col-md-2">Revision No :</div>
-                <div class="col-md-2"><input type="text" id="Tab2RevisionNo" name="Tab2RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
                 <div class="col-md-3">
-                    <button id="btnRevisionTab2" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Add Revision</button>
+                    <div style="display: flex; align-items: center; gap: 2px;">
+                        <input type="text" id="Tab2RevisionNo" name="Tab2RevisionNo" placeholder="Auto" class="form-control" readonly />
+                        <button id="btnRevisionTab2" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Add Revision</button>
+
+                    </div>
                 </div>
+               
             </div>
         </div>
 
@@ -3136,9 +3427,12 @@
                     <div class="row">
                         <div class="col-md-2">Product Code<span style="color: red">*</span> : </div>
                         <div class="col-md-2">
-                            <input type="text" id="Tab2ProductCode" name="Tab2ProductCode" class="form-control txtBox" readonly />
+                            <div style="display: flex; align-items: center; gap: 2px;">
+                                <input type="text" id="Tab2ProductCode" name="Tab2ProductCode" class="form-control txtBox" readonly />
+                                <button id="btnFindProduct" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+                            </div>
                         </div>
-                        <div class="col-md-1"><button id="btnFindProduct" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+                     
 
                         <div class="col-md-2">&nbsp;&nbsp; PackSize:</div>
                         <div class="col-md-5"><input type="text" id="Tab2PackSizeName" name="Tab2PackSizeName" class="form-control" readonly /></div>
@@ -3409,7 +3703,7 @@
                         </div>
                         <div class="row">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <label>List of Document File</label>
+                        
                                 <div id="Tab2FileGrid1" class=""></div>
                             </div>
                         </div>
@@ -3432,9 +3726,16 @@
         <div class="form-group">
             <div class="row">
                 <div class="col-md-2">Recipe No<span style="color: red">*</span> :</div>
-                <div class="col-md-3"><input type="text" id="Tab3SlNo" name="Tab3SlNo" class="form-control" placeholder="Get from Find" readonly /></div>
-                <input type="hidden" id="Tab3RecipeId" name="Tab3RecipeId" class="txtBox" />
-                <div class="col-md-2"><button id="btnFindRecipeTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+                <div class="col-md-3">
+                    <div style="display: flex; align-items: center; gap: 2px;">
+                        <input type="text" id="Tab3SlNo" name="Tab3SlNo" class="form-control" placeholder="Get from Find" readonly />
+
+                        <input type="hidden" id="Tab3RecipeId" name="Tab3RecipeId" class="txtBox" />
+
+                        <button id="btnFindRecipeTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
                 <div class="col-md-2">Annex No:</div>
                 <div class="col-md-3"><input type="text" id="Tab3AnnexureNo" name="Tab3AnnexureNo" placeholder="Auto" class="form-control" readonly /></div>
                 <input type="hidden" id="Tab3AnnexId" name="Tab3AnnexId" class="txtBox" />
@@ -3449,21 +3750,17 @@
             <div class="col-md-2"></div>
             <div class="col-md-2">Record Status :</div>
             <div class="col-md-3">
-                <select id="Tab3StateStatus" class="form-control txtBox" tabindex="" name="Tab3StateStatus"></select>
+                <div style="display: flex; align-items: center; gap: 2px;">
+
+                    <select id="Tab3StateStatus" class="form-control txtBox" tabindex="" name="Tab3StateStatus"></select>
+                    <button id="btnRevisionTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew/Amendment</button>
+
+                </div>
             </div>
-
-
         </div>
 
 
-        <div class="row">
-            <div class="col-md-9"></div>
-
-            <div class="col-md-3">
-                <button id="btnRevisionTab3" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew/Amendment</button>
-            </div>
-
-        </div>
+  
 
         <div class="form-group">
             <fieldset class="panel-border">
@@ -3677,7 +3974,7 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
-                                <label>List of Document File</label>
+                             
                                 <div id="Tab3FileGrid1" class=""></div>
                             </div>
                         </div>
@@ -3700,10 +3997,15 @@
         <div class="form-group">
             <div class="row">
                 <div class="col-sm-2">Annexure No<span style="color: red">*</span> :</div>
-                <div class="col-sm-2"><input type="text" id="Tab4AnnexureNo" name="Tab4AnnexureNo" class="form-control" placeholder="Get from Find" readonly /></div>
-                <input type="hidden" id="Tab4AnnexId" name="Tab4AnnexId" class="txtBox" />
-                <input type="hidden" id="Tab4ID" name="Tab4ID" class="txtBox" />
-                <div class="col-sm-1"><button id="btnFindAnnexureTab4" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+                <div class="col-sm-3">
+                    <div style="display: flex; align-items: center; gap: 2px;">
+                        <input type="text" id="Tab4AnnexureNo" name="Tab4AnnexureNo" class="form-control" placeholder="Get from Find" readonly />
+
+                        <input type="hidden" id="Tab4AnnexId" name="Tab4AnnexId" class="txtBox" />
+                        <input type="hidden" id="Tab4ID" name="Tab4ID" class="txtBox" />
+                        <button id="btnFindAnnexureTab4" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+                    </div>
+            </div>
                 <div class="col-sm-2">Revision No :</div>
                 <div class="col-sm-2"><input type="text" id="Tab4RevisionNo" name="Tab4RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
                 <div class="col-sm-1">Price Type</div>
@@ -3727,15 +4029,17 @@
                 </div>
                 <div class="col-sm-1"></div>
                 <div class="col-sm-2">Price Category :</div>
-                <div class="col-sm-2">
-                    <select id="Tab4PriceCategory" class="txtBox">
-                        <option value="">--N/A--</option>
-                        <option value="IP">IP</option>
-                        <option value="MRP">MRP</option>
-                    </select>
-                </div>
-                <div class="col-sm-2">
-                    <button id="btnRevisionTab4" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Revised</button>
+                <div class="col-sm-3">
+                    <div style="display: flex; align-items: center; gap: 2px;">
+                        <select id="Tab4PriceCategory" class="txtBox">
+                            <option value="">--N/A--</option>
+                            <option value="IP">IP</option>
+                            <option value="MRP">MRP</option>
+                        </select>
+
+
+                        <button id="btnRevisionTab4" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-plus"></i>Revised</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -3810,13 +4114,68 @@
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Approved Price : </div>
+                        @*<div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Approved Price : </div>
                         <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
                             <input type="text" class="form-control" id="Tab4UnitPrice" name="Tab4UnitPrice" placeholder="2ml:4.5,3ml:6.66">
-                        </div>
+                        </div>*@
                         <div class="col-sm-1"> </div>
                     </div>
                 </div>
+                <div class="form-group">
+                    <div class="row">
+                        @*//New Add*@
+                    <div class="col-sm-12">
+                        <fieldset class="panel-border">
+                            <legend class="panel-border">Unit Price :</legend>
+                            <input type="hidden" id="Tab4UnitPrice" name="Tab4UnitPrice" />
+                            <div class="row" style="margin-bottom:10px;">
+                                <div class="col-sm-1">Unit Name:</div>
+                                <div class="col-sm-2">
+                                    <input type="text" class="form-control" id="Tab4UnitNameInput" placeholder="e.g. 2ml, 500mg" maxlength="100">
+                                </div>
+                                <div class="col-sm-1">Price:</div>
+                                <div class="col-sm-2">
+                                    <input type="text" class="form-control" id="Tab4PriceValueInput" placeholder="e.g. 4.50" maxlength="50">
+                                </div>
+                                <div class="col-sm-1">Date:</div>
+                                <div class="col-sm-3">
+                                    <div class="input-group date">
+                                        @*NLD*@
+                                    <input type="text" class="form-control" id="Tab4UnitPriceDateInput" placeholder="dd/mm/yyyy">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-success btn-sm" onclick="addUnitPrice()"><i class="glyphicon glyphicon-plus"></i> Add</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="table table-bordered table-striped table-condensed" id="unitPriceTable" style="margin-bottom:0;">
+                                    <thead>
+                                        <tr style="background-color:#337ab7; color:#fff;">
+                                            <th style="width:50px; text-align:center;">SL</th>
+                                            <th style="width: 150px; text-align: center;">Unit</th>
+                                            <th style="width: 150px; text-align: center;">Price</th>
+                                            <th style="width: 150px; text-align: center;">Date</th>
+                                            <th style="width:60px; text-align:center;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="unitPriceTableBody">
+                                        <tr><td colspan="5" style="text-align:center; color:#999; padding:8px;">No unit-price added yet</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </fieldset>
+                    </div>
+
+
+                    <div class="col-sm-1"> </div>
+                </div>
+            </div>
+
+
                 <div class="form-group">
                     <div class="row">
                         <div class="col-sm-1"> </div>
@@ -3885,7 +4244,7 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
-                                <label>List of Document File</label>
+                         
                                 <div id="Tab4FileGrid1" class=""></div>
                             </div>
                         </div>
@@ -3926,13 +4285,16 @@
             </div>
 
             <div class="col-md-2">Record Status :</div>
-            <div class="col-md-3">
-                <select id="Tab5StateStatus" class="form-control txtBox" tabindex="" name="Tab5StateStatus"></select>
-            </div>
+            <div class="col-md-4">
+                <div style="display: flex; align-items: center; gap: 2px;">
+                    <select id="Tab5StateStatus" class="form-control txtBox" tabindex="" name="Tab5StateStatus"></select>
 
-            <div class="col-md-3">
-                <button id="btnRevisionTab5" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew/Amendment</button>
+
+
+                    <button id="btnRevisionTab5" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew/Amendment</button>
+                </div>
             </div>
+        </div>
         </div>
 
 
@@ -3945,9 +4307,13 @@
 
                     <div class="row">
                         <div class="col-md-3">Product Code<span style="color: red">*</span></div>
-                        <div class="col-md-2"><input type="text" maxlength="50" id="Tab5ProductCode" name="Tab5ProductCode" readonly="readonly" class="RequiredField form-control" /></div>
-                        <div class="col-md-2"><button id="btnFindProdTab5" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+                        <div class="col-md-4">
+                            <div style="display: flex; align-items: center; gap: 2px;">
+                                <input type="text" maxlength="50" id="Tab5ProductCode" name="Tab5ProductCode" readonly="readonly" class="RequiredField form-control" />
 
+                                <button id="btnFindProdTab5" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+                            </div>
+                        </div>
                         <div class="col-md-2">SAP Product Code</div>
                         <div class="col-md-3"><input type="text" maxlength="50" id="Tab5SapProductCode" name="Tab5SapProductCode" readonly="readonly" class="RequiredField form-control" /></div>
                     </div>
@@ -3987,96 +4353,105 @@
 
 
 
-        <div class="row">
-            <div class="col-sm-12">
-                <fieldset class="panel-border">
-                    <legend class="panel-border">Approval & Notification Information :</legend>
+      <div class="row">
+        <div class="col-sm-12">
+            <fieldset class="panel-border">
+                <legend class="panel-border">Approval & Notification Information :</legend>
 
 
-                    <div class="row">
-                        <div class="col-md-2">Submission Date</div>
-                        <div class="col-md-3">
-                            <div class="input-group date">
-                                <input type="text" class="form-control txtBox" id="Tab5SubmissionDate" name="Tab5SubmissionDate" placeholder="dd/mm/yyyy">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                            </div>
-                        </div>
-                        <div class="col-md-1"></div>
-                        <div class="col-md-2">Receive Date</div>
-                        <div class="col-md-3">
-                            <div class="input-group">
-                                <input type="text" class="form-control txtBox" id="Tab5ReceiveDate" name="Tab5ReceiveDate" disabled placeholder="dd/mm/yyyy">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                            </div>
+                <div class="row">
+                    <div class="col-md-2">Submission Date</div>
+                    <div class="col-md-3">
+                        <div class="input-group date">
+                            <input type="text" class="form-control txtBox" id="Tab5SubmissionDate" name="Tab5SubmissionDate" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                         </div>
                     </div>
-
-
-                    <div class="row">
-
-                        <div class="col-md-2">Approval Date</div>
-                        <div class="col-md-3">
-                            <div class="input-group date">
-                                <input type="text" class="form-control txtBox" id="Tab5ApprovalDate" name="Tab5ApprovalDate" placeholder="dd/mm/yyyy">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                            </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">Receive Date</div>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control txtBox" id="Tab5ReceiveDate" name="Tab5ReceiveDate" disabled placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="col-md-1"></div>
-                        <div class="col-md-2">Valid Upto</div>
-                        <div class="col-md-3">
-                            <div class="input-group date">
-                                <input type="text" class="form-control txtBox" id="Tab5ValiduptoDate" name="Tab5ValiduptoDate" placeholder="dd/mm/yyyy">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                            </div>
+
+                <div class="row">
+
+                    <div class="col-md-2">Approval Date</div>
+                    <div class="col-md-3">
+                        <div class="input-group date">
+                            <input type="text" class="form-control txtBox" id="Tab5ApprovalDate" name="Tab5ApprovalDate" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                         </div>
                     </div>
 
-
-
-                    <div class="row">
-                        <div class="col-md-2">Alarm Days</div>
-                        <div class="col-md-3"><input type="text" maxlength="5" id="Tab5NotificationDay" name="Tab5NotificationDay" class="txtBox form-control numeric" /></div>
-                        <div class="col-md-1"></div>
-                        <div class="col-md-2">Market Authorization No</div>
-                        <div class="col-md-3"><input type="text" maxlength="150" id="Tab5MarketAuthorizationNo" name="Tab5MarketAuthorizationNo" class="txtBox form-control" /></div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">Valid Upto</div>
+                    <div class="col-md-3">
+                        <div class="input-group date">
+                            <input type="text" class="form-control txtBox" id="Tab5ValiduptoDate" name="Tab5ValiduptoDate" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="row">
-                        <div class="col-md-2">Remarks</div>
-                        <div class="col-md-3"><textarea id="Tab5Remarks" name="Tab5Remarks" class="RequiredField form-control"> </textarea></div>
-                    </div>
 
-                </fieldset>
-            </div>
+
+                <div class="row">
+                    <div class="col-md-2">Alarm Days</div>
+                    <div class="col-md-3"><input type="text" maxlength="5" id="Tab5NotificationDay" name="Tab5NotificationDay" class="txtBox form-control numeric" /></div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">Market Authorization No</div>
+                    <div class="col-md-3"><input type="text" maxlength="150" id="Tab5MarketAuthorizationNo" name="Tab5MarketAuthorizationNo" class="txtBox form-control" /></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-2">Remarks</div>
+                    <div class="col-md-3"><textarea id="Tab5Remarks" name="Tab5Remarks" class="RequiredField form-control"> </textarea></div>
+                </div>
+
+            </fieldset>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <fieldset class="panel-border">
-                    <legend class="panel-border">Upload Documents :</legend>
-                    <div class="row">
-                        <div class="col-md-3">
-                            Document Name<span style="color: red">*</span>:
-                        </div>
-                        <div class="col-sm-4">
-                            <select id="Tab5RefNo" class="form-control txtBox" tabindex="" name="Tab5RefNo"></select>
-                        </div>
-                        <div class="col-sm-4">
-                            <input type="file" class="txtBox" id="Tab5UploadFile" name="Tab5UploadFile" />
-                            <i class="glyphicon glyphicon-upload form-control-feedback"></i>
-                        </div>
+    </div>
 
+
+
+    <div class="row">
+        <div class="col-sm-12">
+            <fieldset class="panel-border">
+                <legend class="panel-border">Upload Documents :</legend>
+                <div class="row">
+                    <div class="col-md-3">
+                        Document Name<span style="color: red">*</span>:
+                    </div>
+                    <div class="col-sm-4">
+                        <select id="Tab5RefNo" class="form-control txtBox" tabindex="" name="Tab5RefNo"></select>
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="file" class="txtBox" id="Tab5UploadFile" name="Tab5UploadFile" />
+                        <i class="glyphicon glyphicon-upload form-control-feedback"></i>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label>List of Document File</label>
-                            <div id="Tab5FileGrid1" class=""></div>
-                        </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <div id="Tab5FileGrid1" class=""></div>
                     </div>
-                </fieldset>
-            </div>
+                </div>
+            </fieldset>
         </div>
+    </div>
+
+
+
+
+
+
 
         <div class="row">
             <div id="Tab5SearchBtn_PopupWindow" class="PopupWindowLayout" style="display: none;">
@@ -4118,7 +4493,7 @@
 
 
 
-</div>
+
 
 
 

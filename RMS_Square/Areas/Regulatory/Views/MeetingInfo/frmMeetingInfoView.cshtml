@@ -17,11 +17,15 @@
     </div>
 </div>
 <div class="box-body">
+
     <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label required">Meeting Type:</label>
-                <select id="MeetingType" name="MeetingType" class="form-control input-sm">
+        <div class="col-md-9">
+            <div class="input-group">
+
+                <span class="input-group-addon">
+                    <label class="control-label required">Meeting Type:</label>
+                </span>
+                <select id="MeetingType" name="MeetingType" class="form-control input-lg">
                     <option value="All">ALL</option>
                     <option value="Recipe Meeting">Recipe Meeting</option>
                     <option value="TSC Meeting">TSC Meeting</option>
@@ -32,59 +36,42 @@
                     <option value="Herbal Advisory Meeting">Herbal Advisory Meeting</option>
                     <option value="Others">Others</option>
                 </select>
+                <span class="input-group-addon">
+                    <label class="control-label required">From Date:</label>
+                </span>
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox input-lg" id="FromDate" name="FromDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
+                <span class="input-group-addon">
+                    <label class="control-label required">To Date:</label>
+                </span>
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox input-lg" id="ToDate" name="ToDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
             </div>
         </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label required">From Date:</label>
-
-                    <div class="input-group date">
-                        <input type="text" class="form-control txtBox" id="FromDate" name="FromDate" placeholder="dd/mm/yyyy">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                    </div>
-                </div>
-            </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label class="control-label required">To Date:</label>
-                        <div class="input-group date">
-                            <input type="text" class="form-control txtBox" id="ToDate" name="ToDate" placeholder="dd/mm/yyyy">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                        </div>
-                    </div>
-                   
-                </div>
-            </div>
+    </div>
 
 
-            <div class="form-group">
-                <fieldset class="panel-border" id="divRenew">
-                    <legend class="panel-border">Meeting Information :</legend>
-                    <div class="form-group">
+
+
+           
                         <div class="row">
                             <div class="col-sm-12">
                                 <div id="LicenseInfoGrid" class=""></div>
                             </div>
                         </div>
-                    </div>
-                </fieldset>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <fieldset class="panel-border">
-                            <legend class="panel-border">Upload Documents :</legend>
-                            <div class="row">
-                                <br />
-                            </div>
+                
+            <br />
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <label>List of Document File</label>
+                   
                                     <div id="FileGrid" class=""></div>
                                 </div>
                             </div>
-                        </fieldset>
-                    </div>
-                </div>
-            </div>
+           
 
         </div>
 <div class="box-footer">@*Form Footer*@</div>
@@ -137,14 +124,16 @@
             editable: true,
             height: 350,
             selectable: "row",
-            toolbar: ["excel", { template: "<input type='text' id='txtInputLicense'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: [{
+                template: "<label style='float:left; margin:5px 10px 0 0;'>Meeting Information:</label>"
+            }, 'excel', { template: "<input type='text' id='txtInputLicense'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
             excel: {
                 fileName: "Export.xlsx",
                 allPages: true,
                 filterable: true
             },
             navigatable: true,
-            groupable: true,
+            //groupable: true,
             columnMenu: true,
             reorderable: true,
             resizable: true,
@@ -234,9 +223,12 @@
             filterable: true,
             editable: true,
             selectable: "row",
-            toolbar: [{ template: "<input type='text' id='txtInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: [{
+                template: "<label style='float:left; margin:5px 10px 0 0;'>Document Information:</label>"
+            },  { template: "<input type='text' id='txtInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+          
             navigatable: true,
-            groupable: true,
+            //groupable: true,
             columnMenu: true,
             reorderable: true,
             resizable: true,

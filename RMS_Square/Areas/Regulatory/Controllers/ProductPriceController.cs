@@ -122,9 +122,9 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             return Json(GetFileByParameters(_fileModel).OrderBy(o => o.FileID), JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public ActionResult GetAllInfo(string companyCode)
+        public ActionResult GetAllInfo(string companyCode,string productCode)
         {
-            var data = _dalObj.GetAllInfo(new ProductPriceBEL(), companyCode,orderBy: "DESC");
+            var data = _dalObj.GetAllInfo(new ProductPriceBEL(), companyCode,productCode,orderBy: "DESC");
             return Json(data, JsonRequestBehavior.AllowGet);
         }
           [AcceptVerbs(HttpVerbs.Get)]
@@ -145,7 +145,8 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         [HttpPost]
         public ActionResult GetInfoByParams(ProductPriceBEL model,string companyCode)
         {
-            var dMaster = _dalObj.GetAllInfo(model,companyCode, orderBy: "DESC");
+            string productCode="";
+            var dMaster = _dalObj.GetAllInfo(model,companyCode,productCode, orderBy: "DESC");
             if (dMaster.Any())
             {
                 _fileModel = new FileDetailModel();

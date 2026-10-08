@@ -121,7 +121,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             }
         }
 
-        public IList<RecipeBEL> GetAllInfo(RecipeBEL model,string companyCode, string orderBy)
+        public IList<RecipeBEL> GetAllInfo(RecipeBEL model,string companyCode,string productCode, string orderBy)
         {
             var query = new StringBuilder();
             query.Append(" SELECT D.ID, D.SLNO,D.REVISION_NO,D.COMPANY_CODE,D.PRODUCT_CODE,D.MEETING_TYPE,D.MANUFACTURING_TYPE,D.DCC_NO,TO_CHAR(D.RECEIVE_DATE, 'dd/mm/yyyy')RECEIVE_DATE,");
@@ -140,6 +140,10 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             if (!string.IsNullOrEmpty(companyCode))
             {
                 query.Append(" AND  D.COMPANY_CODE='" + companyCode + "'");
+            }
+            if (!string.IsNullOrEmpty(productCode))
+            {
+                query.Append(" AND  D.PRODUCT_CODE='" + productCode + "'");
             }
             if (!string.IsNullOrEmpty(model.CompanyCode))
             {
@@ -349,7 +353,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             query.Append(" SELECT A.ID,A.SLNO,A.REVISION_NO,A.SUBMISSION_DATE,A.PROPOSAL_DATE,A.APPROVAL_DATE,A.COMPANY_CODE,A.COMPANY_NAME,A.LICENSE_NO,");
             query.Append(" A.NOTIFICATION_DAYS,A.PRODUCT_CODE,A.BRAND_NAME,A.PRODUCT_CATEGORY,A.SAP_PRODUCT_CODE,A.GENERIC_CODE,A.PACK_SIZE_NAME,A.COUNTRY_CODE,A.MANUFACTURER_NAME,");
             query.Append(" A.DOSAGE_FORM_NAME,ROUND(((NVL(A.VALID_UPTO, TO_DATE('12/31/2099', 'mm/dd/yyyy')))-(SELECT  SYSDATE FROM DUAL)),0)DateDiff,TO_CHAR(A.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO");
-            query.Append(" FROM ( SELECT D.ID,D.SLNO,D.REVISION_NO,TO_CHAR(D.PROPOSAL_DATE, 'dd/mm/yyyy')PROPOSAL_DATE,D.COMPANY_CODE,C.COMPANY_NAME,C.LICENSE_NO,");
+            query.Append(" FROM ( SELECT P.STATUS,D.ID,D.SLNO,D.REVISION_NO,TO_CHAR(D.PROPOSAL_DATE, 'dd/mm/yyyy')PROPOSAL_DATE,D.COMPANY_CODE,C.COMPANY_NAME,C.LICENSE_NO,");
             query.Append(" TO_CHAR(D.APPROVAL_DATE, 'dd/mm/yyyy')APPROVAL_DATE, TO_CHAR(D.SUBMISSION_DATE, 'dd/mm/yyyy')SUBMISSION_DATE,");
             query.Append(" D.VALID_UPTO,D.NOTIFICATION_DAYS,  TO_CHAR(D.SET_ON, 'dd/mm/yyyy')SET_ON,D.COUNTRY_CODE,D.MANUFACTURER_NAME,P.PRODUCT_CODE,P.BRAND_NAME,P.PRODUCT_CATEGORY,");
             query.Append(" P.SAP_PRODUCT_CODE,P.GENERIC_CODE,P.PACK_SIZE_NAME,DF.DOSAGE_FORM_NAME  FROM RECIPE_INFO D ");
@@ -358,7 +362,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             query.Append(" INNER JOIN ( SELECT PRODUCT_CODE,COMPANY_CODE,MAX(REVISION_NO) AS MaxRvNo FROM RECIPE_INFO GROUP BY COMPANY_CODE,PRODUCT_CODE) B");
             query.Append(" ON B.PRODUCT_CODE=A.PRODUCT_CODE AND B.COMPANY_CODE=A.COMPANY_CODE AND B.MaxRvNo=A.REVISION_NO ");
             query.Append(" LEFT JOIN PRODUCT_REGISTRATION_INFO PR ON PR.RECIPE_ID=A.ID WHERE PR.RECIPE_ID is null ");
-            query.Append(" AND P.STATUS = 'Active' ");
+            query.Append(" AND A.STATUS = 'Active' ");
 
             if (!string.IsNullOrEmpty(model.CompanyCode))
             {

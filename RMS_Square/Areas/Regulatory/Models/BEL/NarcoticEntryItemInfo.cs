@@ -12,11 +12,12 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
 
         public string ItemName { get; set; }
         public string FiscalYear { get; set; }
-        public decimal? AnnualQuota { get; set; }
+        public string AnnualQuota { get; set; }
         public string SubmissionType { get; set; }
-        public decimal? SubmissionQuantity { get; set; }
-        public decimal? ApprovedQuantity { get; set; }
+        public string SubmissionQuantity { get; set; }
+        public string ApprovedQuantity { get; set; }
         public string RecordStatus { get; set; }
+        public string CountryName { get; set; }//NLD
 
         // DGDA Dates
         public DateTime? DgdaReceiveDate { get; set; }
@@ -52,6 +53,8 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
     {
         public decimal NarcoticSetupSl { get; set; } // NUMBER type maps to decimal in .NET
         public string GenericName { get; set; }
+        public string LicenseName { get; set; }
+        public string CompanyCode { get; set; }
         public string SetBy { get; set; }
         public DateTime? SetOn { get; set; }
         public DateTime? UpdatedDate { get; set; }
@@ -59,7 +62,46 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
 
         // Navigation property
         public List<NarcoticEntryItemInfo> EntryItems { get; set; }
+        public List<LicenseEntryItemInfo> LicenseEntries { get; set; }
+
     }
 
+    public class LicenseEntryItemInfo
+    {
+        public decimal NarcoticSetupSl { get; set; }
+        public decimal LicenseId { get; set; } // FK to NarcoticSetupInfo
 
+        public string LicenseName { get; set; }
+        public string RecordStatus { get; set; }
+
+        // DGDA Dates
+        public DateTime? DgdaReceiveDate { get; set; }
+        public DateTime? DgdaSubmissionDate { get; set; }
+        public DateTime? DgdaRecommendationDate { get; set; }
+
+        // DNC Local Office Dates
+        public DateTime? RecSendDate { get; set; }
+        public DateTime? InsReceiveDate { get; set; }
+
+        // DNC Divisional Office Dates
+        public DateTime? DivSendDate { get; set; }
+        public DateTime? DivNarcRecvDate { get; set; }
+
+        // DNC Head Office Dates
+        public DateTime? DncSendDate { get; set; }
+        public DateTime? NarcApvlDate { get; set; }
+
+        public string SetBy { get; set; }
+        public DateTime? SetOn { get; set; }
+        public DateTime? UpdatedDate { get; set; }
+        public string UpdatedBy { get; set; }
+
+        // Navigation property: Many-to-One to NarcoticSetupInfo
+        public NarcoticSetupInfo SetupInfo { get; set; }
+        public List<DocumentUpload> Documents { get; set; }
+
+        public string CompanyCode { get; set; }
+
+        public string CompanyName { get; set; }
+    }
 }

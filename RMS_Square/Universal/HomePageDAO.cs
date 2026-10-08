@@ -33,29 +33,32 @@ namespace RMS_Square.Universal
             var query = new StringBuilder();
 
             query.Append(" SELECT COMPANY_CODE, (SELECT COMPANY_NAME FROM COMPANY_INFO WHERE COMPANY_CODE=A.COMPANY_CODE)COMPANY_NAME,    (SELECT SEQ FROM COMPANY_INFO WHERE COMPANY_CODE = A.COMPANY_CODE) SEQ,SUM(NVL(RECIPE,0))RECIPE, ");
-            query.Append(" SUM(NVL(DTL,0))DTL, SUM(NVL(PROD_REG,0))PROD_REG, SUM(NVL(PRICE,0))PRICE, SUM(NVL(MA,0))MA, SUM(NVL(AMENDMENT,0))AMENDMENT ");
-            query.Append(" FROM ( SELECT  DISTINCT COMPANY_CODE, 0 RECIPE, 0 DTL, 0 PROD_REG, 0 PRICE, 0 MA, 0 AMENDMENT  FROM  PRODUCT_INFO ");
+            query.Append(" SUM(NVL(DTL,0))DTL, SUM(NVL(PROD_REG,0))PROD_REG, SUM(NVL(PRICE,0))PRICE, SUM(NVL(MA,0))MA, SUM(NVL(AMENDMENT,0))AMENDMENT , SUM(NVL(Narcotics,0)) Narcotics ");
+            query.Append(" FROM ( SELECT  DISTINCT COMPANY_CODE, 0 RECIPE, 0 DTL, 0 PROD_REG, 0 PRICE, 0 MA, 0 AMENDMENT,0 Narcotics  FROM  PRODUCT_INFO ");
 
-            query.Append(" UNION ALL SELECT COMPANY_CODE, COUNT(DISTINCT PRODUCT_CODE) RECIPE, 0 DTL,0 PROD_REG,0 PRICE, 0 MA, 0 AMENDMENT FROM RECIPE_INFO ");
+            query.Append(" UNION ALL SELECT COMPANY_CODE, COUNT(DISTINCT PRODUCT_CODE) RECIPE, 0 DTL,0 PROD_REG,0 PRICE, 0 MA, 0 AMENDMENT,0 Narcotics FROM RECIPE_INFO ");
             query.Append(" WHERE TO_DATE(APPROVAL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') GROUP BY COMPANY_CODE ");
 
-            query.Append(" UNION ALL SELECT B.COMPANY_CODE, 0 RECIPE, COUNT(A.RECIPE_ID)DTL, 0 PROD_REG, 0 PRICE, 0 MA, 0 AMENDMENT FROM PRODUCT_REGISTRATION_INFO A, RECIPE_INFO B , PRODUCT_INFO C ");
+            query.Append(" UNION ALL SELECT B.COMPANY_CODE, 0 RECIPE, COUNT(A.RECIPE_ID)DTL, 0 PROD_REG, 0 PRICE, 0 MA, 0 AMENDMENT,0 Narcotics FROM PRODUCT_REGISTRATION_INFO A, RECIPE_INFO B , PRODUCT_INFO C ");
             query.Append(" WHERE  A.RECIPE_ID=B.ID AND C.PRODUCT_CODE = B.PRODUCT_CODE AND C.PRODUCT_SPECIFICATION = 'INN' AND  A.STATE_STATUS='New' AND TO_DATE(A.DTL_APPROVAL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') GROUP BY B.COMPANY_CODE ");
 
-            query.Append(" UNION ALL SELECT B.COMPANY_CODE, 0 RECIPE, 0 DTL, COUNT(A.RECIPE_ID)PROD_REG, 0 PRICE, 0 MA,0 AMENDMENT FROM PRODUCT_REGISTRATION_INFO A, RECIPE_INFO B WHERE A.RECIPE_ID=B.ID ");
+            query.Append(" UNION ALL SELECT B.COMPANY_CODE, 0 RECIPE, 0 DTL, COUNT(A.RECIPE_ID)PROD_REG, 0 PRICE, 0 MA,0 AMENDMENT,0 Narcotics FROM PRODUCT_REGISTRATION_INFO A, RECIPE_INFO B WHERE A.RECIPE_ID=B.ID ");
             query.Append(" AND A.STATE_STATUS='New' AND TO_DATE(A.RENEWAL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') GROUP BY B.COMPANY_CODE  ");
 
-            query.Append(" UNION ALL SELECT  C.COMPANY_CODE, 0 RECIPE, 0 DTL,0 PROD_REG, COUNT(DISTINCT A.SLNO)PRICE, 0 MA,0 AMENDMENT FROM PRODUCT_PRICE A, PRODUCT_REGISTRATION_INFO B,RECIPE_INFO C ");
+            query.Append(" UNION ALL SELECT  C.COMPANY_CODE, 0 RECIPE, 0 DTL,0 PROD_REG, COUNT(DISTINCT A.SLNO)PRICE, 0 MA,0 AMENDMENT,0 Narcotics FROM PRODUCT_PRICE A, PRODUCT_REGISTRATION_INFO B,RECIPE_INFO C ");
             query.Append(" WHERE A.ANNEX_ID=B.ANNEX_ID AND B.RECIPE_ID=C.ID AND TO_DATE(A.APPROVAL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') GROUP BY C.COMPANY_CODE ");
 
-            query.Append(" UNION ALL SELECT COMPANY_CODE, 0 RECIPE,  0 DTL, 0 PROD_REG, 0 PRICE, COUNT(DISTINCT PRODUCT_CODE)MA, 0 AMENDMENT FROM MARKET_AUTH_CERTIFICATE ");
+            query.Append(" UNION ALL SELECT COMPANY_CODE, 0 RECIPE,  0 DTL, 0 PROD_REG, 0 PRICE, COUNT(DISTINCT PRODUCT_CODE)MA, 0 AMENDMENT,0 Narcotics FROM MARKET_AUTH_CERTIFICATE ");
             query.Append(" WHERE TO_DATE(APPROVAL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') GROUP BY COMPANY_CODE ");
 
-         
-            query.Append(" UNION ALL SELECT B.COMPANY_CODE, 0 RECIPE,  0 DTL, 0 PROD_REG, 0 PRICE, 0 MA, COUNT(A.RECIPE_ID) AMENDMENT FROM PRODUCT_REGISTRATION_INFO A INNER JOIN RECIPE_INFO B ON A.RECIPE_ID = B.ID ");
-            query.Append(" WHERE TO_DATE(A.RENEWAL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
-            query.Append(" AND (A.STATE_STATUS='Annexure Amendment' OR A.STATE_STATUS='Packaging Amendment') GROUP BY B.COMPANY_CODE) A GROUP BY COMPANY_CODE ORDER BY SEQ ");
 
+            query.Append(" UNION ALL SELECT B.COMPANY_CODE, 0 RECIPE,  0 DTL, 0 PROD_REG, 0 PRICE, 0 MA, COUNT(A.RECIPE_ID) AMENDMENT,0 Narcotics FROM PRODUCT_REGISTRATION_INFO A INNER JOIN RECIPE_INFO B ON A.RECIPE_ID = B.ID ");
+            query.Append(" WHERE TO_DATE(A.RENEWAL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
+            query.Append(" AND (A.STATE_STATUS='Annexure Amendment' OR A.STATE_STATUS='Packaging Amendment') GROUP BY B.COMPANY_CODE ");
+
+            query.Append(" UNION ALL SELECT B.COMPANY_CODE, 0 RECIPE,  0 DTL, 0 PROD_REG, 0 PRICE, 0 MA, 0 AMENDMENT,COUNT(A.GENERIC_BRAND_ID) Narcotics FROM NARCOTIC_ENTRY_ITEM_INFO A INNER JOIN RECIPE_INFO B ON A.GENERIC_BRAND_ID = B.ID ");
+            query.Append(" WHERE TO_DATE(A.NARC_APVL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
+            query.Append("  GROUP BY B.COMPANY_CODE) A GROUP BY COMPANY_CODE ORDER BY SEQ ");
 
             DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), string.Format(query.ToString()));
 
@@ -70,6 +73,8 @@ namespace RMS_Square.Universal
                             Price = Convert.ToInt64(row["PRICE"].ToString()),
                             MA = Convert.ToInt64(row["MA"].ToString()),
                             Amendment = Convert.ToInt64(row["AMENDMENT"].ToString()),
+
+                            Narcotics = Convert.ToInt64(row["Narcotics"].ToString()),
                         }).ToList();
             return item;
         }
@@ -132,7 +137,13 @@ namespace RMS_Square.Universal
                 query.Append(" AND (C.STATE_STATUS = 'Annexure Amendment' OR C.STATE_STATUS = 'Packaging Amendment') ");
             }
 
-        
+            else if (DType == "Narcotics")
+            {
+                query.Append(" SELECT B.BRAND_NAME, B.GENERIC_CODE, TO_CHAR(C.RENEWAL_DATE, 'dd/mm/yyyy') APPROVAL_DATE,A.COMPANY_CODE,P.COMPANY_NAME FROM PRODUCT_REGISTRATION_INFO C ");
+                query.Append(" INNER JOIN RECIPE_INFO A ON C.RECIPE_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE INNER JOIN COMPANY_INFO P ON A.COMPANY_CODE=P.COMPANY_CODE");
+                query.Append(" WHERE TO_DATE(C.RENEWAL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
+                query.Append(" AND (C.STATE_STATUS = 'Annexure Amendment' OR C.STATE_STATUS = 'Packaging Amendment') ");
+            }
 
             DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), string.Format(query.ToString()));
 
@@ -208,7 +219,13 @@ namespace RMS_Square.Universal
                 query.Append(" AND (C.STATE_STATUS = 'Annexure Amendment' OR C.STATE_STATUS = 'Packaging Amendment') AND C.RENEWAL_DATE IS NULL  ");
             }
 
-          
+            else if (DType == "Narcotics")
+            {
+                query.Append(" SELECT B.BRAND_NAME, B.GENERIC_CODE, TO_CHAR(C.SUBMISSION_DATE, 'dd/mm/yyyy') SUBMISSION_DATE, C.REMARKS,A.COMPANY_CODE,P.COMPANY_NAME FROM PRODUCT_REGISTRATION_INFO C ");
+                query.Append(" INNER JOIN RECIPE_INFO A ON C.RECIPE_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE INNER JOIN COMPANY_INFO P ON A.COMPANY_CODE=P.COMPANY_CODE");
+                query.Append(" WHERE TO_DATE(C.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
+                query.Append(" AND (C.STATE_STATUS = 'Annexure Amendment' OR C.STATE_STATUS = 'Packaging Amendment') AND C.RENEWAL_DATE IS NULL  ");
+            }
 
 
 
@@ -240,33 +257,37 @@ namespace RMS_Square.Universal
             }
 
             var query = new StringBuilder();
-            string Qry = @"SELECT COMPANY_CODE, (SELECT COMPANY_NAME FROM COMPANY_INFO WHERE COMPANY_CODE=A.COMPANY_CODE)COMPANY_NAME,    (SELECT SEQ FROM COMPANY_INFO WHERE COMPANY_CODE = A.COMPANY_CODE) SEQ,SUM(NVL(RECIPE,0))RECIPE,  SUM(NVL(DTL,0))DTL, SUM(NVL(PROD_REG,0))PROD_REG, SUM(NVL(PRICE,0))PRICE, SUM(NVL(MA,0))MA, SUM(NVL(AMENDMENT,0))AMENDMENT  FROM (
+            string Qry = @"SELECT COMPANY_CODE, (SELECT COMPANY_NAME FROM COMPANY_INFO WHERE COMPANY_CODE=A.COMPANY_CODE)COMPANY_NAME,    (SELECT SEQ FROM COMPANY_INFO WHERE COMPANY_CODE = A.COMPANY_CODE) SEQ,SUM(NVL(RECIPE,0))RECIPE,  SUM(NVL(DTL,0))DTL, SUM(NVL(PROD_REG,0))PROD_REG, SUM(NVL(PRICE,0))PRICE, SUM(NVL(MA,0))MA, SUM(NVL(AMENDMENT,0))AMENDMENT, SUM(NVL(Narcotics,0))Narcotics  FROM (
  
-                          SELECT  DISTINCT COMPANY_CODE, 0 RECIPE, 0 DTL, 0 PROD_REG, 0 PRICE, 0 MA, 0 AMENDMENT  FROM  PRODUCT_INFO  
+                          SELECT  DISTINCT COMPANY_CODE, 0 RECIPE, 0 DTL, 0 PROD_REG, 0 PRICE, 0 MA, 0 AMENDMENT,0 Narcotics  FROM  PRODUCT_INFO  
                           UNION ALL 
                          --Recipe
-                          SELECT A.COMPANY_CODE, COUNT(DISTINCT A.PRODUCT_CODE) RECIPE, 0 DTL,0 PROD_REG,0 PRICE, 0 MA, 0 AMENDMENT FROM RECIPE_INFO A INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE  WHERE TO_DATE(A.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + @"','DD/MM/RRRR') AND TO_DATE('" + toDate + @"','DD/MM/RRRR')  
+                          SELECT A.COMPANY_CODE, COUNT(DISTINCT A.PRODUCT_CODE) RECIPE, 0 DTL,0 PROD_REG,0 PRICE, 0 MA, 0 AMENDMENT,0 Narcotics FROM RECIPE_INFO A INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE  WHERE TO_DATE(A.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + @"','DD/MM/RRRR') AND TO_DATE('" + toDate + @"','DD/MM/RRRR')  
                           AND A.APPROVAL_DATE IS NULL   GROUP BY A.COMPANY_CODE 
                             UNION ALL   
                          --DTL
-                          SELECT A.COMPANY_CODE, 0 RECIPE, COUNT(C.RECIPE_ID) DTL, 0 PROD_REG, 0 PRICE, 0 MA, 0 AMENDMENT FROM PRODUCT_REGISTRATION_INFO C  INNER JOIN RECIPE_INFO A ON C.RECIPE_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE  WHERE TO_DATE(C.DTL_SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + @"','DD/MM/RRRR') AND TO_DATE('" + toDate + @"','DD/MM/RRRR')  
+                          SELECT A.COMPANY_CODE, 0 RECIPE, COUNT(C.RECIPE_ID) DTL, 0 PROD_REG, 0 PRICE, 0 MA, 0 AMENDMENT,0 Narcotics FROM PRODUCT_REGISTRATION_INFO C  INNER JOIN RECIPE_INFO A ON C.RECIPE_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE  WHERE TO_DATE(C.DTL_SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + @"','DD/MM/RRRR') AND TO_DATE('" + toDate + @"','DD/MM/RRRR')  
                           AND C.DTL_APPROVAL_DATE IS NULL AND C.STATE_STATUS = 'New'  GROUP BY A.COMPANY_CODE  
                             UNION ALL  
                          --Product
-                          SELECT A.COMPANY_CODE, 0 RECIPE, 0 DTL, COUNT(C.RECIPE_ID) PROD_REG, 0 PRICE, 0 MA,0 AMENDMENT FROM PRODUCT_REGISTRATION_INFO C  INNER JOIN RECIPE_INFO A ON C.RECIPE_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE  WHERE TO_DATE(C.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + @"','DD/MM/RRRR') AND TO_DATE('" + toDate + @"','DD/MM/RRRR')  
+                          SELECT A.COMPANY_CODE, 0 RECIPE, 0 DTL, COUNT(C.RECIPE_ID) PROD_REG, 0 PRICE, 0 MA,0 AMENDMENT,0 Narcotics FROM PRODUCT_REGISTRATION_INFO C  INNER JOIN RECIPE_INFO A ON C.RECIPE_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE  WHERE TO_DATE(C.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + @"','DD/MM/RRRR') AND TO_DATE('" + toDate + @"','DD/MM/RRRR')  
                           AND C.RENEWAL_DATE IS NULL AND C.STATE_STATUS = 'New'   GROUP BY A.COMPANY_CODE 
                             UNION ALL 
                           --Price
-                          SELECT  A.COMPANY_CODE, 0 RECIPE, 0 DTL,0 PROD_REG, COUNT(DISTINCT D.SLNO) PRICE, 0 MA,0 AMENDMENT FROM PRODUCT_PRICE D  INNER JOIN PRODUCT_REGISTRATION_INFO C ON D.ANNEX_ID = C.ANNEX_ID  INNER JOIN RECIPE_INFO A ON C.RECIPE_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE  WHERE TO_DATE(D.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + @"','DD/MM/RRRR') AND TO_DATE('" + toDate + @"','DD/MM/RRRR')  
+                          SELECT  A.COMPANY_CODE, 0 RECIPE, 0 DTL,0 PROD_REG, COUNT(DISTINCT D.SLNO) PRICE, 0 MA,0 AMENDMENT,0 Narcotics FROM PRODUCT_PRICE D  INNER JOIN PRODUCT_REGISTRATION_INFO C ON D.ANNEX_ID = C.ANNEX_ID  INNER JOIN RECIPE_INFO A ON C.RECIPE_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE  WHERE TO_DATE(D.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + @"','DD/MM/RRRR') AND TO_DATE('" + toDate + @"','DD/MM/RRRR')  
                           AND D.APPROVAL_DATE IS NULL   GROUP BY A.COMPANY_CODE 
                             UNION ALL 
                           --MA
-                          SELECT A.COMPANY_CODE, 0 RECIPE,  0 DTL, 0 PROD_REG, 0 PRICE, COUNT(DISTINCT A.PRODUCT_CODE) MA, 0 AMENDMENT FROM MARKET_AUTH_CERTIFICATE A  INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE  WHERE TO_DATE(A.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + @"','DD/MM/RRRR') AND TO_DATE('" + toDate + @"','DD/MM/RRRR')  
+                          SELECT A.COMPANY_CODE, 0 RECIPE,  0 DTL, 0 PROD_REG, 0 PRICE, COUNT(DISTINCT A.PRODUCT_CODE) MA, 0 AMENDMENT,0 Narcotics FROM MARKET_AUTH_CERTIFICATE A  INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE  WHERE TO_DATE(A.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + @"','DD/MM/RRRR') AND TO_DATE('" + toDate + @"','DD/MM/RRRR')  
                           AND A.APPROVAL_DATE IS NULL   GROUP BY A.COMPANY_CODE    
                             UNION ALL 
                          --Am
-                          SELECT A.COMPANY_CODE, 0 RECIPE,  0 DTL, 0 PROD_REG, 0 PRICE, 0 MA, COUNT(C.RECIPE_ID) AMENDMENT FROM PRODUCT_REGISTRATION_INFO C  INNER JOIN RECIPE_INFO A ON C.RECIPE_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE  WHERE TO_DATE(C.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + @"','DD/MM/RRRR') AND TO_DATE('" + toDate + @"','DD/MM/RRRR')  
+                          SELECT A.COMPANY_CODE, 0 RECIPE,  0 DTL, 0 PROD_REG, 0 PRICE, 0 MA, COUNT(C.RECIPE_ID) AMENDMENT,0 Narcotics FROM PRODUCT_REGISTRATION_INFO C  INNER JOIN RECIPE_INFO A ON C.RECIPE_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE  WHERE TO_DATE(C.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + @"','DD/MM/RRRR') AND TO_DATE('" + toDate + @"','DD/MM/RRRR')  
                           AND (C.STATE_STATUS = 'Annexure Amendment' OR C.STATE_STATUS = 'Packaging Amendment') AND C.RENEWAL_DATE IS NULL   GROUP BY A.COMPANY_CODE 
+                          UNION ALL 
+                          --Nargotics
+                          SELECT A.COMPANY_CODE, 0 RECIPE,  0 DTL, 0 PROD_REG, 0 PRICE, 0 MA, 0 AMENDMENT,COUNT(C.GENERIC_BRAND_ID) Narcotics FROM NARCOTIC_ENTRY_ITEM_INFO C  INNER JOIN RECIPE_INFO A ON C.GENERIC_BRAND_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE  WHERE TO_DATE(C.DGDA_SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + @"','DD/MM/RRRR') AND TO_DATE('" + toDate + @"','DD/MM/RRRR')  
+                           AND C.NARC_APVL_DATE IS NULL   GROUP BY A.COMPANY_CODE 
   
                            ) A  GROUP BY COMPANY_CODE";
 
@@ -314,7 +335,13 @@ namespace RMS_Square.Universal
                 query.Append(" WHERE TO_DATE(C.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
                 query.Append(" AND (C.STATE_STATUS = 'Annexure Amendment' OR C.STATE_STATUS = 'Packaging Amendment') AND C.RENEWAL_DATE IS NULL  ");
             }
-
+            else if (dataType == "Narcotics")
+            {
+                query.Append(" SELECT B.BRAND_NAME, B.GENERIC_CODE, TO_CHAR(C.DGDA_SUBMISSION_DATE, 'dd/mm/yyyy') SUBMISSION_DATE, C.REMARKS FROM NARCOTIC_ENTRY_ITEM_INFO C ");
+                query.Append(" INNER JOIN RECIPE_INFO A ON C.GENERIC_BRAND_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE ");
+                query.Append(" WHERE TO_DATE(C.DGDA_SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR')  AND C.NARC_APVL_DATE IS NULL");
+                //query.Append(" AND (C.STATE_STATUS = 'Annexure Amendment' OR C.STATE_STATUS = 'Packaging Amendment')  ");
+            }
             if (!string.IsNullOrEmpty(CompanyCode))
             {
                 query.Append("  AND A.COMPANY_CODE = '" + CompanyCode + "'  ");
@@ -338,6 +365,7 @@ namespace RMS_Square.Universal
                             Price = Convert.ToInt64(row["PRICE"].ToString()),
                             MA = Convert.ToInt64(row["MA"].ToString()),
                             Amendment = Convert.ToInt64(row["AMENDMENT"].ToString()),
+                            Narcotics = Convert.ToInt64(row["Narcotics"].ToString()),
                         }).ToList();
             return item;
         }
@@ -358,7 +386,7 @@ namespace RMS_Square.Universal
                 query.Append(" WHERE PRODUCT_CODE = A.PRODUCT_CODE AND COMPANY_CODE = A.COMPANY_CODE) ");
                 query.Append(" AND A.PRODUCT_CODE = '" + ProductCode + "' ");
 
-                if (!string.IsNullOrEmpty(CompanyCode))
+                if (!string.IsNullOrEmpty(CompanyCode) && CompanyCode!="All")
                 {
                     query.Append(" AND A.COMPANY_CODE = '" + CompanyCode + "'");
                 }
@@ -564,7 +592,13 @@ namespace RMS_Square.Universal
                 query.Append(" WHERE TO_DATE(C.RENEWAL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
                 query.Append(" AND (C.STATE_STATUS = 'Annexure Amendment' OR C.STATE_STATUS = 'Packaging Amendment') ");
             }
-
+            else if (DType == "Narcotics")
+            {
+                query.Append(" SELECT B.BRAND_NAME, B.GENERIC_CODE, TO_CHAR(C.NARC_APVL_DATE, 'dd/mm/yyyy') APPROVAL_DATE FROM NARCOTIC_ENTRY_ITEM_INFO C ");
+                query.Append(" INNER JOIN RECIPE_INFO A ON C.GENERIC_BRAND_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE ");
+                query.Append(" WHERE TO_DATE(C.NARC_APVL_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
+               // query.Append(" AND (C.STATE_STATUS = 'Annexure Amendment' OR C.STATE_STATUS = 'Packaging Amendment') ");
+            }
             if (!string.IsNullOrEmpty(CompanyCode))
             {
                 query.Append("  AND A.COMPANY_CODE = '" + CompanyCode + "'  ");
@@ -640,7 +674,13 @@ namespace RMS_Square.Universal
                 query.Append(" WHERE TO_DATE(C.SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') ");
                 query.Append(" AND (C.STATE_STATUS = 'Annexure Amendment' OR C.STATE_STATUS = 'Packaging Amendment') AND C.RENEWAL_DATE IS NULL  ");
             }
-
+            else if (DType == "Narcotics")
+            {
+                query.Append(" SELECT B.BRAND_NAME, B.GENERIC_CODE, TO_CHAR(C.DGDA_SUBMISSION_DATE, 'dd/mm/yyyy') SUBMISSION_DATE, '' REMARKS FROM NARCOTIC_ENTRY_ITEM_INFO C ");
+                query.Append(" INNER JOIN RECIPE_INFO A ON C.GENERIC_BRAND_ID = A.ID INNER JOIN PRODUCT_INFO B ON B.PRODUCT_CODE = A.PRODUCT_CODE ");
+                query.Append(" WHERE TO_DATE(C.DGDA_SUBMISSION_DATE,'DD/MM/RRRR') BETWEEN TO_DATE('" + fromDate + "','DD/MM/RRRR') AND TO_DATE('" + toDate + "','DD/MM/RRRR') AND C.NARC_APVL_DATE IS NULL");
+                // query.Append(" AND (C.STATE_STATUS = 'Annexure Amendment' OR C.STATE_STATUS = 'Packaging Amendment') ");
+            }
             if (!string.IsNullOrEmpty(CompanyCode))
             {
                 query.Append("  AND A.COMPANY_CODE = '" + CompanyCode + "'  ");
@@ -680,7 +720,8 @@ namespace RMS_Square.Universal
             query.Append(" SELECT D.ID, D.MEETING_TYPE, D.REMARKS, D.MEETING_NAME,TO_CHAR(D.MEETING_DATE, 'dd/mm/yyyy')MEETING_DATE, TO_CHAR(D.MEETING_DATE,'RRRR') MEETING_YEAR,TO_CHAR(D.SET_ON, 'dd/mm/yyyy')SET_ON, REMARKS ");
             query.Append(" FROM MEETING_INFO D");
             query.Append(" WHERE 1=1 ");
-            query.Append(" AND ABS(TRUNC(D.MEETING_DATE) - TO_DATE('" + setDate + "','dd-MM-yyyy'))<= 240 ");
+          //  query.Append(" AND ABS(TRUNC(D.MEETING_DATE) - TO_DATE('" + setDate + "','dd-MM-yyyy'))<= 1 ");
+            query.Append(" AND (TRUNC(D.MEETING_DATE) - TRUNC(SYSDATE)) BETWEEN 0 AND 90 ");
             query.Append(" ORDER BY  D.ID DESC ");
 
             string qry = string.Format(query.ToString());

@@ -59,9 +59,9 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetProduct(string companyCode)
+        public ActionResult GetProduct(string companyCode,string productCode)
         {
-            var data = primaryDAO.GetProductList(companyCode);
+            var data = primaryDAO.GetProductList(companyCode, productCode);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]

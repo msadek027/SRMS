@@ -21,10 +21,13 @@
    
 
     <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label required">Company:</label>
-                <select id="CompanyCode" name="CompanyCode" class="form-control input-sm"  >
+        <div class="col-md-9">
+            <div class="input-group">
+                
+                <span class="input-group-addon">
+                    <label class="control-label required">Company:</label>
+                </span>
+                <select id="CompanyCode" name="CompanyCode" class="form-control input-lg">
                     <option selected value="All">All</option>
                     <option value="0001">SPPLC (Pabna Unit)</option>
                     <option value="0002">SPPLC (Dhaka Unit)</option>
@@ -35,68 +38,42 @@
 
 
                 </select>
-            </div>
-
-        </div>
-
-
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label required">Submission Type:</label>
-
-
-                <select id="SubmissionType" name="SubmissionType" class="form-control input-sm">
+                <span class="input-group-addon">
+                    <label class="control-label required">Submission Type:</label>
+                </span>
+                <select id="SubmissionType" name="SubmissionType" class="form-control input-lg">
                     <option selected value="All">All</option>
                     <option value="License">New</option>
                     <option value="Renewal">Renewal</option>
                 </select>
-            </div>
-
-
-        </div>
-
-
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label required">Search Type:</label>
-
-                <select id="SearchType" name="SearchType" class="form-control input-sm">
+                <span class="input-group-addon">
+                    <label class="control-label required">Search Type:</label>
+                </span>
+                <select id="SearchType" name="SearchType" class="form-control input-lg">
                     <option selected value="All">All</option>
                     <option value="Submission">Submission</option>
                     <option value="Approval">Approval</option>
                 </select>
-            </div>
-
+            </div>        
         </div>
     </div>
-            <div class="form-group">
-                <fieldset class="panel-border" id="divRenew">
-                    <legend class="panel-border">License/Renewal Information :</legend>
-                    <div class="form-group">
+       
+            
+             
                         <div class="row">
                             <div class="col-sm-12">
                                 <div id="LicenseInfoGrid" class=""></div>
                             </div>
                         </div>
-                    </div>
-                </fieldset>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <fieldset class="panel-border">
-                            <legend class="panel-border">Document Information :</legend>
+                <br />
+               
                             <div class="row">
-                                <br />
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <label>List of Document File</label>
+                                <div class="col-sm-12">                     
                                     <div id="FileGrid" class=""></div>
                                 </div>
                             </div>
-                        </fieldset>
-                    </div>
-                </div>
-            </div>
+                  
+           
 
         </div>
         <div class="box-footer">@*Form Footer*@</div>
@@ -156,15 +133,28 @@
                     editable: true,
                     height: 300,
                     selectable: "row",
-                    toolbar: [{ template: "<input type='text' id='txtInputLicense'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+                    toolbar: [{
+                        template: "<label style='float:left; margin:5px 10px 0 0;'>License/Renewal Information:</label>"
+                    },'excel',
+                    { template: "<input type='text' id='txtInputLicense'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+                    excel: {
+                        fileName: "Export.xlsx",
+                        allPages: true,
+                        filterable: true
+                    },
+
                     navigatable: true,
-                    groupable: true,
+                    //groupable: true,
+                    //groupable: {
+                    //    messages: { empty: '<span style="font-size:12px;">License/Renewal Information:</span>' }
+                    //},
                     columnMenu: true,
                     reorderable: true,
                     resizable: true,
                     columns: [
                     { field: "CLID", hidden: true },
-                    { field: "CompanyCode", title: "CompanyCode", width: 80 },
+                    { field: "CompanyCode", title: "CompanyCode", width: 80, hidden: true },
+                    { field: "LicenseNo", title: "LicenseNo", width: 80 },
                     { field: "CompanyName", title: "CompanyName", width: 160 },
                     { field: "RevisionNo", title: "RevisionNo", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
                     { field: "SubmissionType", title: "SubmissionType", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
@@ -260,9 +250,12 @@
                     height: 300,
                     editable: true,
                     selectable: "row",
-                    toolbar: [{ template: "<input type='text' id='txtInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+                    toolbar: [{
+                        template: "<label style='float:left; margin:5px 10px 0 0;'>License/Document Information:</label>"
+                    },
+                    { template: "<input type='text' id='txtInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
                     navigatable: true,
-                    groupable: true,
+                    //groupable: true,
                     columnMenu: true,
                     reorderable: true,
                     resizable: true,

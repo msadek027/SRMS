@@ -22,5 +22,7 @@ namespace RMS_Square.Universal
         public string Remarks { get; set; }
         public string SubmissionDate { get; set; }
 
+
+        public Int64 Narcotics { get; set; }
     }
 }
